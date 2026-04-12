@@ -1330,9 +1330,9 @@
   let previewedItem = null;
 
   const products = {
-    1: { name: 'Original', edition: '1 of 50', price: 118, cat: 'outerwear', shopifyUrl: 'https://1de1.co/products/original' },
-    2: { name: 'Copy', edition: '1 of 75', price: 62, cat: 'tops', shopifyUrl: 'https://1de1.co/products/copy' },
-    3: { name: 'Stripe 001', edition: '1 of 60', price: 72, cat: 'polo', shopifyUrl: 'https://1de1.co/products/stripe-001' }
+    1: { name: 'Original', edition: '1 of 50', price: 118, cat: 'outerwear', shopifyUrl: 'https://1de1.co/products/uni-zip' },
+    2: { name: 'Copy', edition: '1 of 75', price: 62, cat: 'tops', shopifyUrl: 'https://1de1.co/products/uni-tee' },
+    3: { name: 'Stripe 001', edition: '1 of 60', price: 72, cat: 'polo', shopifyUrl: 'https://1de1.co/products/uni-rugby' }
   };
 
   // ── BOOT SEQUENCE ──
@@ -1497,12 +1497,10 @@
 
   function enterRealWorld() {
     if (cart.length === 0) return;
-    // When Shopify is live, redirect to cart or first product
-    // For now opens the store
     const url = cart.length === 1
       ? products[cart[0].id].shopifyUrl
       : 'https://1de1.co/cart';
-    alert('Redirecting to 1de1.co checkout — update shopifyUrl values in the script with your real Shopify product URLs when live.');
+    window.location.href = url;
   }
 </script>
 </body>
