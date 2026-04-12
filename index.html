@@ -1357,9 +1357,9 @@
   let previewedItem = null;
 
   const products = {
-    1: { name: 'Uni Zip', edition: '1 of 50', price: 80, cat: 'outerwear', shopifyUrl: 'https://1de1.myshopify.com/products/uni-zip' },
-    2: { name: 'Uni Tee', edition: '1 of 75', price: 44, cat: 'tops', shopifyUrl: 'https://1de1.myshopify.com/products/uni-tee' },
-    3: { name: 'Uni Rugby', edition: '1 of 60', price: 62, cat: 'polo', shopifyUrl: 'https://1de1.myshopify.com/products/uni-rugby' }
+    1: { name: 'Uni Zip', edition: '1 of 50', price: 80, cat: 'outerwear', shopifyUrl: 'https://1de1.co/products/uni-zip' },
+    2: { name: 'Uni Tee', edition: '1 of 75', price: 44, cat: 'tops', shopifyUrl: 'https://1de1.co/products/uni-tee' },
+    3: { name: 'Uni Rugby', edition: '1 of 60', price: 62, cat: 'polo', shopifyUrl: 'https://1de1.co/products/uni-rugby' }
   };
 
   // ── PRODUCT IMAGES ──
@@ -1371,7 +1371,7 @@
 
   async function loadProductImages() {
     for (const [id, handle] of Object.entries(productHandles)) {
-      const url = `https://1de1.myshopify.com/products/${handle}.json`;
+      const url = `https://1de1.co/products/${handle}.json`;
       console.log(`[1DE1] Fetching product ${id} (${handle}):`, url);
       try {
         const res = await fetch(url);
@@ -1575,7 +1575,7 @@
     if (cart.length === 0) return;
     const url = cart.length === 1
       ? products[cart[0].id].shopifyUrl
-      : 'https://1de1.myshopify.com/cart';
+      : 'https://1de1.co/cart';
     window.location.href = url;
   }
 </script>
