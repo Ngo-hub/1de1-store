@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1DE1 — Uni 001</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Cinzel:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080808;
+    --dark: #0e0e0e;
+    --panel: #111111;
+    --border: #222222;
+    --border-active: #444444;
+    --accent: #c8a876;
+    --accent-dim: #8a7050;
+    --white: #f0ede8;
+    --muted: #666666;
+    --red: #c0392b;
+    --green: #2d6a4f;
+    --scan: rgba(200,168,118,0.03);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* Scanline overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* Noise texture */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* ── BOOT SCREEN ── */
+  #boot {
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.8s ease;
+  }
+
+  #boot.hidden { opacity: 0; pointer-events: none; }
+
+  .boot-logo {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(48px, 8vw, 96px);
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    animation: flicker 3s ease-in-out infinite;
+    margin-bottom: 8px;
+  }
+
+  .boot-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 60px;
+  }
+
+  .boot-bar-wrap {
+    width: 280px;
+    height: 1px;
+    background: var(--border);
+    margin-bottom: 12px;
+  }
+
+  .boot-bar {
+    height: 1px;
+    background: var(--accent);
+    width: 0%;
+    animation: load 2s ease forwards 0.5s;
+  }
+
+  .boot-status {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+  }
+
+  @keyframes load { to { width: 100%; } }
+  @keyframes flicker {
+    0%,100%{opacity:1} 92%{opacity:1} 93%{opacity:0.6} 94%{opacity:1} 97%{opacity:0.8} 98%{opacity:1}
+  }
+
+  /* ── MAIN APP ── */
+  #app {
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    min-height: 100vh;
+  }
+  #app.visible { opacity: 1; }
+
+  /* ── HEADER ── */
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 40px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(8,8,8,0.95);
+    backdrop-filter: blur(20px);
+  }
+
+  .header-left {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+  }
+
+  .header-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.4em;
+    color: var(--accent);
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .loadout-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .loadout-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .loadout-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    background: var(--accent);
+    color: var(--black);
+    font-size: 9px;
+    font-weight: 700;
+    border-radius: 50%;
+    margin-left: 6px;
+  }
+
+  /* ── SCREENS ── */
+  .screen {
+    display: none;
+    min-height: 100vh;
+    padding-top: 80px;
+  }
+  .screen.active { display: block; }
+
+  /* ── SCREEN 1: CHARACTER SELECT ── */
+  #screen-select {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 80px;
+    min-height: 100vh;
+  }
+  #screen-select.active { display: flex; }
+
+  .screen-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.5em;
+    color: var(--accent-dim);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  .screen-heading {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    color: var(--white);
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .character-grid {
+    display: flex;
+    gap: 24px;
+    align-items: flex-end;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0 40px;
+    margin-bottom: 48px;
+  }
+
+  .character-card {
+    position: relative;
+    width: 220px;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+
+  .character-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(200,168,118,0.08) 100%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 1;
+  }
+
+  .character-card:hover::before,
+  .character-card.selected::before { opacity: 1; }
+
+  .character-card:hover,
+  .character-card.selected {
+    border-color: var(--accent);
+    transform: translateY(-8px);
+  }
+
+  .character-card.selected {
+    box-shadow: 0 0 40px rgba(200,168,118,0.15);
+  }
+
+  .char-img-wrap {
+    width: 100%;
+    aspect-ratio: 2/3;
+    background: linear-gradient(180deg, #1a1a1a 0%, #111 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Placeholder character silhouettes */
+  .char-silhouette {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .char-silhouette svg {
+    width: 70%;
+    height: 70%;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+  }
+
+  .character-card:hover .char-silhouette svg,
+  .character-card.selected .char-silhouette svg { opacity: 1; }
+
+  .char-scan-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    animation: scan 3s linear infinite;
+    opacity: 0;
+  }
+
+  .character-card:hover .char-scan-line,
+  .character-card.selected .char-scan-line { opacity: 0.6; }
+
+  @keyframes scan {
+    0% { top: 0%; }
+    100% { top: 100%; }
+  }
+
+  .char-info {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    position: relative;
+    z-index: 2;
+  }
+
+  .char-id {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--accent);
+    letter-spacing: 0.3em;
+    margin-bottom: 4px;
+  }
+
+  .char-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+
+  .char-type {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    margin-top: 4px;
+  }
+
+  .select-selected-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--black);
+    background: var(--accent);
+    padding: 4px 8px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    z-index: 3;
+  }
+
+  .character-card.selected .select-selected-badge { opacity: 1; }
+
+  .enter-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--black);
+    background: var(--accent);
+    border: none;
+    padding: 16px 48px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .enter-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.1);
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+  }
+
+  .enter-btn:hover::after { transform: translateX(0); }
+  .enter-btn:hover { letter-spacing: 0.5em; }
+  .enter-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .randomize-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 16px 32px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    margin-left: 12px;
+  }
+  .randomize-btn:hover { border-color: var(--border-active); color: var(--white); }
+
+  .btn-row { display: flex; align-items: center; justify-content: center; gap: 0; }
+
+  /* ── SCREEN 2: DRESSING ROOM ── */
+  #screen-room {
+    display: none;
+    min-height: 100vh;
+    padding-top: 80px;
+  }
+  #screen-room.active { display: flex; }
+
+  .room-layout {
+    display: grid;
+    grid-template-columns: 240px 1fr 320px;
+    min-height: calc(100vh - 80px);
+    width: 100%;
+  }
+
+  /* Left nav */
+  .room-nav {
+    border-right: 1px solid var(--border);
+    padding: 32px 24px;
+    background: var(--panel);
+  }
+
+  .nav-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    color: var(--accent-dim);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .nav-item {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+    padding: 12px 0;
+    cursor: pointer;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav-item:hover, .nav-item.active { color: var(--white); }
+  .nav-item.active { color: var(--accent); }
+
+  .nav-arrow {
+    font-size: 10px;
+    color: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .nav-item.active .nav-arrow { opacity: 1; }
+
+  .nav-divider { height: 32px; }
+
+  .back-link {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-top: 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--white); }
+
+  .char-preview-mini {
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+
+  .char-preview-mini-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--accent-dim);
+    margin-bottom: 12px;
+  }
+
+  .char-preview-mini-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+
+  /* Center stage */
+  .room-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: radial-gradient(ellipse at center bottom, #1a1a1a 0%, var(--black) 70%);
+    overflow: hidden;
+    min-height: 600px;
+  }
+
+  .stage-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(200,168,118,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,168,118,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .stage-floor {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(180deg, transparent, rgba(200,168,118,0.03));
+    border-top: 1px solid rgba(200,168,118,0.08);
+  }
+
+  .stage-lights {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 200px;
+    background: linear-gradient(180deg, rgba(200,168,118,0.2), transparent);
+  }
+
+  .stage-char {
+    position: relative;
+    z-index: 2;
+    width: 280px;
+    height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stage-char-inner {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .stage-char-inner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(200,168,118,0.05) 100%);
+  }
+
+  .stage-char-svg {
+    width: 65%;
+    height: 65%;
+    opacity: 0.75;
+  }
+
+  .stage-wearing {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--accent-dim);
+    text-transform: uppercase;
+    z-index: 3;
+  }
+
+  .stage-item-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: var(--black);
+    border: 1px solid var(--border);
+    padding: 6px 10px;
+    z-index: 3;
+  }
+
+  .stage-item-badge-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+  }
+
+  /* Right panel — product cards */
+  .room-products {
+    border-left: 1px solid var(--border);
+    background: var(--panel);
+    overflow-y: auto;
+    padding: 32px 0;
+  }
+
+  .products-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    color: var(--accent-dim);
+    text-transform: uppercase;
+    padding: 0 24px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+
+  .products-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .product-card {
+    display: flex;
+    gap: 16px;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+  }
+
+  .product-card:hover { background: rgba(200,168,118,0.03); }
+  .product-card.selected { background: rgba(200,168,118,0.05); }
+
+  .product-card.selected::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--accent);
+  }
+
+  .product-thumb {
+    width: 64px;
+    height: 80px;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .product-thumb svg { width: 80%; height: 80%; opacity: 0.5; }
+  .product-card.selected .product-thumb svg { opacity: 0.9; }
+
+  .product-info { flex: 1; min-width: 0; }
+
+  .product-edition {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .product-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: var(--white);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+    line-height: 1.2;
+  }
+
+  .product-desc {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .product-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .product-price {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--white);
+    letter-spacing: 0.1em;
+  }
+
+  .add-fit-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--black);
+    background: var(--accent);
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+
+  .add-fit-btn:hover { background: var(--white); }
+  .add-fit-btn.added {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+
+  /* ── SCREEN 3: LOADOUT ── */
+  #screen-loadout {
+    display: none;
+    min-height: 100vh;
+    padding-top: 80px;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  #screen-loadout.active { display: flex; }
+
+  .loadout-layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 0;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 48px 40px;
+    gap: 48px;
+  }
+
+  .loadout-left h2 {
+    font-family: 'Cinzel', serif;
+    font-size: 32px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .loadout-left-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    color: var(--accent-dim);
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  .loadout-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .loadout-item-thumb {
+    width: 72px;
+    height: 90px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .loadout-item-thumb svg { width: 80%; height: 80%; opacity: 0.6; }
+
+  .loadout-item-info { flex: 1; }
+
+  .loadout-item-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--white);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .loadout-item-edition {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .loadout-item-price {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: var(--white);
+  }
+
+  .remove-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 6px 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+  .remove-btn:hover { border-color: var(--red); color: var(--red); }
+
+  .loadout-right {
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+  }
+
+  .loadout-summary {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 32px;
+  }
+
+  .summary-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.4em;
+    color: var(--accent-dim);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .summary-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+
+  .summary-total {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    color: var(--white);
+    margin: 20px 0 28px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .enter-world-btn {
+    width: 100%;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--black);
+    background: var(--accent);
+    border: none;
+    padding: 18px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .enter-world-btn:hover { background: var(--white); letter-spacing: 0.5em; }
+
+  .summary-note {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+
+  .empty-loadout {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-align: center;
+    padding: 60px 0;
+    text-transform: uppercase;
+  }
+
+  /* HUD elements */
+  .hud-corner {
+    position: fixed;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--border-active);
+    z-index: 90;
+    pointer-events: none;
+  }
+
+  .hud-tl { top: 100px; left: 20px; }
+  .hud-tr { top: 100px; right: 20px; text-align: right; }
+  .hud-bl { bottom: 20px; left: 20px; }
+  .hud-br { bottom: 20px; right: 20px; text-align: right; }
+
+  .hud-line { display: block; margin-bottom: 3px; }
+
+  /* Blink animation */
+  .blink { animation: blink 1.2s step-end infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* Drop info banner */
+  .drop-banner {
+    background: rgba(200,168,118,0.06);
+    border: 1px solid rgba(200,168,118,0.15);
+    padding: 12px 24px;
+    margin: 0 24px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .drop-banner-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .drop-banner-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8px;
+    color: var(--green);
+    letter-spacing: 0.2em;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #2ecc71;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%,100%{opacity:1;transform:scale(1)}
+    50%{opacity:0.5;transform:scale(0.8)}
+  }
+
+  /* Transitions */
+  .fade-in {
+    animation: fadeIn 0.5s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--black); }
+  ::-webkit-scrollbar-thumb { background: var(--border-active); }
+
+  @media (max-width: 900px) {
+    .room-layout { grid-template-columns: 1fr; }
+    .room-nav { display: none; }
+    .loadout-layout { grid-template-columns: 1fr; padding: 24px 20px; }
+    header { padding: 16px 20px; }
+    .character-grid { gap: 12px; }
+    .character-card { width: 160px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- BOOT SCREEN -->
+<div id="boot">
+  <div class="boot-logo">1DE1</div>
+  <div class="boot-sub">System initializing — Uni 001</div>
+  <div class="boot-bar-wrap">
+    <div class="boot-bar"></div>
+  </div>
+  <div class="boot-status"><span class="blink">▮</span> Loading drop environment...</div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="header-left">
+      <span class="blink">▮</span> SYS:ACTIVE &nbsp;|&nbsp; UNI_001
+    </div>
+    <a class="header-logo" onclick="showScreen('select')">1DE1</a>
+    <div class="header-right">
+      <button class="loadout-btn" onclick="showScreen('loadout')">
+        LOADOUT <span class="loadout-count" id="cart-count">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- HUD CORNERS -->
+  <div class="hud-corner hud-tl">
+    <span class="hud-line">DROP // UNI 001</span>
+    <span class="hud-line">STATUS // LIVE</span>
+    <span class="hud-line">UNITS // LIMITED</span>
+  </div>
+  <div class="hud-corner hud-br">
+    <span class="hud-line">1DE1.CO</span>
+    <span class="hud-line">NON-HUMAN BRAND</span>
+    <span class="hud-line blink">● REC</span>
+  </div>
+
+  <!-- ══ SCREEN 1: CHARACTER SELECT ══ -->
+  <div id="screen-select" class="screen active">
+    <div class="screen-title">— Select your player —</div>
+    <div class="screen-heading">Choose Your Character</div>
+
+    <div class="character-grid">
+
+      <!-- Character A -->
+      <div class="character-card" onclick="selectChar(this, 'UNIT-A', 'Alpha')" data-char="A">
+        <div class="char-img-wrap">
+          <img src="alpha.jpg.png" alt="Alpha" style="width:100%;height:100%;object-fit:cover;display:block;">
+          <div class="char-scan-line"></div>
+          <div class="select-selected-badge">SELECTED</div>
+        </div>
+        <div class="char-info">
+          <div class="char-id">UNIT-A // M-01</div>
+          <div class="char-name">Alpha</div>
+          <div class="char-type">Add photo after Midjourney</div>
+        </div>
+      </div>
+
+      <!-- Character B -->
+      <div class="character-card" onclick="selectChar(this, 'UNIT-B', 'Omega')" data-char="B" style="transform: translateY(0); margin-top: -20px;">
+        <div class="char-img-wrap" style="background: linear-gradient(180deg, #151515 0%, #0e0e0e 100%);">
+          <img src="omega.jpg.png" alt="Omega" style="width:100%;height:100%;object-fit:cover;display:block;">
+          <div class="char-scan-line"></div>
+          <div class="select-selected-badge">SELECTED</div>
+        </div>
+        <div class="char-info">
+          <div class="char-id">UNIT-B // F-01</div>
+          <div class="char-name">Omega</div>
+          <div class="char-type">Add photo after Midjourney</div>
+        </div>
+      </div>
+
+      <!-- Character C -->
+      <div class="character-card" onclick="selectChar(this, 'UNIT-C', 'Delta')" data-char="C">
+        <div class="char-img-wrap">
+          <img src="delta.jpg.png" alt="Delta" style="width:100%;height:100%;object-fit:cover;display:block;">
+          <div class="char-scan-line"></div>
+          <div class="select-selected-badge">SELECTED</div>
+        </div>
+        <div class="char-info">
+          <div class="char-id">UNIT-C // M-02</div>
+          <div class="char-name">Delta</div>
+          <div class="char-type">Add photo after Midjourney</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="btn-row">
+      <button class="enter-btn" id="enter-world-btn" onclick="enterWorld()" disabled>
+        ▶ &nbsp; Enter World
+      </button>
+      <button class="randomize-btn" onclick="randomize()">Randomize</button>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 2: DRESSING ROOM ══ -->
+  <div id="screen-room" class="screen">
+    <div class="room-layout">
+
+      <!-- Left Nav -->
+      <div class="room-nav">
+        <div class="nav-label">Menu</div>
+        <div class="nav-item active" onclick="filterCategory('all')">
+          All Items <span class="nav-arrow">▶</span>
+        </div>
+        <div class="nav-item" onclick="filterCategory('outerwear')">Outerwear</div>
+        <div class="nav-item" onclick="filterCategory('tops')">Tops</div>
+        <div class="nav-item" onclick="filterCategory('polo')">Polo</div>
+        <div class="nav-divider"></div>
+
+        <div class="char-preview-mini">
+          <div class="char-preview-mini-label">Active Unit</div>
+          <div class="char-preview-mini-name" id="active-char-name">—</div>
+        </div>
+
+        <div class="back-link" onclick="showScreen('select')">
+          ← Back to Select
+        </div>
+      </div>
+
+      <!-- Stage -->
+      <div class="room-stage">
+        <div class="stage-grid"></div>
+        <div class="stage-lights"></div>
+        <div class="stage-floor"></div>
+
+        <div class="stage-char">
+          <div class="stage-char-inner">
+            <svg class="stage-char-svg" viewBox="0 0 100 200" fill="none" id="stage-figure">
+              <circle cx="50" cy="22" r="14" fill="#c8a876" opacity="0.6"/>
+              <rect x="30" y="40" width="40" height="60" rx="4" fill="#c8a876" opacity="0.4"/>
+              <rect x="18" y="42" width="14" height="50" rx="4" fill="#c8a876" opacity="0.3"/>
+              <rect x="68" y="42" width="14" height="50" rx="4" fill="#c8a876" opacity="0.3"/>
+              <rect x="32" y="98" width="16" height="70" rx="4" fill="#c8a876" opacity="0.35"/>
+              <rect x="52" y="98" width="16" height="70" rx="4" fill="#c8a876" opacity="0.35"/>
+            </svg>
+            <div class="stage-wearing" id="stage-wearing-text">No item equipped</div>
+            <div class="stage-item-badge" id="stage-badge" style="display:none">
+              <div class="stage-item-badge-text" id="stage-badge-text"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 20px; font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.3em; color: var(--muted); text-align: center; position: relative; z-index: 2;">
+          CLICK A PIECE TO PREVIEW &nbsp;|&nbsp; ADD TO FIT TO EQUIP
+        </div>
+      </div>
+
+      <!-- Products Panel -->
+      <div class="room-products">
+        <div class="drop-banner">
+          <span class="drop-banner-text">UNI 001 // DROP ACTIVE</span>
+          <span class="drop-banner-status">
+            <span class="status-dot"></span>
+            LIVE
+          </span>
+        </div>
+
+        <div class="products-label">Uni 001</div>
+
+        <!-- Product 1 -->
+        <div class="product-card" id="prod-1" onclick="previewItem(1)" data-cat="outerwear">
+          <div class="product-thumb">
+            <svg viewBox="0 0 60 80" fill="none">
+              <path d="M15 10 L5 25 L15 30 L15 70 L45 70 L45 30 L55 25 L45 10 L35 15 Q30 12 25 15 Z" fill="#2d6a4f" stroke="#c8a876" stroke-width="0.5"/>
+              <line x1="30" y1="10" x2="30" y2="70" stroke="#c8a876" stroke-width="0.5" opacity="0.5"/>
+              <text x="18" y="42" font-size="5" fill="#c8a876" opacity="0.7" font-family="serif">1de1</text>
+            </svg>
+          </div>
+          <div class="product-info">
+            <div class="product-edition">UNI 001 // 1 OF 50</div>
+            <div class="product-name">Original</div>
+            <div class="product-desc">Washed zip hoodie. Forest green. Mixed media scan.</div>
+            <div class="product-bottom">
+              <div class="product-price">$118</div>
+              <button class="add-fit-btn" id="fit-1" onclick="addToFit(event, 1, 'Original', 118)">Add to Fit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 2 -->
+        <div class="product-card" id="prod-2" onclick="previewItem(2)" data-cat="tops">
+          <div class="product-thumb">
+            <svg viewBox="0 0 60 80" fill="none">
+              <path d="M15 15 L5 28 L15 32 L15 68 L45 68 L45 32 L55 28 L45 15 Q38 10 30 12 Q22 10 15 15 Z" fill="#1a1a1a" stroke="#c8a876" stroke-width="0.5"/>
+              <rect x="22" y="28" width="16" height="16" fill="#333" stroke="#c8a876" stroke-width="0.3"/>
+              <text x="30" y="38" font-size="4" fill="#c8a876" text-anchor="middle" opacity="0.8" font-family="serif">1de1</text>
+            </svg>
+          </div>
+          <div class="product-info">
+            <div class="product-edition">UNI 001 // 1 OF 75</div>
+            <div class="product-name">Copy</div>
+            <div class="product-desc">Acid washed tee. Black. Original is not for sale.</div>
+            <div class="product-bottom">
+              <div class="product-price">$62</div>
+              <button class="add-fit-btn" id="fit-2" onclick="addToFit(event, 2, 'Copy', 62)">Add to Fit</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 3 -->
+        <div class="product-card" id="prod-3" onclick="previewItem(3)" data-cat="polo">
+          <div class="product-thumb">
+            <svg viewBox="0 0 60 80" fill="none">
+              <path d="M15 12 L5 26 L15 30 L15 68 L45 68 L45 30 L55 26 L45 12 Q38 8 30 10 Q22 8 15 12 Z" fill="none" stroke="#888" stroke-width="0.3"/>
+              <rect x="5" y="18" width="50" height="8" fill="#c0392b" opacity="0.7"/>
+              <rect x="5" y="34" width="50" height="8" fill="#c0392b" opacity="0.7"/>
+              <rect x="5" y="50" width="50" height="8" fill="#c0392b" opacity="0.7"/>
+              <rect x="5" y="66" width="50" height="6" fill="#c0392b" opacity="0.5"/>
+              <rect x="5" y="12" width="50" height="8" fill="#fff" opacity="0.1"/>
+              <text x="30" y="48" font-size="4" fill="#c8a876" text-anchor="middle" opacity="0.9" font-family="serif">1de1</text>
+            </svg>
+          </div>
+          <div class="product-info">
+            <div class="product-edition">UNI 001 // 1 OF 60</div>
+            <div class="product-name">Stripe 001</div>
+            <div class="product-desc">Red and white rugby collar. Heavyweight cotton.</div>
+            <div class="product-bottom">
+              <div class="product-price">$72</div>
+              <button class="add-fit-btn" id="fit-3" onclick="addToFit(event, 3, 'Stripe 001', 72)">Add to Fit</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SCREEN 3: LOADOUT ══ -->
+  <div id="screen-loadout" class="screen">
+    <div class="loadout-layout">
+      <div class="loadout-left">
+        <h2>Loadout</h2>
+        <div class="loadout-left-sub">Uni 001 // Your equipped items</div>
+        <div id="loadout-items">
+          <div class="empty-loadout">No items equipped.<br>Return to the dressing room.</div>
+        </div>
+        <div style="margin-top: 24px;">
+          <span class="back-link" onclick="showScreen('room')" style="display:inline-flex;">
+            ← Back to Dressing Room
+          </span>
+        </div>
+      </div>
+
+      <div class="loadout-right">
+        <div class="loadout-summary">
+          <div class="summary-label">Summary</div>
+          <div id="summary-rows"></div>
+          <div class="summary-total">
+            <span>Total</span>
+            <span id="summary-total">$0</span>
+          </div>
+          <button class="enter-world-btn" onclick="enterRealWorld()">
+            Enter Real World &nbsp;▶
+          </button>
+          <div class="summary-note">
+            You will be redirected to checkout.<br>
+            Fulfilled by Tapstitch. Ships worldwide.<br>
+            <br>
+            UNI 001 — NO RESTOCK.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end #app -->
+
+<script>
+  // ── STATE ──
+  let cart = [];
+  let selectedChar = null;
+  let selectedCharName = '';
+  let previewedItem = null;
+
+  const products = {
+    1: { name: 'Original', edition: '1 of 50', price: 118, cat: 'outerwear', shopifyUrl: 'https://1de1.co/products/original' },
+    2: { name: 'Copy', edition: '1 of 75', price: 62, cat: 'tops', shopifyUrl: 'https://1de1.co/products/copy' },
+    3: { name: 'Stripe 001', edition: '1 of 60', price: 72, cat: 'polo', shopifyUrl: 'https://1de1.co/products/stripe-001' }
+  };
+
+  // ── BOOT SEQUENCE ──
+  setTimeout(() => {
+    document.getElementById('boot').classList.add('hidden');
+    setTimeout(() => {
+      document.getElementById('app').classList.add('visible');
+    }, 300);
+  }, 2800);
+
+  // ── SCREEN MANAGEMENT ──
+  function showScreen(name) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    if (name === 'loadout') renderLoadout();
+    window.scrollTo(0, 0);
+  }
+
+  // ── CHARACTER SELECT ──
+  function selectChar(el, id, name) {
+    document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedChar = id;
+    selectedCharName = name;
+    document.getElementById('enter-world-btn').disabled = false;
+    document.getElementById('active-char-name').textContent = name + ' // ' + id;
+
+    // Update stage figure based on char
+    const svg = document.getElementById('stage-figure');
+    if (id === 'UNIT-B') {
+      svg.innerHTML = `
+        <circle cx="50" cy="20" r="13" fill="#c8a876" opacity="0.6"/>
+        <path d="M34 40 Q50 36 66 40 L70 95 Q50 100 30 95 Z" fill="#c8a876" opacity="0.45"/>
+        <rect x="20" y="42" width="12" height="46" rx="4" fill="#c8a876" opacity="0.3"/>
+        <rect x="68" y="42" width="12" height="46" rx="4" fill="#c8a876" opacity="0.3"/>
+        <rect x="33" y="94" width="14" height="72" rx="4" fill="#c8a876" opacity="0.35"/>
+        <rect x="53" y="94" width="14" height="72" rx="4" fill="#c8a876" opacity="0.35"/>`;
+    } else if (id === 'UNIT-C') {
+      svg.innerHTML = `
+        <circle cx="50" cy="21" r="15" fill="#c8a876" opacity="0.65"/>
+        <rect x="28" y="40" width="44" height="62" rx="5" fill="#c8a876" opacity="0.5"/>
+        <rect x="16" y="43" width="14" height="52" rx="4" fill="#c8a876" opacity="0.35"/>
+        <rect x="70" y="43" width="14" height="52" rx="4" fill="#c8a876" opacity="0.35"/>
+        <rect x="30" y="100" width="18" height="68" rx="4" fill="#c8a876" opacity="0.38"/>
+        <rect x="52" y="100" width="18" height="68" rx="4" fill="#c8a876" opacity="0.38"/>`;
+    } else {
+      svg.innerHTML = `
+        <circle cx="50" cy="22" r="14" fill="#c8a876" opacity="0.6"/>
+        <rect x="30" y="40" width="40" height="60" rx="4" fill="#c8a876" opacity="0.4"/>
+        <rect x="18" y="42" width="14" height="50" rx="4" fill="#c8a876" opacity="0.3"/>
+        <rect x="68" y="42" width="14" height="50" rx="4" fill="#c8a876" opacity="0.3"/>
+        <rect x="32" y="98" width="16" height="70" rx="4" fill="#c8a876" opacity="0.35"/>
+        <rect x="52" y="98" width="16" height="70" rx="4" fill="#c8a876" opacity="0.35"/>`;
+    }
+  }
+
+  function randomize() {
+    const cards = document.querySelectorAll('.character-card');
+    const idx = Math.floor(Math.random() * cards.length);
+    cards[idx].click();
+  }
+
+  function enterWorld() {
+    if (!selectedChar) return;
+    showScreen('room');
+  }
+
+  // ── DRESSING ROOM ──
+  function previewItem(id) {
+    document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('prod-' + id).classList.add('selected');
+    previewedItem = id;
+
+    const p = products[id];
+    document.getElementById('stage-wearing-text').textContent = 'Wearing: ' + p.name;
+    document.getElementById('stage-badge').style.display = 'block';
+    document.getElementById('stage-badge-text').textContent = p.edition.toUpperCase();
+  }
+
+  function filterCategory(cat) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    document.querySelectorAll('.product-card').forEach(card => {
+      if (cat === 'all' || card.dataset.cat === cat) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  // ── CART ──
+  function addToFit(e, id, name, price) {
+    e.stopPropagation();
+    const btn = document.getElementById('fit-' + id);
+
+    if (cart.find(i => i.id === id)) {
+      cart = cart.filter(i => i.id !== id);
+      btn.textContent = 'Add to Fit';
+      btn.classList.remove('added');
+    } else {
+      cart.push({ id, name, price });
+      btn.textContent = 'Equipped ✓';
+      btn.classList.add('added');
+    }
+
+    updateCartCount();
+    previewItem(id);
+  }
+
+  function updateCartCount() {
+    document.getElementById('cart-count').textContent = cart.length;
+  }
+
+  // ── LOADOUT ──
+  function renderLoadout() {
+    const container = document.getElementById('loadout-items');
+    const summaryRows = document.getElementById('summary-rows');
+    const total = document.getElementById('summary-total');
+
+    if (cart.length === 0) {
+      container.innerHTML = '<div class="empty-loadout">No items equipped.<br>Return to the dressing room.</div>';
+      summaryRows.innerHTML = '';
+      total.textContent = '$0';
+      return;
+    }
+
+    const thumbs = {
+      1: `<svg viewBox="0 0 60 80" fill="none"><path d="M15 10 L5 25 L15 30 L15 70 L45 70 L45 30 L55 25 L45 10 L35 15 Q30 12 25 15 Z" fill="#2d6a4f" stroke="#c8a876" stroke-width="0.5"/><line x1="30" y1="10" x2="30" y2="70" stroke="#c8a876" stroke-width="0.5" opacity="0.5"/></svg>`,
+      2: `<svg viewBox="0 0 60 80" fill="none"><path d="M15 15 L5 28 L15 32 L15 68 L45 68 L45 32 L55 28 L45 15 Q38 10 30 12 Q22 10 15 15 Z" fill="#1a1a1a" stroke="#c8a876" stroke-width="0.5"/><rect x="22" y="28" width="16" height="16" fill="#333" stroke="#c8a876" stroke-width="0.3"/></svg>`,
+      3: `<svg viewBox="0 0 60 80" fill="none"><path d="M15 12 L5 26 L15 30 L15 68 L45 68 L45 30 L55 26 L45 12 Q38 8 30 10 Q22 8 15 12 Z" fill="none" stroke="#888" stroke-width="0.3"/><rect x="5" y="18" width="50" height="8" fill="#c0392b" opacity="0.7"/><rect x="5" y="34" width="50" height="8" fill="#c0392b" opacity="0.7"/><rect x="5" y="50" width="50" height="8" fill="#c0392b" opacity="0.7"/></svg>`
+    };
+
+    container.innerHTML = cart.map(item => `
+      <div class="loadout-item fade-in">
+        <div class="loadout-item-thumb">${thumbs[item.id] || ''}</div>
+        <div class="loadout-item-info">
+          <div class="loadout-item-name">${item.name}</div>
+          <div class="loadout-item-edition">${products[item.id].edition.toUpperCase()} // UNI 001</div>
+          <div class="loadout-item-price">$${item.price}</div>
+        </div>
+        <button class="remove-btn" onclick="removeItem(${item.id})">Remove</button>
+      </div>
+    `).join('');
+
+    summaryRows.innerHTML = cart.map(item =>
+      `<div class="summary-row"><span>${item.name}</span><span>$${item.price}</span></div>`
+    ).join('');
+
+    const totalAmt = cart.reduce((s, i) => s + i.price, 0);
+    total.textContent = '$' + totalAmt;
+  }
+
+  function removeItem(id) {
+    cart = cart.filter(i => i.id !== id);
+    const btn = document.getElementById('fit-' + id);
+    if (btn) { btn.textContent = 'Add to Fit'; btn.classList.remove('added'); }
+    updateCartCount();
+    renderLoadout();
+  }
+
+  function enterRealWorld() {
+    if (cart.length === 0) return;
+    // When Shopify is live, redirect to cart or first product
+    // For now opens the store
+    const url = cart.length === 1
+      ? products[cart[0].id].shopifyUrl
+      : 'https://1de1.co/cart';
+    alert('Redirecting to 1de1.co checkout — update shopifyUrl values in the script with your real Shopify product URLs when live.');
+  }
+</script>
+</body>
+</html>
