@@ -1284,9 +1284,8 @@
 
         <!-- Product 2 -->
         <div class="product-card" id="prod-2" onclick="previewItem(2)" data-cat="tops">
-          <div class="product-thumb" style="background:#1c1c1c;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;">
-            <span style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:0.3em;color:#555;">TEE</span>
-            <span style="font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:0.15em;color:#333;">UNI 001</span>
+          <div class="product-thumb">
+            <img src="uni-tee-cut.png" alt="Uni Tee" style="width:100%;height:100%;object-fit:contain;display:block;">
           </div>
           <div class="product-info">
             <div class="product-edition">UNI 001 // 1 OF 75</div>
@@ -1303,15 +1302,7 @@
         <!-- Product 3 -->
         <div class="product-card" id="prod-3" onclick="previewItem(3)" data-cat="polo">
           <div class="product-thumb">
-            <svg viewBox="0 0 60 80" fill="none">
-              <path d="M15 12 L5 26 L15 30 L15 68 L45 68 L45 30 L55 26 L45 12 Q38 8 30 10 Q22 8 15 12 Z" fill="none" stroke="#888" stroke-width="0.3"/>
-              <rect x="5" y="18" width="50" height="8" fill="#c0392b" opacity="0.7"/>
-              <rect x="5" y="34" width="50" height="8" fill="#c0392b" opacity="0.7"/>
-              <rect x="5" y="50" width="50" height="8" fill="#c0392b" opacity="0.7"/>
-              <rect x="5" y="66" width="50" height="6" fill="#c0392b" opacity="0.5"/>
-              <rect x="5" y="12" width="50" height="8" fill="#fff" opacity="0.1"/>
-              <text x="30" y="48" font-size="4" fill="#c8a876" text-anchor="middle" opacity="0.9" font-family="serif">1de1</text>
-            </svg>
+            <img src="uni-rugby-cut.png" alt="Uni Rugby" style="width:100%;height:100%;object-fit:contain;display:block;">
           </div>
           <div class="product-info">
             <div class="product-edition">UNI 001 // 1 OF 60</div>
@@ -1545,7 +1536,7 @@
   // ── CART ──
   function addToFit(e, id, name, price) {
     e.stopPropagation();
-    window.location.href = products[id].shopifyUrl;
+    window.open(products[id].shopifyUrl, '_blank');
   }
 
   function updateCartCount() {
