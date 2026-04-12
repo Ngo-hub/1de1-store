@@ -636,8 +636,8 @@
     inset: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: top center;
+    object-fit: contain;
+    object-position: center bottom;
     display: none;
     z-index: 1;
   }
@@ -654,22 +654,19 @@
 
   .stage-equip-overlay {
     position: absolute;
-    left: 18%;
-    width: 64%;
-    top: 28%;
-    height: 42%;
+    left: 20%;
+    width: 60%;
+    top: 25%;
+    height: 50%;
     z-index: 2;
     display: none;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(200,168,118,0.35);
-    background: rgba(0,0,0,0.25);
-    overflow: hidden;
     transition: opacity 0.25s;
     pointer-events: none;
   }
   .stage-equip-overlay.visible { display: flex; }
-  .stage-equip-overlay img { width: 100%; height: 100%; object-fit: cover; }
+  .stage-equip-overlay img { width: 100%; height: 100%; object-fit: contain; }
   .stage-equip-overlay svg { width: 85%; height: 85%; opacity: 0.95; }
 
   .stage-item-badge-text {
@@ -1380,9 +1377,9 @@
   let previewedItem = null;
 
   const products = {
-    1: { name: 'Uni Zip', edition: '1 of 50', price: 80, cat: 'outerwear', shopifyUrl: 'https://1de1.co/products/uni-zip' },
-    2: { name: 'Uni Tee', edition: '1 of 75', price: 44, cat: 'tops', shopifyUrl: 'https://1de1.co/products/uni-tee' },
-    3: { name: 'Uni Rugby', edition: '1 of 60', price: 62, cat: 'polo', shopifyUrl: 'https://1de1.co/products/uni-rugby' }
+    1: { name: 'Uni Zip', edition: '1 of 50', price: 80, cat: 'outerwear', shopifyUrl: 'https://1de1.co/products/uni-zip', cutout: 'uni-zip-cut.png' },
+    2: { name: 'Uni Tee', edition: '1 of 75', price: 44, cat: 'tops', shopifyUrl: 'https://1de1.co/products/uni-tee', cutout: 'uni-tee-cut.png' },
+    3: { name: 'Uni Rugby', edition: '1 of 60', price: 62, cat: 'polo', shopifyUrl: 'https://1de1.co/products/uni-rugby', cutout: 'uni-rugby-cut.png' }
   };
 
   // ── PRODUCT IMAGES ──
@@ -1455,7 +1452,7 @@
     document.getElementById('active-char-name').textContent = name + ' // ' + id;
 
     // Show character photo on stage
-    const charImages = { 'UNIT-A': 'alpha.jpg.png', 'UNIT-B': 'omega.jpg.png', 'UNIT-C': 'delta.jpg.png' };
+    const charImages = { 'UNIT-A': 'alpha-cut.png', 'UNIT-B': 'omega-cut.png', 'UNIT-C': 'delta-cut.png' };
     const photo = document.getElementById('stage-char-photo');
     const svg = document.getElementById('stage-figure');
     if (photo && charImages[id]) {
@@ -1524,10 +1521,10 @@
     const badge = document.getElementById('equip-tag-' + id);
     if (badge) badge.style.display = 'block';
 
-    // Show product thumbnail overlaid on character photo
-    const thumb = document.querySelector('#prod-' + id + ' .product-thumb');
-    if (thumb) {
-      overlay.innerHTML = thumb.innerHTML;
+    // Show cutout PNG overlaid on character
+    const cutout = products[id].cutout;
+    if (cutout) {
+      overlay.innerHTML = `<img src="${cutout}" alt="${p.name}">`;
       overlay.classList.add('visible');
     }
   }
