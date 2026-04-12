@@ -1120,7 +1120,7 @@
       <!-- Character A -->
       <div class="character-card" onclick="selectChar(this, 'UNIT-A', 'Alpha')" data-char="A">
         <div class="char-img-wrap">
-          <img src="alpha.jpg.png" alt="Alpha" style="width:100%;height:100%;object-fit:cover;display:block;">
+          <img src="alpha.jpg.png" alt="Alpha" draggable="false" style="width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;">
           <div class="char-scan-line"></div>
           <div class="select-selected-badge">SELECTED</div>
         </div>
@@ -1134,7 +1134,7 @@
       <!-- Character B -->
       <div class="character-card" onclick="selectChar(this, 'UNIT-B', 'Omega')" data-char="B" style="transform: translateY(0); margin-top: -20px;">
         <div class="char-img-wrap" style="background: linear-gradient(180deg, #151515 0%, #0e0e0e 100%);">
-          <img src="omega.jpg.png" alt="Omega" style="width:100%;height:100%;object-fit:cover;display:block;">
+          <img src="omega.jpg.png" alt="Omega" draggable="false" style="width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;">
           <div class="char-scan-line"></div>
           <div class="select-selected-badge">SELECTED</div>
         </div>
@@ -1148,7 +1148,7 @@
       <!-- Character C -->
       <div class="character-card" onclick="selectChar(this, 'UNIT-C', 'Delta')" data-char="C">
         <div class="char-img-wrap">
-          <img src="delta.jpg.png" alt="Delta" style="width:100%;height:100%;object-fit:cover;display:block;">
+          <img src="delta.jpg.png" alt="Delta" draggable="false" style="width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;">
           <div class="char-scan-line"></div>
           <div class="select-selected-badge">SELECTED</div>
         </div>
@@ -1351,9 +1351,9 @@
   let previewedItem = null;
 
   const products = {
-    1: { name: 'Uni Zip', edition: '1 of 50', price: 80, cat: 'outerwear', shopifyUrl: 'https://1de1.co/products/uni-zip' },
-    2: { name: 'Uni Tee', edition: '1 of 75', price: 44, cat: 'tops', shopifyUrl: 'https://1de1.co/products/uni-tee' },
-    3: { name: 'Uni Rugby', edition: '1 of 60', price: 62, cat: 'polo', shopifyUrl: 'https://1de1.co/products/uni-rugby' }
+    1: { name: 'Uni Zip', edition: '1 of 50', price: 80, cat: 'outerwear', shopifyUrl: 'https://1de1.myshopify.com/products/uni-zip' },
+    2: { name: 'Uni Tee', edition: '1 of 75', price: 44, cat: 'tops', shopifyUrl: 'https://1de1.myshopify.com/products/uni-tee' },
+    3: { name: 'Uni Rugby', edition: '1 of 60', price: 62, cat: 'polo', shopifyUrl: 'https://1de1.myshopify.com/products/uni-rugby' }
   };
 
   // ── PRODUCT IMAGES ──
@@ -1406,7 +1406,7 @@
     selectedCharName = name;
     document.getElementById('enter-world-btn').disabled = false;
     document.getElementById('active-char-name').textContent = name + ' // ' + id;
-    setTimeout(() => { if (selectedChar === id) enterWorld(); }, 700);
+    enterWorld();
 
     // Update stage figure based on char
     const svg = document.getElementById('stage-figure');
@@ -1542,7 +1542,7 @@
     if (cart.length === 0) return;
     const url = cart.length === 1
       ? products[cart[0].id].shopifyUrl
-      : 'https://1de1.co/cart';
+      : 'https://1de1.myshopify.com/cart';
     window.location.href = url;
   }
 </script>
