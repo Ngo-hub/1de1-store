@@ -631,6 +631,27 @@
     z-index: 3;
   }
 
+  #stage-char-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: none;
+    z-index: 1;
+  }
+
+  .product-equipped-badge {
+    display: none;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    padding: 2px 0;
+    text-transform: uppercase;
+  }
+
   .stage-equip-overlay {
     position: absolute;
     left: 18%;
@@ -1217,6 +1238,7 @@
               <rect x="32" y="98" width="16" height="70" rx="4" fill="#c8a876" opacity="0.35"/>
               <rect x="52" y="98" width="16" height="70" rx="4" fill="#c8a876" opacity="0.35"/>
             </svg>
+            <img id="stage-char-photo" src="" alt="Character" draggable="false">
             <div class="stage-equip-overlay" id="stage-equip-overlay"></div>
             <div class="stage-wearing" id="stage-wearing-text">No item equipped</div>
             <div class="stage-item-badge" id="stage-badge" style="display:none">
@@ -1257,6 +1279,7 @@
             <div class="product-desc">Washed zip hoodie. Mixed media icon.</div>
             <div class="product-bottom">
               <div class="product-price">$80</div>
+              <div class="product-equipped-badge" id="equip-tag-1">EQUIPPED ✓</div>
               <button class="add-fit-btn" id="fit-1" onclick="addToFit(event, 1, 'Original', 118)">Add to Fit</button>
             </div>
           </div>
@@ -1264,12 +1287,9 @@
 
         <!-- Product 2 -->
         <div class="product-card" id="prod-2" onclick="previewItem(2)" data-cat="tops">
-          <div class="product-thumb">
-            <svg viewBox="0 0 60 80" fill="none">
-              <path d="M15 15 L5 28 L15 32 L15 68 L45 68 L45 32 L55 28 L45 15 Q38 10 30 12 Q22 10 15 15 Z" fill="#1a1a1a" stroke="#c8a876" stroke-width="0.5"/>
-              <rect x="22" y="28" width="16" height="16" fill="#333" stroke="#c8a876" stroke-width="0.3"/>
-              <text x="30" y="38" font-size="4" fill="#c8a876" text-anchor="middle" opacity="0.8" font-family="serif">1de1</text>
-            </svg>
+          <div class="product-thumb" style="background:#1c1c1c;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;">
+            <span style="font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:0.3em;color:#555;">TEE</span>
+            <span style="font-family:'Share Tech Mono',monospace;font-size:8px;letter-spacing:0.15em;color:#333;">UNI 001</span>
           </div>
           <div class="product-info">
             <div class="product-edition">UNI 001 // 1 OF 75</div>
@@ -1277,6 +1297,7 @@
             <div class="product-desc">Acid washed tee. Black. Mixed media icon.</div>
             <div class="product-bottom">
               <div class="product-price">$44</div>
+              <div class="product-equipped-badge" id="equip-tag-2">EQUIPPED ✓</div>
               <button class="add-fit-btn" id="fit-2" onclick="addToFit(event, 2, 'Copy', 62)">Add to Fit</button>
             </div>
           </div>
@@ -1301,6 +1322,7 @@
             <div class="product-desc">Red and white rugby collar. Heavyweight cotton.</div>
             <div class="product-bottom">
               <div class="product-price">$62</div>
+              <div class="product-equipped-badge" id="equip-tag-3">EQUIPPED ✓</div>
               <button class="add-fit-btn" id="fit-3" onclick="addToFit(event, 3, 'Stripe 001', 72)">Add to Fit</button>
             </div>
           </div>
@@ -1432,36 +1454,23 @@
 
     document.getElementById('active-char-name').textContent = name + ' // ' + id;
 
-    // Update stage figure based on char (do this BEFORE switching screen)
+    // Show character photo on stage
+    const charImages = { 'UNIT-A': 'alpha.jpg.png', 'UNIT-B': 'omega.jpg.png', 'UNIT-C': 'delta.jpg.png' };
+    const photo = document.getElementById('stage-char-photo');
     const svg = document.getElementById('stage-figure');
-    console.log('[1DE1] stage-figure element:', svg);
-    if (svg) {
-      if (id === 'UNIT-B') {
-        svg.innerHTML = `
-          <circle cx="50" cy="20" r="13" fill="#c8a876" opacity="0.6"/>
-          <path d="M34 40 Q50 36 66 40 L70 95 Q50 100 30 95 Z" fill="#c8a876" opacity="0.45"/>
-          <rect x="20" y="42" width="12" height="46" rx="4" fill="#c8a876" opacity="0.3"/>
-          <rect x="68" y="42" width="12" height="46" rx="4" fill="#c8a876" opacity="0.3"/>
-          <rect x="33" y="94" width="14" height="72" rx="4" fill="#c8a876" opacity="0.35"/>
-          <rect x="53" y="94" width="14" height="72" rx="4" fill="#c8a876" opacity="0.35"/>`;
-      } else if (id === 'UNIT-C') {
-        svg.innerHTML = `
-          <circle cx="50" cy="21" r="15" fill="#c8a876" opacity="0.65"/>
-          <rect x="28" y="40" width="44" height="62" rx="5" fill="#c8a876" opacity="0.5"/>
-          <rect x="16" y="43" width="14" height="52" rx="4" fill="#c8a876" opacity="0.35"/>
-          <rect x="70" y="43" width="14" height="52" rx="4" fill="#c8a876" opacity="0.35"/>
-          <rect x="30" y="100" width="18" height="68" rx="4" fill="#c8a876" opacity="0.38"/>
-          <rect x="52" y="100" width="18" height="68" rx="4" fill="#c8a876" opacity="0.38"/>`;
-      } else {
-        svg.innerHTML = `
-          <circle cx="50" cy="22" r="14" fill="#c8a876" opacity="0.6"/>
-          <rect x="30" y="40" width="40" height="60" rx="4" fill="#c8a876" opacity="0.4"/>
-          <rect x="18" y="42" width="14" height="50" rx="4" fill="#c8a876" opacity="0.3"/>
-          <rect x="68" y="42" width="14" height="50" rx="4" fill="#c8a876" opacity="0.3"/>
-          <rect x="32" y="98" width="16" height="70" rx="4" fill="#c8a876" opacity="0.35"/>
-          <rect x="52" y="98" width="16" height="70" rx="4" fill="#c8a876" opacity="0.35"/>`;
-      }
+    if (photo && charImages[id]) {
+      photo.src = charImages[id];
+      photo.style.display = 'block';
+      if (svg) svg.style.display = 'none';
     }
+
+    // Clear any previously equipped product
+    previewedItem = null;
+    const overlay = document.getElementById('stage-equip-overlay');
+    if (overlay) { overlay.innerHTML = ''; overlay.classList.remove('visible'); }
+    document.querySelectorAll('.product-equipped-badge').forEach(b => b.style.display = 'none');
+    document.getElementById('stage-wearing-text').textContent = 'No item equipped';
+    document.getElementById('stage-badge').style.display = 'none';
 
     console.log('[1DE1] calling enterWorld(), selectedChar =', selectedChar);
     enterWorld();
@@ -1484,7 +1493,25 @@
 
   // ── DRESSING ROOM ──
   function previewItem(id) {
+    const overlay = document.getElementById('stage-equip-overlay');
+
+    // Toggle: clicking the same product again unequips it
+    if (previewedItem === id) {
+      previewedItem = null;
+      overlay.innerHTML = '';
+      overlay.classList.remove('visible');
+      document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
+      document.querySelectorAll('.product-equipped-badge').forEach(b => b.style.display = 'none');
+      document.getElementById('stage-wearing-text').textContent = 'No item equipped';
+      document.getElementById('stage-badge').style.display = 'none';
+      return;
+    }
+
+    // Clear previous equipped state
     document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.product-equipped-badge').forEach(b => b.style.display = 'none');
+
+    // Set new equipped item
     document.getElementById('prod-' + id).classList.add('selected');
     previewedItem = id;
 
@@ -1493,8 +1520,11 @@
     document.getElementById('stage-badge').style.display = 'block';
     document.getElementById('stage-badge-text').textContent = p.edition.toUpperCase();
 
-    // Equip overlay — mirror the product thumbnail onto the avatar
-    const overlay = document.getElementById('stage-equip-overlay');
+    // Show EQUIPPED badge on card
+    const badge = document.getElementById('equip-tag-' + id);
+    if (badge) badge.style.display = 'block';
+
+    // Show product thumbnail overlaid on character photo
     const thumb = document.querySelector('#prod-' + id + ' .product-thumb');
     if (thumb) {
       overlay.innerHTML = thumb.innerHTML;
