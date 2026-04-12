@@ -1335,6 +1335,31 @@
     3: { name: 'Uni Rugby', edition: '1 of 60', price: 62, cat: 'polo', shopifyUrl: 'https://1de1.co/products/uni-rugby' }
   };
 
+  // ── PRODUCT IMAGES ──
+  const productHandles = {
+    1: 'uni-zip',
+    2: 'uni-tee',
+    3: 'uni-rugby'
+  };
+
+  async function loadProductImages() {
+    for (const [id, handle] of Object.entries(productHandles)) {
+      try {
+        const res = await fetch(`https://1de1.myshopify.com/products/${handle}.json`);
+        if (!res.ok) continue;
+        const data = await res.json();
+        const imgSrc = data.product && data.product.images && data.product.images[0] && data.product.images[0].src;
+        if (!imgSrc) continue;
+        const thumb = document.querySelector(`#prod-${id} .product-thumb`);
+        if (thumb) {
+          thumb.innerHTML = `<img src="${imgSrc}" alt="${data.product.title}" style="width:100%;height:100%;object-fit:cover;display:block;">`;
+        }
+      } catch (e) { /* silently keep placeholder if fetch fails */ }
+    }
+  }
+
+  loadProductImages();
+
   // ── BOOT SEQUENCE ──
   setTimeout(() => {
     document.getElementById('boot').classList.add('hidden');
