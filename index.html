@@ -1428,20 +1428,7 @@
   // ── CART ──
   function addToFit(e, id, name, price) {
     e.stopPropagation();
-    const btn = document.getElementById('fit-' + id);
-
-    if (cart.find(i => i.id === id)) {
-      cart = cart.filter(i => i.id !== id);
-      btn.textContent = 'Add to Fit';
-      btn.classList.remove('added');
-    } else {
-      cart.push({ id, name, price });
-      btn.textContent = 'Equipped ✓';
-      btn.classList.add('added');
-    }
-
-    updateCartCount();
-    previewItem(id);
+    window.location.href = products[id].shopifyUrl;
   }
 
   function updateCartCount() {
