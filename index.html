@@ -126,8 +126,7 @@
     justify-content: space-between;
     padding: 20px 40px;
     border-bottom: 1px solid #222222;
-    background: rgba(0,0,0,0.98);
-    backdrop-filter: blur(20px);
+    background: #000000;
   }
 
   .header-left {
@@ -1786,40 +1785,20 @@
   const products = {
     1: { name: 'Uni Zip',   edition: '1 of 50', price: 80, cat: 'outerwear', layer: 1, cutout: 'uni-zip-cut.png',   shopifyUrl: 'https://1de1.co/products/uni-zip',
          variants: { S: 51431795753184, M: 51431795785952, L: 51431795818720, XL: 51431795851488, '2XL': 51431795884256 } },
-    2: { name: 'Uni Tee',   edition: '1 of 75', price: 44, cat: 'tops',      layer: 2, cutout: 'uni-tee-cut.png',   shopifyUrl: 'https://1de1.co/products/uni-tee',   variants: null },
-    3: { name: 'Uni Rugby', edition: '1 of 60', price: 62, cat: 'polo',      layer: 3, cutout: 'uni-rugby-cut.png', shopifyUrl: 'https://1de1.co/products/uni-rugby', variants: null }
+    2: { name: 'Uni Tee',   edition: '1 of 75', price: 44, cat: 'tops',      layer: 2, cutout: 'uni-tee-cut.png',   shopifyUrl: 'https://1de1.co/products/uni-tee',
+         variants: { S: 51431795982560, M: 51431796015328, L: 51431796048096, XL: 51431796080864, '2XL': 51431796113632 } },
+    3: { name: 'Uni Rugby', edition: '1 of 60', price: 62, cat: 'polo',      layer: 3, cutout: 'uni-rugby-cut.png', shopifyUrl: 'https://1de1.co/products/uni-rugby',
+         variants: { S: 51431796211936, M: 51431796244704, L: 51431796277472, XL: 51431796310240 } }
   };
 
 
   // ── BOOT SEQUENCE ──
-  fetchVariants();
   setTimeout(() => {
     document.getElementById('boot').classList.add('hidden');
     setTimeout(() => {
       document.getElementById('app').classList.add('visible');
     }, 300);
   }, 2800);
-
-  async function fetchVariants() {
-    try {
-      const [teeResp, rugbyResp] = await Promise.all([
-        fetch('https://1de1.co/products/uni-tee.json'),
-        fetch('https://1de1.co/products/uni-rugby.json'),
-      ]);
-      const [teeData, rugbyData] = await Promise.all([teeResp.json(), rugbyResp.json()]);
-      products[2].variants = buildVariantMap(teeData.product.variants);
-      products[3].variants = buildVariantMap(rugbyData.product.variants);
-      console.log('[1DE1] Variants loaded:', products[2].variants, products[3].variants);
-    } catch (err) {
-      console.warn('[1DE1] Could not fetch variant IDs:', err.message);
-    }
-  }
-
-  function buildVariantMap(variants) {
-    const map = {};
-    variants.forEach(function(v) { map[v.title] = v.id; });
-    return map;
-  }
 
   // ── SCREEN MANAGEMENT ──
   function showScreen(name) {
