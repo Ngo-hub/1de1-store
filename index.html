@@ -7,15 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Cinzel:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   :root {
-    --black: #1a1a1a;
-    --dark: #141414;
-    --panel: #222222;
-    --border: #333333;
-    --border-active: #555555;
+    --black: #f5f5f5;
+    --dark:  #ebebeb;
+    --panel: #ffffff;
+    --border: #e0e0e0;
+    --border-active: #aaaaaa;
     --accent: #c8a876;
-    --accent-dim: #8a7050;
-    --white: #f5f2ed;
-    --muted: #888888;
+    --accent-dim: #9a7a50;
+    --white: #111111;
+    --muted: #666666;
     --red: #c0392b;
     --green: #2d6a4f;
     --scan: rgba(200,168,118,0.03);
@@ -29,31 +29,18 @@
     font-family: 'Rajdhani', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
-    cursor: crosshair;
+    cursor: default;
   }
 
-  /* Scanline overlay */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background: repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 2px,
-      rgba(0,0,0,0.15) 2px,
-      rgba(0,0,0,0.15) 4px
-    );
-    pointer-events: none;
-    z-index: 9999;
-  }
+  /* Scanline overlay — disabled for light theme */
+  body::before { display: none; }
 
-  /* Noise texture */
+  /* Noise texture — disabled for light theme */
   body::after {
     content: '';
     position: fixed;
     inset: 0;
-    opacity: 0.04;
+    opacity: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
     pointer-events: none;
     z-index: 9998;
@@ -63,7 +50,7 @@
   #boot {
     position: fixed;
     inset: 0;
-    background: var(--black);
+    background: #111111;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -138,8 +125,8 @@
     align-items: center;
     justify-content: space-between;
     padding: 20px 40px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(8,8,8,0.95);
+    border-bottom: 1px solid #222222;
+    background: rgba(0,0,0,0.98);
     backdrop-filter: blur(20px);
   }
 
@@ -191,7 +178,7 @@
     width: 16px;
     height: 16px;
     background: var(--accent);
-    color: var(--black);
+    color: #111111;
     font-size: 9px;
     font-weight: 700;
     border-radius: 50%;
@@ -283,7 +270,7 @@
   .char-img-wrap {
     width: 100%;
     aspect-ratio: 2/3;
-    background: linear-gradient(180deg, #1a1a1a 0%, #111 100%);
+    background: linear-gradient(180deg, #e8e8e8 0%, #d8d8d8 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -368,7 +355,7 @@
     font-family: 'Share Tech Mono', monospace;
     font-size: 8px;
     letter-spacing: 0.2em;
-    color: var(--black);
+    color: #111111;
     background: var(--accent);
     padding: 4px 8px;
     opacity: 0;
@@ -382,7 +369,7 @@
     font-family: 'Share Tech Mono', monospace;
     font-size: 11px;
     letter-spacing: 0.4em;
-    color: var(--black);
+    color: #111111;
     background: var(--accent);
     border: none;
     padding: 16px 48px;
@@ -538,7 +525,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    background: radial-gradient(ellipse at center bottom, #1a1a1a 0%, var(--black) 70%);
+    background: #f0f0f0;
     overflow: hidden;
     min-height: 600px;
   }
@@ -585,7 +572,7 @@
   .stage-char-inner {
     width: 100%;
     height: 100%;
-    background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
+    background: linear-gradient(180deg, #f8f8f8 0%, #f0f0f0 100%);
     border: 1px solid var(--border);
     display: flex;
     flex-direction: column;
@@ -671,7 +658,7 @@
   .equip-badge {
     width: 40px;
     height: 40px;
-    background: rgba(8,8,8,0.88);
+    background: rgba(255,255,255,0.92);
     border: 1px solid var(--accent);
     display: flex;
     align-items: center;
@@ -917,8 +904,8 @@
   }
 
   .product-thumb {
-    width: 96px;
-    height: 120px;
+    width: 128px;
+    height: 160px;
     background: var(--dark);
     border: 1px solid var(--border);
     flex-shrink: 0;
@@ -981,7 +968,7 @@
     font-family: 'Share Tech Mono', monospace;
     font-size: 8px;
     letter-spacing: 0.2em;
-    color: var(--black);
+    color: #111111;
     background: var(--accent);
     border: 1px solid var(--accent);
     padding: 6px 14px;
@@ -990,7 +977,7 @@
     transition: all 0.2s;
     white-space: nowrap;
   }
-  .add-cart-btn:hover { background: var(--white); border-color: var(--white); }
+  .add-cart-btn:hover { background: #111111; color: #f5f5f5; border-color: #111111; }
 
   .add-fit-btn {
     font-family: 'Share Tech Mono', monospace;
@@ -1642,7 +1629,7 @@
               <div class="product-price">$80</div>
               <div class="product-equipped-badge" id="equip-tag-1">EQUIPPED ✓</div>
               <div class="product-btns">
-                <button class="add-cart-btn" onclick="addToCart(event, 1)">ADD TO CART</button>
+                <button class="add-cart-btn" onclick="addToCart(event, 1)">BUY NOW</button>
                 <button class="add-fit-btn" id="fit-1" onclick="addToFit(event, 1)">ADD TO FIT</button>
               </div>
             </div>
@@ -1672,7 +1659,7 @@
               <div class="product-price">$44</div>
               <div class="product-equipped-badge" id="equip-tag-2">EQUIPPED ✓</div>
               <div class="product-btns">
-                <button class="add-cart-btn" onclick="addToCart(event, 2)">ADD TO CART</button>
+                <button class="add-cart-btn" onclick="addToCart(event, 2)">BUY NOW</button>
                 <button class="add-fit-btn" id="fit-2" onclick="addToFit(event, 2)">ADD TO FIT</button>
               </div>
             </div>
@@ -1702,7 +1689,7 @@
               <div class="product-price">$62</div>
               <div class="product-equipped-badge" id="equip-tag-3">EQUIPPED ✓</div>
               <div class="product-btns">
-                <button class="add-cart-btn" onclick="addToCart(event, 3)">ADD TO CART</button>
+                <button class="add-cart-btn" onclick="addToCart(event, 3)">BUY NOW</button>
                 <button class="add-fit-btn" id="fit-3" onclick="addToFit(event, 3)">ADD TO FIT</button>
               </div>
             </div>
@@ -1919,17 +1906,7 @@
   // ── EQUIP / CART ──
   function addToCart(e, id) {
     e.stopPropagation();
-    const p = products[id];
-    if (p.variants) {
-      // Show size picker in cart mode
-      const picker = document.getElementById('size-picker-' + id);
-      const isOpen = picker && picker.classList.contains('open') && picker.dataset.mode === 'cart';
-      hideSizePickers();
-      if (!isOpen) openSizePicker(id, 'cart');
-    } else {
-      // Variants not loaded yet — go to product page
-      window.open(p.shopifyUrl, '_blank');
-    }
+    window.open(products[id].shopifyUrl, '_blank');
   }
 
   function openSizePicker(id, mode) {
