@@ -1975,9 +1975,6 @@
       }
       updateCartCount();
       renderDrawer();
-      // Open drawer so user sees item added
-      document.getElementById('loadout-drawer').classList.add('open');
-      document.getElementById('drawer-backdrop').classList.add('open');
       return;
     }
 
@@ -2171,7 +2168,7 @@
     if (cart.length === 0) return;
     const parts = cart.filter(i => i.variantId).map(i => i.variantId + ':1');
     const url = parts.length > 0
-      ? 'https://1de1.co/cart/' + parts.join(',') + '?checkout=true'
+      ? 'https://1de1.co/cart/' + parts.join(',')
       : 'https://1de1.co/cart';
     window.open(url, '_blank');
   }
