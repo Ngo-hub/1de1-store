@@ -652,22 +652,22 @@
     text-transform: uppercase;
   }
 
-  .stage-equip-overlay {
+  .stage-layer {
     position: absolute;
-    left: 20%;
-    width: 60%;
-    top: 25%;
-    height: 50%;
-    z-index: 2;
+    left: 10%;
+    width: 80%;
+    top: 15%;
+    height: 70%;
     display: none;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.25s;
     pointer-events: none;
   }
-  .stage-equip-overlay.visible { display: flex; }
-  .stage-equip-overlay img { width: 100%; height: 100%; object-fit: contain; }
-  .stage-equip-overlay svg { width: 85%; height: 85%; opacity: 0.95; }
+  .stage-layer.on { display: flex; }
+  #overlay-2 { z-index: 11; }
+  #overlay-3 { z-index: 12; }
+  #overlay-1 { z-index: 13; }
+  .stage-layer img { width: 100%; height: 100%; object-fit: contain; }
 
   .stage-item-badge-text {
     font-family: 'Share Tech Mono', monospace;
@@ -1078,6 +1078,149 @@
   ::-webkit-scrollbar-track { background: var(--black); }
   ::-webkit-scrollbar-thumb { background: var(--border-active); }
 
+  /* ── LOADOUT DRAWER ── */
+  .drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 199;
+    display: none;
+    cursor: pointer;
+  }
+  .drawer-backdrop.open { display: block; }
+
+  .loadout-drawer {
+    position: fixed;
+    top: 0;
+    right: -420px;
+    width: 380px;
+    height: 100vh;
+    background: #0e0e0e;
+    border-left: 1px solid var(--border);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    transition: right 0.3s ease;
+  }
+  .loadout-drawer.open { right: 0; }
+
+  .drawer-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .drawer-head-title {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .drawer-close {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: color 0.2s;
+  }
+  .drawer-close:hover { color: var(--white); }
+
+  .drawer-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 24px;
+  }
+
+  .drawer-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .drawer-item-thumb {
+    width: 60px;
+    height: 60px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .drawer-item-thumb img { width: 100%; height: 100%; object-fit: contain; }
+  .drawer-item-info { flex: 1; min-width: 0; }
+  .drawer-item-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--white);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .drawer-item-edition {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .drawer-item-price {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--white);
+  }
+
+  .drawer-footer {
+    padding: 20px 24px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .drawer-total {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Cinzel', serif;
+    font-size: 18px;
+    color: var(--white);
+    margin-bottom: 20px;
+  }
+  .checkout-btn {
+    width: 100%;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--black);
+    background: var(--accent);
+    border: none;
+    padding: 16px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+  }
+  .checkout-btn:hover { background: var(--white); letter-spacing: 0.5em; }
+  .checkout-btn:disabled { opacity: 0.35; cursor: default; }
+  .drawer-note {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.6;
+  }
+  .add-fit-btn.equipped {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
   @media (max-width: 900px) {
     .room-layout { grid-template-columns: 1fr; }
     .room-nav { display: none; }
@@ -1110,7 +1253,7 @@
     </div>
     <a class="header-logo" onclick="showScreen('select')" style="display:flex;align-items:center;"><img src="white_1de1.png" alt="1DE1" style="height:28px;display:block;filter:brightness(0) invert(1);"></a>
     <div class="header-right">
-      <button class="loadout-btn" onclick="showScreen('loadout')">
+      <button class="loadout-btn" onclick="toggleDrawer()">
         LOADOUT <span class="loadout-count" id="cart-count">0</span>
       </button>
     </div>
@@ -1236,7 +1379,9 @@
               <rect x="52" y="98" width="16" height="70" rx="4" fill="#c8a876" opacity="0.35"/>
             </svg>
             <img id="stage-char-photo" src="" alt="Character" draggable="false">
-            <div class="stage-equip-overlay" id="stage-equip-overlay"></div>
+            <div class="stage-layer" id="overlay-2"></div>
+            <div class="stage-layer" id="overlay-3"></div>
+            <div class="stage-layer" id="overlay-1"></div>
             <div class="stage-wearing" id="stage-wearing-text">No item equipped</div>
             <div class="stage-item-badge" id="stage-badge" style="display:none">
               <div class="stage-item-badge-text" id="stage-badge-text"></div>
@@ -1264,11 +1409,7 @@
         <!-- Product 1 -->
         <div class="product-card" id="prod-1" onclick="previewItem(1)" data-cat="outerwear">
           <div class="product-thumb">
-            <svg viewBox="0 0 60 80" fill="none">
-              <path d="M15 10 L5 25 L15 30 L15 70 L45 70 L45 30 L55 25 L45 10 L35 15 Q30 12 25 15 Z" fill="#2d6a4f" stroke="#c8a876" stroke-width="0.5"/>
-              <line x1="30" y1="10" x2="30" y2="70" stroke="#c8a876" stroke-width="0.5" opacity="0.5"/>
-              <text x="18" y="42" font-size="5" fill="#c8a876" opacity="0.7" font-family="serif">1de1</text>
-            </svg>
+            <img src="uni-zip-cut.png" alt="Uni Zip" style="width:100%;height:100%;object-fit:contain;display:block;">
           </div>
           <div class="product-info">
             <div class="product-edition">UNI 001 // 1 OF 50</div>
@@ -1277,7 +1418,7 @@
             <div class="product-bottom">
               <div class="product-price">$80</div>
               <div class="product-equipped-badge" id="equip-tag-1">EQUIPPED ✓</div>
-              <button class="add-fit-btn" id="fit-1" onclick="addToFit(event, 1, 'Original', 118)">Add to Fit</button>
+              <button class="add-fit-btn" id="fit-1" onclick="addToFit(event, 1)">ADD TO FIT</button>
             </div>
           </div>
         </div>
@@ -1294,7 +1435,7 @@
             <div class="product-bottom">
               <div class="product-price">$44</div>
               <div class="product-equipped-badge" id="equip-tag-2">EQUIPPED ✓</div>
-              <button class="add-fit-btn" id="fit-2" onclick="addToFit(event, 2, 'Copy', 62)">Add to Fit</button>
+              <button class="add-fit-btn" id="fit-2" onclick="addToFit(event, 2)">ADD TO FIT</button>
             </div>
           </div>
         </div>
@@ -1311,7 +1452,7 @@
             <div class="product-bottom">
               <div class="product-price">$62</div>
               <div class="product-equipped-badge" id="equip-tag-3">EQUIPPED ✓</div>
-              <button class="add-fit-btn" id="fit-3" onclick="addToFit(event, 3, 'Stripe 001', 72)">Add to Fit</button>
+              <button class="add-fit-btn" id="fit-3" onclick="addToFit(event, 3)">ADD TO FIT</button>
             </div>
           </div>
         </div>
@@ -1360,6 +1501,26 @@
 
 </div><!-- end #app -->
 
+<!-- LOADOUT DRAWER -->
+<div class="drawer-backdrop" id="drawer-backdrop" onclick="closeDrawer()"></div>
+<div class="loadout-drawer" id="loadout-drawer">
+  <div class="drawer-head">
+    <span class="drawer-head-title"><span class="blink">▮</span> &nbsp;Loadout // Uni 001</span>
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-items" id="drawer-items">
+    <div class="empty-loadout" style="padding:48px 0;">No items equipped.</div>
+  </div>
+  <div class="drawer-footer">
+    <div class="drawer-total">
+      <span>Total</span>
+      <span id="drawer-total">$0</span>
+    </div>
+    <button class="checkout-btn" id="checkout-btn" onclick="checkout()" disabled>CHECKOUT &nbsp;▶</button>
+    <div class="drawer-note">Ships worldwide &nbsp;·&nbsp; UNI 001 — NO RESTOCK</div>
+  </div>
+</div>
+
 <script>
   // ── STATE ──
   let cart = [];
@@ -1368,40 +1529,11 @@
   let previewedItem = null;
 
   const products = {
-    1: { name: 'Uni Zip', edition: '1 of 50', price: 80, cat: 'outerwear', shopifyUrl: 'https://1de1.co/products/uni-zip', cutout: 'uni-zip-cut.png' },
-    2: { name: 'Uni Tee', edition: '1 of 75', price: 44, cat: 'tops', shopifyUrl: 'https://1de1.co/products/uni-tee', cutout: 'uni-tee-cut.png' },
-    3: { name: 'Uni Rugby', edition: '1 of 60', price: 62, cat: 'polo', shopifyUrl: 'https://1de1.co/products/uni-rugby', cutout: 'uni-rugby-cut.png' }
+    1: { name: 'Uni Zip',   edition: '1 of 50', price: 80, cat: 'outerwear', layer: 1, cutout: 'uni-zip-cut.png',   shopifyUrl: 'https://1de1.co/products/uni-zip' },
+    2: { name: 'Uni Tee',   edition: '1 of 75', price: 44, cat: 'tops',      layer: 2, cutout: 'uni-tee-cut.png',   shopifyUrl: 'https://1de1.co/products/uni-tee' },
+    3: { name: 'Uni Rugby', edition: '1 of 60', price: 62, cat: 'polo',      layer: 3, cutout: 'uni-rugby-cut.png', shopifyUrl: 'https://1de1.co/products/uni-rugby' }
   };
 
-  // ── PRODUCT IMAGES ──
-  const productHandles = {
-    1: 'uni-zip',
-    2: 'uni-tee',
-    3: 'uni-rugby'
-  };
-
-  async function loadProductImages() {
-    for (const [id, handle] of Object.entries(productHandles)) {
-      const url = `https://1de1.co/products/${handle}.json`;
-      console.log(`[1DE1] Fetching product ${id} (${handle}):`, url);
-      try {
-        const res = await fetch(url);
-        console.log(`[1DE1] Product ${id} (${handle}) response:`, res.status, res.ok);
-        if (!res.ok) { console.warn(`[1DE1] Product ${id} (${handle}) returned ${res.status}`); continue; }
-        const data = await res.json();
-        const imgSrc = data.product && data.product.images && data.product.images[0] && data.product.images[0].src;
-        console.log(`[1DE1] Product ${id} (${handle}) image src:`, imgSrc);
-        if (!imgSrc) continue;
-        products[id].imgSrc = imgSrc;
-        const thumb = document.querySelector(`#prod-${id} .product-thumb`);
-        if (thumb) {
-          thumb.innerHTML = `<img src="${imgSrc}" alt="${data.product.title}" style="width:100%;height:100%;object-fit:cover;display:block;">`;
-        }
-      } catch (e) { console.error(`[1DE1] Product ${id} (${handle}) fetch error:`, e); }
-    }
-  }
-
-  loadProductImages();
 
   // ── BOOT SEQUENCE ──
   setTimeout(() => {
@@ -1481,121 +1613,138 @@
 
   // ── DRESSING ROOM ──
   function previewItem(id) {
-    const overlay = document.getElementById('stage-equip-overlay');
-
-    // Toggle: clicking the same product again unequips it
-    if (previewedItem === id) {
-      previewedItem = null;
-      overlay.innerHTML = '';
-      overlay.classList.remove('visible');
-      document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
-      document.querySelectorAll('.product-equipped-badge').forEach(b => b.style.display = 'none');
-      document.getElementById('stage-wearing-text').textContent = 'No item equipped';
-      document.getElementById('stage-badge').style.display = 'none';
-      return;
-    }
-
-    // Clear previous equipped state
     document.querySelectorAll('.product-card').forEach(c => c.classList.remove('selected'));
-    document.querySelectorAll('.product-equipped-badge').forEach(b => b.style.display = 'none');
-
-    // Set new equipped item
     document.getElementById('prod-' + id).classList.add('selected');
-    previewedItem = id;
-
-    const p = products[id];
-    document.getElementById('stage-wearing-text').textContent = 'Wearing: ' + p.name;
-    document.getElementById('stage-badge').style.display = 'block';
-    document.getElementById('stage-badge-text').textContent = p.edition.toUpperCase();
-
-    // Show EQUIPPED badge on card
-    const badge = document.getElementById('equip-tag-' + id);
-    if (badge) badge.style.display = 'block';
-
-    // Show cutout PNG overlaid on character
-    const cutout = products[id].cutout;
-    if (cutout) {
-      overlay.innerHTML = `<img src="${cutout}" alt="${p.name}">`;
-      overlay.classList.add('visible');
-    }
   }
 
   function filterCategory(cat) {
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     event.currentTarget.classList.add('active');
-
     document.querySelectorAll('.product-card').forEach(card => {
-      if (cat === 'all' || card.dataset.cat === cat) {
-        card.style.display = 'flex';
-      } else {
-        card.style.display = 'none';
-      }
+      card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'flex' : 'none';
     });
   }
 
-  // ── CART ──
-  function addToFit(e, id, name, price) {
+  // ── EQUIP / CART ──
+  function addToFit(e, id) {
     e.stopPropagation();
-    window.open(products[id].shopifyUrl, '_blank');
+    const p = products[id];
+    const btn   = document.getElementById('fit-' + id);
+    const badge = document.getElementById('equip-tag-' + id);
+    const card  = document.getElementById('prod-' + id);
+
+    if (cart.find(i => i.id === id)) {
+      // Unequip
+      cart = cart.filter(i => i.id !== id);
+      setLayerOff(p.layer);
+      if (btn)   { btn.textContent = 'ADD TO FIT'; btn.classList.remove('equipped'); }
+      if (badge) badge.style.display = 'none';
+      if (card)  card.classList.remove('selected');
+    } else {
+      // Equip
+      cart.push({ id, name: p.name, price: p.price });
+      setLayerOn(p.layer, p.cutout, p.name);
+      if (btn)   { btn.textContent = 'EQUIPPED ✓'; btn.classList.add('equipped'); }
+      if (badge) badge.style.display = 'block';
+      if (card)  card.classList.add('selected');
+    }
+
+    updateCartCount();
+    updateWearingText();
+    renderDrawer();
+  }
+
+  function setLayerOn(layer, cutout, name) {
+    const el = document.getElementById('overlay-' + layer);
+    if (!el) return;
+    el.innerHTML = '<img src="' + cutout + '" alt="' + name + '">';
+    el.classList.add('on');
+  }
+
+  function setLayerOff(layer) {
+    const el = document.getElementById('overlay-' + layer);
+    if (!el) return;
+    el.innerHTML = '';
+    el.classList.remove('on');
+  }
+
+  function updateWearingText() {
+    const wt = document.getElementById('stage-wearing-text');
+    const sb = document.getElementById('stage-badge');
+    if (!wt) return;
+    if (cart.length === 0) {
+      wt.textContent = 'No item equipped';
+      if (sb) sb.style.display = 'none';
+    } else {
+      const names = cart.map(i => products[i.id].name).join(' + ');
+      wt.textContent = 'Wearing: ' + names;
+      if (sb) sb.style.display = 'none';
+    }
+  }
+
+  function removeItem(id) {
+    const p = products[id];
+    cart = cart.filter(i => i.id !== id);
+    setLayerOff(p.layer);
+    const btn   = document.getElementById('fit-' + id);
+    const badge = document.getElementById('equip-tag-' + id);
+    const card  = document.getElementById('prod-' + id);
+    if (btn)   { btn.textContent = 'ADD TO FIT'; btn.classList.remove('equipped'); }
+    if (badge) badge.style.display = 'none';
+    if (card)  card.classList.remove('selected');
+    updateCartCount();
+    updateWearingText();
+    renderDrawer();
   }
 
   function updateCartCount() {
     document.getElementById('cart-count').textContent = cart.length;
   }
 
-  // ── LOADOUT ──
-  function renderLoadout() {
-    const container = document.getElementById('loadout-items');
-    const summaryRows = document.getElementById('summary-rows');
-    const total = document.getElementById('summary-total');
+  // ── LOADOUT DRAWER ──
+  function toggleDrawer() {
+    document.getElementById('loadout-drawer').classList.toggle('open');
+    document.getElementById('drawer-backdrop').classList.toggle('open');
+  }
+
+  function closeDrawer() {
+    document.getElementById('loadout-drawer').classList.remove('open');
+    document.getElementById('drawer-backdrop').classList.remove('open');
+  }
+
+  function renderDrawer() {
+    const itemsEl     = document.getElementById('drawer-items');
+    const totalEl     = document.getElementById('drawer-total');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (!itemsEl) return;
 
     if (cart.length === 0) {
-      container.innerHTML = '<div class="empty-loadout">No items equipped.<br>Return to the dressing room.</div>';
-      summaryRows.innerHTML = '';
-      total.textContent = '$0';
+      itemsEl.innerHTML = '<div class="empty-loadout" style="padding:48px 0;">No items equipped.</div>';
+      if (totalEl) totalEl.textContent = '$0';
+      if (checkoutBtn) checkoutBtn.disabled = true;
       return;
     }
 
-    const thumbs = {
-      1: `<svg viewBox="0 0 60 80" fill="none"><path d="M15 10 L5 25 L15 30 L15 70 L45 70 L45 30 L55 25 L45 10 L35 15 Q30 12 25 15 Z" fill="#2d6a4f" stroke="#c8a876" stroke-width="0.5"/><line x1="30" y1="10" x2="30" y2="70" stroke="#c8a876" stroke-width="0.5" opacity="0.5"/></svg>`,
-      2: `<svg viewBox="0 0 60 80" fill="none"><path d="M15 15 L5 28 L15 32 L15 68 L45 68 L45 32 L55 28 L45 15 Q38 10 30 12 Q22 10 15 15 Z" fill="#1a1a1a" stroke="#c8a876" stroke-width="0.5"/><rect x="22" y="28" width="16" height="16" fill="#333" stroke="#c8a876" stroke-width="0.3"/></svg>`,
-      3: `<svg viewBox="0 0 60 80" fill="none"><path d="M15 12 L5 26 L15 30 L15 68 L45 68 L45 30 L55 26 L45 12 Q38 8 30 10 Q22 8 15 12 Z" fill="none" stroke="#888" stroke-width="0.3"/><rect x="5" y="18" width="50" height="8" fill="#c0392b" opacity="0.7"/><rect x="5" y="34" width="50" height="8" fill="#c0392b" opacity="0.7"/><rect x="5" y="50" width="50" height="8" fill="#c0392b" opacity="0.7"/></svg>`
-    };
-
-    container.innerHTML = cart.map(item => `
-      <div class="loadout-item fade-in">
-        <div class="loadout-item-thumb">${thumbs[item.id] || ''}</div>
-        <div class="loadout-item-info">
-          <div class="loadout-item-name">${item.name}</div>
-          <div class="loadout-item-edition">${products[item.id].edition.toUpperCase()} // UNI 001</div>
-          <div class="loadout-item-price">$${item.price}</div>
+    itemsEl.innerHTML = cart.map(item => {
+      const p = products[item.id];
+      return `<div class="drawer-item fade-in">
+        <div class="drawer-item-thumb"><img src="${p.cutout}" alt="${item.name}"></div>
+        <div class="drawer-item-info">
+          <div class="drawer-item-name">${item.name}</div>
+          <div class="drawer-item-edition">${p.edition.toUpperCase()} // UNI 001</div>
+          <div class="drawer-item-price">$${item.price}</div>
         </div>
-        <button class="remove-btn" onclick="removeItem(${item.id})">Remove</button>
-      </div>
-    `).join('');
+        <button class="remove-btn" onclick="removeItem(${item.id})">&#x2715;</button>
+      </div>`;
+    }).join('');
 
-    summaryRows.innerHTML = cart.map(item =>
-      `<div class="summary-row"><span>${item.name}</span><span>$${item.price}</span></div>`
-    ).join('');
-
-    const totalAmt = cart.reduce((s, i) => s + i.price, 0);
-    total.textContent = '$' + totalAmt;
+    if (totalEl) totalEl.textContent = '$' + cart.reduce((s, i) => s + i.price, 0);
+    if (checkoutBtn) checkoutBtn.disabled = false;
   }
 
-  function removeItem(id) {
-    cart = cart.filter(i => i.id !== id);
-    const btn = document.getElementById('fit-' + id);
-    if (btn) { btn.textContent = 'Add to Fit'; btn.classList.remove('added'); }
-    updateCartCount();
-    renderLoadout();
-  }
-
-  function enterRealWorld() {
+  function checkout() {
     if (cart.length === 0) return;
-    const url = cart.length === 1
-      ? products[cart[0].id].shopifyUrl
-      : 'https://1de1.co/cart';
-    window.location.href = url;
+    window.open('https://1de1.co/cart', '_blank');
   }
 </script>
 </body>
