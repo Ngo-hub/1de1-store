@@ -654,20 +654,19 @@
 
   .stage-layer {
     position: absolute;
-    left: 10%;
-    width: 80%;
-    top: 15%;
-    height: 70%;
     display: none;
     align-items: center;
     justify-content: center;
     pointer-events: none;
   }
   .stage-layer.on { display: flex; }
-  #overlay-2 { z-index: 11; }
-  #overlay-3 { z-index: 12; }
-  #overlay-1 { z-index: 13; }
   .stage-layer img { width: 100%; height: 100%; object-fit: contain; }
+  /* Uni Zip (hoodie) — shoulders to mid-thigh, widest */
+  #overlay-1 { z-index: 13; left: 5%;  width: 90%; top: 10%; height: 72%; }
+  /* Uni Tee — chest to waist */
+  #overlay-2 { z-index: 11; left: 10%; width: 80%; top: 16%; height: 54%; }
+  /* Uni Rugby — chest to waist */
+  #overlay-3 { z-index: 12; left: 10%; width: 80%; top: 16%; height: 54%; }
 
   .stage-item-badge-text {
     font-family: 'Share Tech Mono', monospace;
