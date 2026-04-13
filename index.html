@@ -2167,9 +2167,12 @@
   function checkout() {
     if (cart.length === 0) return;
     const parts = cart.filter(i => i.variantId).map(i => i.variantId + ':1');
+    console.log('[1DE1] Cart items:', cart);
+    console.log('[1DE1] Variant parts:', parts);
     const url = parts.length > 0
       ? 'https://1de1.co/cart/' + parts.join(',')
       : 'https://1de1.co/cart';
+    console.log('[1DE1] Checkout URL:', url);
     window.open(url, '_blank');
   }
 </script>
