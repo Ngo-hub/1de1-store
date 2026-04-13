@@ -1748,17 +1748,33 @@
     const garmentImage = RAW_BASE + p.cutout;
     setTryonLoading(true);
     try {
-      const resp = await fetch('/api/tryon', {
+      // Step 1: create prediction, get ID back immediately
+      const createResp = await fetch('/api/tryon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ personImage, garmentImage })
       });
-      if (!resp.ok) throw new Error('HTTP ' + resp.status);
-      const data = await resp.json();
-      if (!data.imageUrl) throw new Error(data.error || 'No imageUrl');
-      tryonCache[cacheKey] = data.imageUrl;
-      setTryonLoading(false);
-      showTryonResult(data.imageUrl);
+      if (!createResp.ok) throw new Error('HTTP ' + createResp.status);
+      const { predictionId } = await createResp.json();
+      if (!predictionId) throw new Error('No predictionId');
+      // Step 2: poll /api/poll every 3 seconds until done
+      let attempts = 0;
+      while (attempts < 40) {
+        await new Promise(r => setTimeout(r, 3000));
+        const pollResp = await fetch('/api/poll?id=' + predictionId);
+        if (!pollResp.ok) throw new Error('Poll HTTP ' + pollResp.status);
+        const result = await pollResp.json();
+        if (result.status === 'succeeded') {
+          if (!result.imageUrl) throw new Error('No imageUrl in result');
+          tryonCache[cacheKey] = result.imageUrl;
+          setTryonLoading(false);
+          showTryonResult(result.imageUrl);
+          return;
+        }
+        if (result.status === 'failed') throw new Error(result.error || 'Prediction failed');
+        attempts++;
+      }
+      throw new Error('Polling timed out');
     } catch (err) {
       console.warn('[1DE1] Try-on failed, using fallback:', err.message);
       setTryonLoading(false);
