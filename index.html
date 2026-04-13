@@ -1629,7 +1629,7 @@
               <div class="product-price">$80</div>
               <div class="product-equipped-badge" id="equip-tag-1">EQUIPPED ✓</div>
               <div class="product-btns">
-                <button class="add-cart-btn" onclick="addToCart(event, 1)">BUY NOW</button>
+                <button class="add-cart-btn" onclick="addToCart(event, 1)">ADD TO CART</button>
                 <button class="add-fit-btn" id="fit-1" onclick="addToFit(event, 1)">ADD TO FIT</button>
               </div>
             </div>
@@ -1659,7 +1659,7 @@
               <div class="product-price">$44</div>
               <div class="product-equipped-badge" id="equip-tag-2">EQUIPPED ✓</div>
               <div class="product-btns">
-                <button class="add-cart-btn" onclick="addToCart(event, 2)">BUY NOW</button>
+                <button class="add-cart-btn" onclick="addToCart(event, 2)">ADD TO CART</button>
                 <button class="add-fit-btn" id="fit-2" onclick="addToFit(event, 2)">ADD TO FIT</button>
               </div>
             </div>
@@ -1689,7 +1689,7 @@
               <div class="product-price">$62</div>
               <div class="product-equipped-badge" id="equip-tag-3">EQUIPPED ✓</div>
               <div class="product-btns">
-                <button class="add-cart-btn" onclick="addToCart(event, 3)">BUY NOW</button>
+                <button class="add-cart-btn" onclick="addToCart(event, 3)">ADD TO CART</button>
                 <button class="add-fit-btn" id="fit-3" onclick="addToFit(event, 3)">ADD TO FIT</button>
               </div>
             </div>
@@ -1772,7 +1772,8 @@
 
 <script>
   // ── STATE ──
-  let cart = [];
+  let cart   = [];   // purchase items (ADD TO CART flow)
+  let fitted = new Set(); // visually equipped IDs (ADD TO FIT flow)
   let selectedChar = null;
   let selectedCharName = '';
   let previewedItem = null;
@@ -1861,8 +1862,18 @@
       if (svg) svg.style.display = 'none';
     }
 
-    // Clear any previously equipped product + try-on result
+    // Clear visual fit state + try-on result
     clearTryonResult();
+    fitted.clear();
+    document.querySelectorAll('.add-fit-btn').forEach(function(b) {
+      b.textContent = 'ADD TO FIT'; b.classList.remove('equipped');
+    });
+    document.querySelectorAll('.product-equipped-badge').forEach(function(b) {
+      b.style.display = 'none';
+    });
+    document.querySelectorAll('.product-card').forEach(function(c) {
+      c.classList.remove('selected');
+    });
     previewedItem = null;
     const overlay = document.getElementById('stage-equip-overlay');
     if (overlay) { overlay.innerHTML = ''; overlay.classList.remove('visible'); }
@@ -1906,7 +1917,11 @@
   // ── EQUIP / CART ──
   function addToCart(e, id) {
     e.stopPropagation();
-    window.open(products[id].shopifyUrl, '_blank');
+    if (cart.find(i => i.id === id)) { toggleDrawer(); return; }
+    const picker = document.getElementById('size-picker-' + id);
+    const isOpen = picker && picker.classList.contains('open') && picker.dataset.mode === 'cart';
+    hideSizePickers();
+    if (!isOpen) openSizePicker(id, 'cart');
   }
 
   function openSizePicker(id, mode) {
@@ -1922,18 +1937,16 @@
     const badge = document.getElementById('equip-tag-' + id);
     const card  = document.getElementById('prod-' + id);
 
-    if (cart.find(i => i.id === id)) {
-      // Unequip
-      cart = cart.filter(i => i.id !== id);
+    if (fitted.has(id)) {
+      // Un-fit: remove from visual equip
+      fitted.delete(id);
       clearTryonResult();
       hideSizePickers();
       if (btn)   { btn.textContent = 'ADD TO FIT'; btn.classList.remove('equipped'); }
       if (badge) badge.style.display = 'none';
       if (card)  card.classList.remove('selected');
-      updateCartCount();
       updateEquipVisuals();
       updateWearingText();
-      renderDrawer();
     } else {
       // Show size picker in fit mode (toggle)
       const picker = document.getElementById('size-picker-' + id);
@@ -1956,33 +1969,36 @@
     hideSizePickers();
 
     if (mode === 'cart') {
-      const url = variantId
-        ? 'https://1de1.co/cart/' + variantId + ':1'
-        : p.shopifyUrl;
-      window.open(url, '_blank');
+      // ADD TO CART: push to purchase cart, show in loadout drawer
+      if (!cart.find(i => i.id === id)) {
+        cart.push({ id, name: p.name, price: p.price, size, variantId });
+      }
+      updateCartCount();
+      renderDrawer();
+      // Open drawer so user sees item added
+      document.getElementById('loadout-drawer').classList.add('open');
+      document.getElementById('drawer-backdrop').classList.add('open');
       return;
     }
 
-    // fit mode — equip on avatar
+    // fit mode — visual equip on avatar (does NOT touch purchase cart)
     const btn   = document.getElementById('fit-' + id);
     const badge = document.getElementById('equip-tag-' + id);
     const card  = document.getElementById('prod-' + id);
-    cart.push({ id, name: p.name, price: p.price, size, variantId });
+    fitted.add(id);
     if (btn)   { btn.textContent = 'EQUIPPED ✓ (' + size + ')'; btn.classList.add('equipped'); }
     if (badge) badge.style.display = 'block';
     if (card)  card.classList.add('selected');
     callTryOn(id);
-    updateCartCount();
     updateEquipVisuals();
     updateWearingText();
-    renderDrawer();
   }
 
   function updateEquipVisuals() {
     const inner = document.querySelector('.stage-char-inner');
     const photo = document.getElementById('stage-char-photo');
     const strip = document.getElementById('equip-badge-strip');
-    if (cart.length === 0) {
+    if (fitted.size === 0) {
       if (inner) inner.classList.remove('equipped');
       if (photo) photo.classList.remove('tinted');
       if (strip) strip.innerHTML = '';
@@ -1992,8 +2008,8 @@
     if (inner) inner.classList.add('equipped');
     if (photo) photo.classList.add('tinted');
     if (strip) {
-      strip.innerHTML = cart.map(function(item) {
-        var p = products[item.id];
+      strip.innerHTML = [...fitted].map(function(itemId) {
+        var p = products[itemId];
         return '<div class="equip-badge" title="' + p.name + '"><img src="' + p.cutout + '" alt="' + p.name + '"></div>';
       }).join('');
     }
@@ -2089,11 +2105,11 @@
     const wt = document.getElementById('stage-wearing-text');
     const sb = document.getElementById('stage-badge');
     if (!wt) return;
-    if (cart.length === 0) {
+    if (fitted.size === 0) {
       wt.textContent = 'No item equipped';
       if (sb) sb.style.display = 'none';
     } else {
-      const names = cart.map(i => products[i.id].name).join(' + ');
+      const names = [...fitted].map(id => products[id].name).join(' + ');
       wt.textContent = 'Wearing: ' + names;
       if (sb) sb.style.display = 'none';
     }
@@ -2101,15 +2117,7 @@
 
   function removeItem(id) {
     cart = cart.filter(i => i.id !== id);
-    const btn   = document.getElementById('fit-' + id);
-    const badge = document.getElementById('equip-tag-' + id);
-    const card  = document.getElementById('prod-' + id);
-    if (btn)   { btn.textContent = 'ADD TO FIT'; btn.classList.remove('equipped'); }
-    if (badge) badge.style.display = 'none';
-    if (card)  card.classList.remove('selected');
     updateCartCount();
-    updateEquipVisuals();
-    updateWearingText();
     renderDrawer();
   }
 
@@ -2159,41 +2167,14 @@
     if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.textContent = 'CHECKOUT — $' + total + ' ▶'; }
   }
 
-  async function checkout() {
+  function checkout() {
     if (cart.length === 0) return;
-    const checkoutBtn = document.getElementById('checkout-btn');
-    const originalText = checkoutBtn ? checkoutBtn.textContent : '';
-    if (checkoutBtn) { checkoutBtn.disabled = true; checkoutBtn.textContent = 'PROCESSING...'; }
-
-    const items = cart
-      .filter(i => i.variantId)
-      .map(i => ({ variantId: i.variantId, quantity: 1, size: i.size || '' }));
-
-    // If no variant IDs resolved yet, fall back to cart page
-    if (items.length === 0) {
-      window.open('https://1de1.co/cart', '_blank');
-      if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.textContent = originalText; }
-      return;
-    }
-
-    try {
-      const resp = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(items),
-      });
-      const data = await resp.json();
-      if (!resp.ok || !data.checkoutUrl) throw new Error(data.error || 'No checkoutUrl');
-      window.open(data.checkoutUrl, '_blank');
-      if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.textContent = originalText; }
-    } catch (err) {
-      console.error('[1DE1] Checkout error:', err.message);
-      window.open('https://1de1.co/cart', '_blank');
-      if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.textContent = originalText; }
-    }
+    const parts = cart.filter(i => i.variantId).map(i => i.variantId + ':1');
+    const url = parts.length > 0
+      ? 'https://1de1.co/cart/' + parts.join(',') + '?checkout=true'
+      : 'https://1de1.co/cart';
+    window.open(url, '_blank');
   }
-
-
 </script>
 </body>
 </html>
