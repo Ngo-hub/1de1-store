@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
   try {
     const createResp = await fetch(
-      'https://api.replicate.com/v1/deployments/fashn-ai/tryon/predictions',
+      'https://api.replicate.com/v1/predictions',
       {
         method: 'POST',
         headers: {
@@ -23,10 +23,15 @@ export default async function handler(req, res) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          version: 'c871bb9b046607b680449ecbae55fd8c6d945e0a1948644bf2361b3d021d3ff4',
           input: {
-            model_image: personImage,
-            garment_image: garmentImage,
-            category: 'tops',
+            human_img: personImage,
+            garm_img: garmentImage,
+            garment_des: 'streetwear piece',
+            is_checked: true,
+            is_checked_crop: false,
+            denoise_steps: 30,
+            seed: 42,
           },
         }),
       }
