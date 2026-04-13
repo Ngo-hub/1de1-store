@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
   try {
     const createResp = await fetch(
-      'https://api.replicate.com/v1/models/fashn-ai/fashn-tryon/predictions',
+      'https://api.replicate.com/v1/models/fashn-ai/tryon/predictions',
       {
         method: 'POST',
         headers: {
@@ -32,13 +32,15 @@ export default async function handler(req, res) {
       }
     );
 
+    const responseBody = await createResp.json();
+    console.log('[tryon] Replicate response status:', createResp.status);
+    console.log('[tryon] Replicate response body:', JSON.stringify(responseBody));
+
     if (!createResp.ok) {
-      const body = await createResp.text();
-      return res.status(502).json({ error: 'Replicate error: ' + createResp.status, detail: body });
+      return res.status(502).json({ error: 'Replicate error: ' + createResp.status, detail: responseBody });
     }
 
-    const prediction = await createResp.json();
-    return res.status(200).json({ predictionId: prediction.id });
+    return res.status(200).json({ predictionId: responseBody.id });
   } catch (err) {
     return res.status(500).json({ error: 'Internal error', detail: err.message });
   }
