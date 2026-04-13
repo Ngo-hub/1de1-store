@@ -15,7 +15,7 @@ export default async function handler(req, res) {
 
   try {
     const createResp = await fetch(
-      'https://api.replicate.com/v1/models/fashn-ai/tryon/predictions',
+      'https://api.replicate.com/v1/deployments/fashn-ai/tryon/predictions',
       {
         method: 'POST',
         headers: {
