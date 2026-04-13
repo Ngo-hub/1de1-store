@@ -680,6 +680,49 @@
   }
   .equip-badge img { width: 100%; height: 100%; object-fit: contain; }
 
+  /* ── TRY-ON SYSTEM ── */
+  #tryon-result {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+    z-index: 6;
+    transition: opacity 0.5s ease;
+  }
+  #tryon-result.visible { display: block; }
+  .tryon-loading {
+    position: absolute;
+    inset: 0;
+    background: rgba(8,8,8,0.88);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 14px;
+    z-index: 20;
+    pointer-events: none;
+  }
+  .tryon-loading.active { display: flex; }
+  .tryon-spinner {
+    width: 28px;
+    height: 28px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: tryon-spin 0.75s linear infinite;
+  }
+  @keyframes tryon-spin { to { transform: rotate(360deg); } }
+  .tryon-loading-text {
+    color: var(--accent);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    animation: tryon-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes tryon-pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+
   .stage-item-badge-text {
     font-family: 'Share Tech Mono', monospace;
     font-size: 8px;
@@ -1390,6 +1433,11 @@
               <rect x="52" y="98" width="16" height="70" rx="4" fill="#c8a876" opacity="0.35"/>
             </svg>
             <img id="stage-char-photo" src="" alt="Character" draggable="false">
+            <img id="tryon-result" src="" alt="AI Try-on" draggable="false">
+            <div class="tryon-loading" id="tryon-loading">
+              <div class="tryon-spinner"></div>
+              <div class="tryon-loading-text">GENERATING FIT...</div>
+            </div>
             <div class="equip-badge-strip" id="equip-badge-strip"></div>
             <div class="stage-wearing" id="stage-wearing-text">No item equipped</div>
             <div class="stage-item-badge" id="stage-badge" style="display:none">
@@ -1537,6 +1585,12 @@
   let selectedCharName = '';
   let previewedItem = null;
 
+  // ── REPLICATE TRY-ON ──
+  const REPLICATE_TOKEN = 'YOUR_TOKEN_HERE';
+  const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/main/';
+  const charCutouts = { 'UNIT-A': 'alpha-cut.png', 'UNIT-B': 'omega-cut.png', 'UNIT-C': 'delta-cut.png' };
+  const tryonCache = {};  // charId:productId -> output URL
+
   const products = {
     1: { name: 'Uni Zip',   edition: '1 of 50', price: 80, cat: 'outerwear', layer: 1, cutout: 'uni-zip-cut.png',   shopifyUrl: 'https://1de1.co/products/uni-zip' },
     2: { name: 'Uni Tee',   edition: '1 of 75', price: 44, cat: 'tops',      layer: 2, cutout: 'uni-tee-cut.png',   shopifyUrl: 'https://1de1.co/products/uni-tee' },
@@ -1593,7 +1647,8 @@
       if (svg) svg.style.display = 'none';
     }
 
-    // Clear any previously equipped product
+    // Clear any previously equipped product + try-on result
+    clearTryonResult();
     previewedItem = null;
     const overlay = document.getElementById('stage-equip-overlay');
     if (overlay) { overlay.innerHTML = ''; overlay.classList.remove('visible'); }
@@ -1645,6 +1700,7 @@
     if (cart.find(i => i.id === id)) {
       // Unequip
       cart = cart.filter(i => i.id !== id);
+      clearTryonResult();
       if (btn)   { btn.textContent = 'ADD TO FIT'; btn.classList.remove('equipped'); }
       if (badge) badge.style.display = 'none';
       if (card)  card.classList.remove('selected');
@@ -1654,6 +1710,7 @@
       if (btn)   { btn.textContent = 'EQUIPPED ✓'; btn.classList.add('equipped'); }
       if (badge) badge.style.display = 'block';
       if (card)  card.classList.add('selected');
+      callTryOn(id);
     }
 
     updateCartCount();
@@ -1670,6 +1727,7 @@
       if (inner) inner.classList.remove('equipped');
       if (photo) photo.classList.remove('tinted');
       if (strip) strip.innerHTML = '';
+      clearTryonResult();
       return;
     }
     if (inner) inner.classList.add('equipped');
@@ -1680,6 +1738,71 @@
         return '<div class="equip-badge" title="' + p.name + '"><img src="' + p.cutout + '" alt="' + p.name + '"></div>';
       }).join('');
     }
+  }
+
+  async function callTryOn(productId) {
+    if (!REPLICATE_TOKEN || REPLICATE_TOKEN === 'YOUR_TOKEN_HERE') return;
+    if (!selectedChar) return;
+    const cacheKey = selectedChar + ':' + productId;
+    if (tryonCache[cacheKey]) { showTryonResult(tryonCache[cacheKey]); return; }
+    const p = products[productId];
+    const modelImg   = RAW_BASE + charCutouts[selectedChar];
+    const garmentImg = RAW_BASE + p.cutout;
+    const catMap = { outerwear: 'tops', tops: 'tops', polo: 'tops' };
+    const category   = catMap[p.cat] || 'tops';
+    setTryonLoading(true);
+    try {
+      const resp = await fetch('https://api.replicate.com/v1/models/fashn-ai/fashn-tryon/predictions', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + REPLICATE_TOKEN,
+          'Content-Type': 'application/json',
+          'Prefer': 'wait=60'
+        },
+        body: JSON.stringify({ input: { model_image: modelImg, garment_image: garmentImg, category: category } })
+      });
+      if (!resp.ok) throw new Error('HTTP ' + resp.status);
+      let result = await resp.json();
+      let attempts = 0;
+      while (result.status !== 'succeeded' && result.status !== 'failed' && attempts < 20) {
+        await new Promise(r => setTimeout(r, 2500));
+        const poll = await fetch('https://api.replicate.com/v1/predictions/' + result.id, {
+          headers: { 'Authorization': 'Bearer ' + REPLICATE_TOKEN }
+        });
+        result = await poll.json();
+        attempts++;
+      }
+      if (result.status !== 'succeeded') throw new Error('Prediction ' + result.status);
+      const output = Array.isArray(result.output) ? result.output[0] : result.output;
+      if (!output) throw new Error('No output');
+      tryonCache[cacheKey] = output;
+      setTryonLoading(false);
+      showTryonResult(output);
+    } catch (err) {
+      console.warn('[1DE1] Try-on failed, using fallback:', err.message);
+      setTryonLoading(false);
+    }
+  }
+
+  function setTryonLoading(active) {
+    const el = document.getElementById('tryon-loading');
+    if (el) el.classList.toggle('active', active);
+  }
+
+  function showTryonResult(url) {
+    const img   = document.getElementById('tryon-result');
+    const photo = document.getElementById('stage-char-photo');
+    if (!img) return;
+    img.src = url;
+    img.classList.add('visible');
+    if (photo) photo.style.display = 'none';
+  }
+
+  function clearTryonResult() {
+    const img   = document.getElementById('tryon-result');
+    const photo = document.getElementById('stage-char-photo');
+    if (img)   { img.src = ''; img.classList.remove('visible'); }
+    if (photo && photo.src) photo.style.display = 'block';
   }
 
   function updateWearingText() {
