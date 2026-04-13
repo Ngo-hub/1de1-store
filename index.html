@@ -692,36 +692,136 @@
     transition: opacity 0.5s ease;
   }
   #tryon-result.visible { display: block; }
+
+  /* Scanner overlay — sits on top of the character, doesn't blank it */
   .tryon-loading {
     position: absolute;
     inset: 0;
-    background: rgba(8,8,8,0.88);
+    background: rgba(8,8,8,0.55);
     display: none;
-    align-items: center;
-    justify-content: center;
     flex-direction: column;
-    gap: 14px;
+    align-items: stretch;
+    justify-content: flex-start;
     z-index: 20;
     pointer-events: none;
+    font-family: 'Share Tech Mono', monospace;
   }
   .tryon-loading.active { display: flex; }
-  .tryon-spinner {
-    width: 28px;
-    height: 28px;
-    border: 2px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
-    animation: tryon-spin 0.75s linear infinite;
+
+  /* Top status bar */
+  .tl-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px 6px;
+    border-bottom: 1px solid rgba(200,168,118,0.2);
+    background: rgba(8,8,8,0.6);
   }
-  @keyframes tryon-spin { to { transform: rotate(360deg); } }
-  .tryon-loading-text {
+  .tl-title {
     color: var(--accent);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 11px;
+    font-size: 9px;
     letter-spacing: 3px;
-    animation: tryon-pulse 1.4s ease-in-out infinite;
+    text-transform: uppercase;
   }
-  @keyframes tryon-pulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+  .tl-status {
+    color: var(--accent);
+    font-size: 9px;
+    letter-spacing: 2px;
+    opacity: 0.7;
+    animation: tl-blink 1s step-end infinite;
+  }
+  @keyframes tl-blink { 0%,100% { opacity: 0.7; } 50% { opacity: 0.1; } }
+
+  /* Scan line that moves over the character */
+  .tl-scan-area {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+  }
+  .tl-scanline {
+    position: absolute;
+    left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(200,168,118,0.15) 20%,
+      rgba(200,168,118,0.7) 50%,
+      rgba(200,168,118,0.15) 80%,
+      transparent 100%
+    );
+    box-shadow: 0 0 12px rgba(200,168,118,0.5), 0 0 3px rgba(200,168,118,0.9);
+    animation: tl-scan 2.4s ease-in-out infinite;
+  }
+  @keyframes tl-scan {
+    0%   { top: 0%; }
+    50%  { top: 98%; }
+    100% { top: 0%; }
+  }
+  /* Faint horizontal grid lines for tech feel */
+  .tl-scan-area::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 18px,
+      rgba(200,168,118,0.04) 18px,
+      rgba(200,168,118,0.04) 19px
+    );
+  }
+  /* Corner brackets */
+  .tl-corner {
+    position: absolute;
+    width: 14px; height: 14px;
+    border-color: var(--accent);
+    border-style: solid;
+    opacity: 0.6;
+  }
+  .tl-corner.tl { top: 8px; left: 8px;  border-width: 1px 0 0 1px; }
+  .tl-corner.tr { top: 8px; right: 8px; border-width: 1px 1px 0 0; }
+  .tl-corner.bl { bottom: 8px; left: 8px;  border-width: 0 0 1px 1px; }
+  .tl-corner.br { bottom: 8px; right: 8px; border-width: 0 1px 1px 0; }
+
+  /* Bottom info strip */
+  .tl-footer {
+    padding: 8px 12px 10px;
+    background: rgba(8,8,8,0.7);
+    border-top: 1px solid rgba(200,168,118,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .tl-label {
+    color: var(--accent);
+    font-size: 9px;
+    letter-spacing: 3px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tl-cursor {
+    display: inline-block;
+    width: 7px; height: 11px;
+    background: var(--accent);
+    animation: tl-blink 0.8s step-end infinite;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+  .tl-bar-track {
+    height: 2px;
+    background: rgba(200,168,118,0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  .tl-bar-fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 0%;
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(200,168,118,0.6);
+    transition: width 0.5s linear;
+  }
 
   .stage-item-badge-text {
     font-family: 'Share Tech Mono', monospace;
@@ -1435,8 +1535,21 @@
             <img id="stage-char-photo" src="" alt="Character" draggable="false">
             <img id="tryon-result" src="" alt="AI Try-on" draggable="false">
             <div class="tryon-loading" id="tryon-loading">
-              <div class="tryon-spinner"></div>
-              <div class="tryon-loading-text">GENERATING FIT...</div>
+              <div class="tl-header">
+                <span class="tl-title">NGO // SYSTEM ONLINE</span>
+                <span class="tl-status">&#9646; ACTIVE</span>
+              </div>
+              <div class="tl-scan-area">
+                <div class="tl-scanline"></div>
+                <div class="tl-corner tl"></div>
+                <div class="tl-corner tr"></div>
+                <div class="tl-corner bl"></div>
+                <div class="tl-corner br"></div>
+              </div>
+              <div class="tl-footer">
+                <div class="tl-label">GENERATING FIT...<span class="tl-cursor"></span></div>
+                <div class="tl-bar-track"><div class="tl-bar-fill" id="tl-bar"></div></div>
+              </div>
             </div>
             <div class="equip-badge-strip" id="equip-badge-strip"></div>
             <div class="stage-wearing" id="stage-wearing-text">No item equipped</div>
@@ -1781,9 +1894,32 @@
     }
   }
 
+  let _tryonBarTimer = null;
   function setTryonLoading(active) {
-    const el = document.getElementById('tryon-loading');
-    if (el) el.classList.toggle('active', active);
+    const el  = document.getElementById('tryon-loading');
+    const bar = document.getElementById('tl-bar');
+    if (!el) return;
+    el.classList.toggle('active', active);
+    if (_tryonBarTimer) { clearInterval(_tryonBarTimer); _tryonBarTimer = null; }
+    if (active && bar) {
+      bar.style.transition = 'none';
+      bar.style.width = '0%';
+      const duration = 20000; // 20 s estimated
+      const step = 200;
+      let elapsed = 0;
+      _tryonBarTimer = setInterval(function() {
+        elapsed += step;
+        // Ease-out: fast at start, slows near 90%
+        const pct = 90 * (1 - Math.exp(-3 * elapsed / duration));
+        bar.style.transition = 'width 0.2s linear';
+        bar.style.width = pct.toFixed(1) + '%';
+        if (elapsed >= duration * 2) { clearInterval(_tryonBarTimer); _tryonBarTimer = null; }
+      }, step);
+    } else if (!active && bar) {
+      bar.style.transition = 'width 0.3s ease';
+      bar.style.width = '100%';
+      setTimeout(function() { bar.style.width = '0%'; }, 350);
+    }
   }
 
   function showTryonResult(url) {
