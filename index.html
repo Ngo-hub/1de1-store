@@ -680,6 +680,40 @@
   }
   .equip-badge img { width: 100%; height: 100%; object-fit: contain; }
 
+  /* ── SIZE PICKER ── */
+  .size-picker {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 0 2px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+  .size-picker.open { display: flex; }
+  .size-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--muted);
+  }
+  .size-btns { display: flex; gap: 5px; flex-wrap: wrap; }
+  .size-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--white);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+  }
+  .size-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(200,168,118,0.06);
+  }
+
   /* ── TRY-ON SYSTEM ── */
   #tryon-result {
     position: absolute;
@@ -1590,6 +1624,16 @@
               <div class="product-equipped-badge" id="equip-tag-1">EQUIPPED ✓</div>
               <button class="add-fit-btn" id="fit-1" onclick="addToFit(event, 1)">ADD TO FIT</button>
             </div>
+            <div class="size-picker" id="size-picker-1">
+              <span class="size-label">SELECT SIZE</span>
+              <div class="size-btns">
+                <button class="size-btn" onclick="selectSize(event,1,'S')">S</button>
+                <button class="size-btn" onclick="selectSize(event,1,'M')">M</button>
+                <button class="size-btn" onclick="selectSize(event,1,'L')">L</button>
+                <button class="size-btn" onclick="selectSize(event,1,'XL')">XL</button>
+                <button class="size-btn" onclick="selectSize(event,1,'2XL')">2XL</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1607,6 +1651,16 @@
               <div class="product-equipped-badge" id="equip-tag-2">EQUIPPED ✓</div>
               <button class="add-fit-btn" id="fit-2" onclick="addToFit(event, 2)">ADD TO FIT</button>
             </div>
+            <div class="size-picker" id="size-picker-2">
+              <span class="size-label">SELECT SIZE</span>
+              <div class="size-btns">
+                <button class="size-btn" onclick="selectSize(event,2,'S')">S</button>
+                <button class="size-btn" onclick="selectSize(event,2,'M')">M</button>
+                <button class="size-btn" onclick="selectSize(event,2,'L')">L</button>
+                <button class="size-btn" onclick="selectSize(event,2,'XL')">XL</button>
+                <button class="size-btn" onclick="selectSize(event,2,'2XL')">2XL</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1623,6 +1677,16 @@
               <div class="product-price">$62</div>
               <div class="product-equipped-badge" id="equip-tag-3">EQUIPPED ✓</div>
               <button class="add-fit-btn" id="fit-3" onclick="addToFit(event, 3)">ADD TO FIT</button>
+            </div>
+            <div class="size-picker" id="size-picker-3">
+              <span class="size-label">SELECT SIZE</span>
+              <div class="size-btns">
+                <button class="size-btn" onclick="selectSize(event,3,'S')">S</button>
+                <button class="size-btn" onclick="selectSize(event,3,'M')">M</button>
+                <button class="size-btn" onclick="selectSize(event,3,'L')">L</button>
+                <button class="size-btn" onclick="selectSize(event,3,'XL')">XL</button>
+                <button class="size-btn" onclick="selectSize(event,3,'2XL')">2XL</button>
+              </div>
             </div>
           </div>
         </div>
@@ -1704,19 +1768,42 @@
   const tryonCache = {};  // charId:productId -> output URL
 
   const products = {
-    1: { name: 'Uni Zip',   edition: '1 of 50', price: 80, cat: 'outerwear', layer: 1, cutout: 'uni-zip-cut.png',   shopifyUrl: 'https://1de1.co/products/uni-zip' },
-    2: { name: 'Uni Tee',   edition: '1 of 75', price: 44, cat: 'tops',      layer: 2, cutout: 'uni-tee-cut.png',   shopifyUrl: 'https://1de1.co/products/uni-tee' },
-    3: { name: 'Uni Rugby', edition: '1 of 60', price: 62, cat: 'polo',      layer: 3, cutout: 'uni-rugby-cut.png', shopifyUrl: 'https://1de1.co/products/uni-rugby' }
+    1: { name: 'Uni Zip',   edition: '1 of 50', price: 80, cat: 'outerwear', layer: 1, cutout: 'uni-zip-cut.png',   shopifyUrl: 'https://1de1.co/products/uni-zip',
+         variants: { S: 51431795753184, M: 51431795785952, L: 51431795818720, XL: 51431795851488, '2XL': 51431795884256 } },
+    2: { name: 'Uni Tee',   edition: '1 of 75', price: 44, cat: 'tops',      layer: 2, cutout: 'uni-tee-cut.png',   shopifyUrl: 'https://1de1.co/products/uni-tee',   variants: null },
+    3: { name: 'Uni Rugby', edition: '1 of 60', price: 62, cat: 'polo',      layer: 3, cutout: 'uni-rugby-cut.png', shopifyUrl: 'https://1de1.co/products/uni-rugby', variants: null }
   };
 
 
   // ── BOOT SEQUENCE ──
+  fetchVariants();
   setTimeout(() => {
     document.getElementById('boot').classList.add('hidden');
     setTimeout(() => {
       document.getElementById('app').classList.add('visible');
     }, 300);
   }, 2800);
+
+  async function fetchVariants() {
+    try {
+      const [teeResp, rugbyResp] = await Promise.all([
+        fetch('https://1de1.co/products/uni-tee.json'),
+        fetch('https://1de1.co/products/uni-rugby.json'),
+      ]);
+      const [teeData, rugbyData] = await Promise.all([teeResp.json(), rugbyResp.json()]);
+      products[2].variants = buildVariantMap(teeData.product.variants);
+      products[3].variants = buildVariantMap(rugbyData.product.variants);
+      console.log('[1DE1] Variants loaded:', products[2].variants, products[3].variants);
+    } catch (err) {
+      console.warn('[1DE1] Could not fetch variant IDs:', err.message);
+    }
+  }
+
+  function buildVariantMap(variants) {
+    const map = {};
+    variants.forEach(function(v) { map[v.title] = v.id; });
+    return map;
+  }
 
   // ── SCREEN MANAGEMENT ──
   function showScreen(name) {
@@ -1804,7 +1891,6 @@
   // ── EQUIP / CART ──
   function addToFit(e, id) {
     e.stopPropagation();
-    const p = products[id];
     const btn   = document.getElementById('fit-' + id);
     const badge = document.getElementById('equip-tag-' + id);
     const card  = document.getElementById('prod-' + id);
@@ -1813,18 +1899,40 @@
       // Unequip
       cart = cart.filter(i => i.id !== id);
       clearTryonResult();
+      hideSizePickers();
       if (btn)   { btn.textContent = 'ADD TO FIT'; btn.classList.remove('equipped'); }
       if (badge) badge.style.display = 'none';
       if (card)  card.classList.remove('selected');
+      updateCartCount();
+      updateEquipVisuals();
+      updateWearingText();
+      renderDrawer();
     } else {
-      // Equip
-      cart.push({ id, name: p.name, price: p.price });
-      if (btn)   { btn.textContent = 'EQUIPPED ✓'; btn.classList.add('equipped'); }
-      if (badge) badge.style.display = 'block';
-      if (card)  card.classList.add('selected');
-      callTryOn(id);
+      // Show size picker (toggle)
+      const picker = document.getElementById('size-picker-' + id);
+      const isOpen = picker && picker.classList.contains('open');
+      hideSizePickers();
+      if (!isOpen && picker) picker.classList.add('open');
     }
+  }
 
+  function hideSizePickers() {
+    document.querySelectorAll('.size-picker').forEach(p => p.classList.remove('open'));
+  }
+
+  function selectSize(e, id, size) {
+    e.stopPropagation();
+    const p      = products[id];
+    const btn    = document.getElementById('fit-' + id);
+    const badge  = document.getElementById('equip-tag-' + id);
+    const card   = document.getElementById('prod-' + id);
+    const variantId = p.variants ? (p.variants[size] || null) : null;
+    hideSizePickers();
+    cart.push({ id, name: p.name, price: p.price, size, variantId });
+    if (btn)   { btn.textContent = 'EQUIPPED ✓ (' + size + ')'; btn.classList.add('equipped'); }
+    if (badge) badge.style.display = 'block';
+    if (card)  card.classList.add('selected');
+    callTryOn(id);
     updateCartCount();
     updateEquipVisuals();
     updateWearingText();
@@ -1999,7 +2107,7 @@
       return `<div class="drawer-item fade-in">
         <div class="drawer-item-thumb"><img src="${p.cutout}" alt="${item.name}"></div>
         <div class="drawer-item-info">
-          <div class="drawer-item-name">${item.name}</div>
+          <div class="drawer-item-name">${item.name}${item.size ? ' <span style="opacity:.6;font-size:.85em">// ' + item.size + '</span>' : ''}</div>
           <div class="drawer-item-edition">${p.edition.toUpperCase()} // UNI 001</div>
           <div class="drawer-item-price">$${item.price}</div>
         </div>
@@ -2014,7 +2122,11 @@
 
   function checkout() {
     if (cart.length === 0) return;
-    window.open('https://1de1.co/cart', '_blank');
+    const parts = cart.filter(i => i.variantId).map(i => i.variantId + ':1');
+    const url = parts.length > 0
+      ? 'https://1de1.co/cart/' + parts.join(',')
+      : 'https://1de1.co/cart';
+    window.open(url, '_blank');
   }
 </script>
 </body>
