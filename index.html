@@ -2120,13 +2120,38 @@
     if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.textContent = 'CHECKOUT — $' + total + ' ▶'; }
   }
 
-  function checkout() {
+  async function checkout() {
     if (cart.length === 0) return;
-    const parts = cart.filter(i => i.variantId).map(i => i.variantId + ':1');
-    const url = parts.length > 0
-      ? 'https://1de1.co/cart/' + parts.join(',')
-      : 'https://1de1.co/cart';
-    window.open(url, '_blank');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    const originalText = checkoutBtn ? checkoutBtn.textContent : '';
+    if (checkoutBtn) { checkoutBtn.disabled = true; checkoutBtn.textContent = 'PROCESSING...'; }
+
+    const items = cart
+      .filter(i => i.variantId)
+      .map(i => ({ variantId: i.variantId, quantity: 1, size: i.size || '' }));
+
+    // If no variant IDs resolved yet, fall back to cart page
+    if (items.length === 0) {
+      window.open('https://1de1.co/cart', '_blank');
+      if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.textContent = originalText; }
+      return;
+    }
+
+    try {
+      const resp = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(items),
+      });
+      const data = await resp.json();
+      if (!resp.ok || !data.checkoutUrl) throw new Error(data.error || 'No checkoutUrl');
+      window.location.href = data.checkoutUrl;
+    } catch (err) {
+      console.error('[1DE1] Checkout error:', err.message);
+      // Fall back to cart page on error
+      window.open('https://1de1.co/cart', '_blank');
+      if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.textContent = originalText; }
+    }
   }
 </script>
 </body>
