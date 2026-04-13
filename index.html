@@ -652,21 +652,33 @@
     text-transform: uppercase;
   }
 
-  .stage-layer {
+  /* ── EQUIP VISUALS ── */
+  .stage-char-inner.equipped {
+    border-color: var(--accent);
+    box-shadow: 0 0 32px rgba(200,168,118,0.25), inset 0 0 24px rgba(200,168,118,0.06);
+  }
+  #stage-char-photo { transition: filter 0.4s ease; }
+  #stage-char-photo.tinted { filter: brightness(0.72) saturate(0.85); }
+  .equip-badge-strip {
     position: absolute;
-    display: none;
+    bottom: 36px;
+    left: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    z-index: 10;
+  }
+  .equip-badge {
+    width: 40px;
+    height: 40px;
+    background: rgba(8,8,8,0.88);
+    border: 1px solid var(--accent);
+    display: flex;
     align-items: center;
     justify-content: center;
-    pointer-events: none;
+    overflow: hidden;
   }
-  .stage-layer.on { display: flex; }
-  .stage-layer img { width: 100%; height: 100%; object-fit: contain; }
-  /* Uni Zip (hoodie) — shoulders to mid-thigh, widest */
-  #overlay-1 { z-index: 13; left: 5%;  width: 90%; top: 10%; height: 72%; }
-  /* Uni Tee — chest to waist */
-  #overlay-2 { z-index: 11; left: 10%; width: 80%; top: 16%; height: 54%; }
-  /* Uni Rugby — chest to waist */
-  #overlay-3 { z-index: 12; left: 10%; width: 80%; top: 16%; height: 54%; }
+  .equip-badge img { width: 100%; height: 100%; object-fit: contain; }
 
   .stage-item-badge-text {
     font-family: 'Share Tech Mono', monospace;
@@ -1378,9 +1390,7 @@
               <rect x="52" y="98" width="16" height="70" rx="4" fill="#c8a876" opacity="0.35"/>
             </svg>
             <img id="stage-char-photo" src="" alt="Character" draggable="false">
-            <div class="stage-layer" id="overlay-2"></div>
-            <div class="stage-layer" id="overlay-3"></div>
-            <div class="stage-layer" id="overlay-1"></div>
+            <div class="equip-badge-strip" id="equip-badge-strip"></div>
             <div class="stage-wearing" id="stage-wearing-text">No item equipped</div>
             <div class="stage-item-badge" id="stage-badge" style="display:none">
               <div class="stage-item-badge-text" id="stage-badge-text"></div>
@@ -1635,36 +1645,41 @@
     if (cart.find(i => i.id === id)) {
       // Unequip
       cart = cart.filter(i => i.id !== id);
-      setLayerOff(p.layer);
       if (btn)   { btn.textContent = 'ADD TO FIT'; btn.classList.remove('equipped'); }
       if (badge) badge.style.display = 'none';
       if (card)  card.classList.remove('selected');
     } else {
       // Equip
       cart.push({ id, name: p.name, price: p.price });
-      setLayerOn(p.layer, p.cutout, p.name);
       if (btn)   { btn.textContent = 'EQUIPPED ✓'; btn.classList.add('equipped'); }
       if (badge) badge.style.display = 'block';
       if (card)  card.classList.add('selected');
     }
 
     updateCartCount();
+    updateEquipVisuals();
     updateWearingText();
     renderDrawer();
   }
 
-  function setLayerOn(layer, cutout, name) {
-    const el = document.getElementById('overlay-' + layer);
-    if (!el) return;
-    el.innerHTML = '<img src="' + cutout + '" alt="' + name + '">';
-    el.classList.add('on');
-  }
-
-  function setLayerOff(layer) {
-    const el = document.getElementById('overlay-' + layer);
-    if (!el) return;
-    el.innerHTML = '';
-    el.classList.remove('on');
+  function updateEquipVisuals() {
+    const inner = document.querySelector('.stage-char-inner');
+    const photo = document.getElementById('stage-char-photo');
+    const strip = document.getElementById('equip-badge-strip');
+    if (cart.length === 0) {
+      if (inner) inner.classList.remove('equipped');
+      if (photo) photo.classList.remove('tinted');
+      if (strip) strip.innerHTML = '';
+      return;
+    }
+    if (inner) inner.classList.add('equipped');
+    if (photo) photo.classList.add('tinted');
+    if (strip) {
+      strip.innerHTML = cart.map(function(item) {
+        var p = products[item.id];
+        return '<div class="equip-badge" title="' + p.name + '"><img src="' + p.cutout + '" alt="' + p.name + '"></div>';
+      }).join('');
+    }
   }
 
   function updateWearingText() {
@@ -1682,9 +1697,7 @@
   }
 
   function removeItem(id) {
-    const p = products[id];
     cart = cart.filter(i => i.id !== id);
-    setLayerOff(p.layer);
     const btn   = document.getElementById('fit-' + id);
     const badge = document.getElementById('equip-tag-' + id);
     const card  = document.getElementById('prod-' + id);
@@ -1692,6 +1705,7 @@
     if (badge) badge.style.display = 'none';
     if (card)  card.classList.remove('selected');
     updateCartCount();
+    updateEquipVisuals();
     updateWearingText();
     renderDrawer();
   }
@@ -1720,7 +1734,7 @@
     if (cart.length === 0) {
       itemsEl.innerHTML = '<div class="empty-loadout" style="padding:48px 0;">No items equipped.</div>';
       if (totalEl) totalEl.textContent = '$0';
-      if (checkoutBtn) checkoutBtn.disabled = true;
+      if (checkoutBtn) { checkoutBtn.disabled = true; checkoutBtn.textContent = 'CHECKOUT ▶'; }
       return;
     }
 
@@ -1737,8 +1751,9 @@
       </div>`;
     }).join('');
 
-    if (totalEl) totalEl.textContent = '$' + cart.reduce((s, i) => s + i.price, 0);
-    if (checkoutBtn) checkoutBtn.disabled = false;
+    var total = cart.reduce((s, i) => s + i.price, 0);
+    if (totalEl) totalEl.textContent = '$' + total;
+    if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.textContent = 'CHECKOUT — $' + total + ' ▶'; }
   }
 
   function checkout() {
