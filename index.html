@@ -7,15 +7,15 @@
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Cinzel:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   :root {
-    --black: #080808;
-    --dark: #0e0e0e;
-    --panel: #111111;
-    --border: #222222;
-    --border-active: #444444;
+    --black: #1a1a1a;
+    --dark: #141414;
+    --panel: #222222;
+    --border: #333333;
+    --border-active: #555555;
     --accent: #c8a876;
     --accent-dim: #8a7050;
-    --white: #f0ede8;
-    --muted: #666666;
+    --white: #f5f2ed;
+    --muted: #888888;
     --red: #c0392b;
     --green: #2d6a4f;
     --scan: rgba(200,168,118,0.03);
@@ -917,8 +917,8 @@
   }
 
   .product-thumb {
-    width: 64px;
-    height: 80px;
+    width: 96px;
+    height: 120px;
     background: var(--dark);
     border: 1px solid var(--border);
     flex-shrink: 0;
@@ -975,22 +975,39 @@
     letter-spacing: 0.1em;
   }
 
-  .add-fit-btn {
+  .product-btns { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; }
+
+  .add-cart-btn {
     font-family: 'Share Tech Mono', monospace;
     font-size: 8px;
     letter-spacing: 0.2em;
     color: var(--black);
     background: var(--accent);
-    border: none;
-    padding: 6px 12px;
+    border: 1px solid var(--accent);
+    padding: 6px 14px;
     cursor: pointer;
     text-transform: uppercase;
     transition: all 0.2s;
+    white-space: nowrap;
   }
+  .add-cart-btn:hover { background: var(--white); border-color: var(--white); }
 
-  .add-fit-btn:hover { background: var(--white); }
-  .add-fit-btn.added {
+  .add-fit-btn {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
     background: transparent;
+    border: 1px solid var(--accent);
+    padding: 5px 14px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .add-fit-btn:hover { background: rgba(200,168,118,0.1); }
+  .add-fit-btn.equipped {
+    background: rgba(200,168,118,0.18);
     color: var(--accent);
     border: 1px solid var(--accent);
   }
@@ -1624,7 +1641,10 @@
             <div class="product-bottom">
               <div class="product-price">$80</div>
               <div class="product-equipped-badge" id="equip-tag-1">EQUIPPED ✓</div>
-              <button class="add-fit-btn" id="fit-1" onclick="addToFit(event, 1)">ADD TO FIT</button>
+              <div class="product-btns">
+                <button class="add-cart-btn" onclick="addToCart(event, 1)">ADD TO CART</button>
+                <button class="add-fit-btn" id="fit-1" onclick="addToFit(event, 1)">ADD TO FIT</button>
+              </div>
             </div>
             <div class="size-picker" id="size-picker-1">
               <span class="size-label">SELECT SIZE</span>
@@ -1651,7 +1671,10 @@
             <div class="product-bottom">
               <div class="product-price">$44</div>
               <div class="product-equipped-badge" id="equip-tag-2">EQUIPPED ✓</div>
-              <button class="add-fit-btn" id="fit-2" onclick="addToFit(event, 2)">ADD TO FIT</button>
+              <div class="product-btns">
+                <button class="add-cart-btn" onclick="addToCart(event, 2)">ADD TO CART</button>
+                <button class="add-fit-btn" id="fit-2" onclick="addToFit(event, 2)">ADD TO FIT</button>
+              </div>
             </div>
             <div class="size-picker" id="size-picker-2">
               <span class="size-label">SELECT SIZE</span>
@@ -1678,7 +1701,10 @@
             <div class="product-bottom">
               <div class="product-price">$62</div>
               <div class="product-equipped-badge" id="equip-tag-3">EQUIPPED ✓</div>
-              <button class="add-fit-btn" id="fit-3" onclick="addToFit(event, 3)">ADD TO FIT</button>
+              <div class="product-btns">
+                <button class="add-cart-btn" onclick="addToCart(event, 3)">ADD TO CART</button>
+                <button class="add-fit-btn" id="fit-3" onclick="addToFit(event, 3)">ADD TO FIT</button>
+              </div>
             </div>
             <div class="size-picker" id="size-picker-3">
               <span class="size-label">SELECT SIZE</span>
@@ -1891,6 +1917,28 @@
   }
 
   // ── EQUIP / CART ──
+  function addToCart(e, id) {
+    e.stopPropagation();
+    const p = products[id];
+    if (p.variants) {
+      // Show size picker in cart mode
+      const picker = document.getElementById('size-picker-' + id);
+      const isOpen = picker && picker.classList.contains('open') && picker.dataset.mode === 'cart';
+      hideSizePickers();
+      if (!isOpen) openSizePicker(id, 'cart');
+    } else {
+      // Variants not loaded yet — go to product page
+      window.open(p.shopifyUrl, '_blank');
+    }
+  }
+
+  function openSizePicker(id, mode) {
+    const picker = document.getElementById('size-picker-' + id);
+    if (!picker) return;
+    picker.dataset.mode = mode || 'fit';
+    picker.classList.add('open');
+  }
+
   function addToFit(e, id) {
     e.stopPropagation();
     const btn   = document.getElementById('fit-' + id);
@@ -1910,11 +1958,11 @@
       updateWearingText();
       renderDrawer();
     } else {
-      // Show size picker (toggle)
+      // Show size picker in fit mode (toggle)
       const picker = document.getElementById('size-picker-' + id);
-      const isOpen = picker && picker.classList.contains('open');
+      const isOpen = picker && picker.classList.contains('open') && picker.dataset.mode === 'fit';
       hideSizePickers();
-      if (!isOpen && picker) picker.classList.add('open');
+      if (!isOpen) openSizePicker(id, 'fit');
     }
   }
 
@@ -1924,12 +1972,24 @@
 
   function selectSize(e, id, size) {
     e.stopPropagation();
-    const p      = products[id];
-    const btn    = document.getElementById('fit-' + id);
-    const badge  = document.getElementById('equip-tag-' + id);
-    const card   = document.getElementById('prod-' + id);
+    const picker    = document.getElementById('size-picker-' + id);
+    const mode      = picker ? (picker.dataset.mode || 'fit') : 'fit';
+    const p         = products[id];
     const variantId = p.variants ? (p.variants[size] || null) : null;
     hideSizePickers();
+
+    if (mode === 'cart') {
+      const url = variantId
+        ? 'https://1de1.co/cart/' + variantId + ':1'
+        : p.shopifyUrl;
+      window.open(url, '_blank');
+      return;
+    }
+
+    // fit mode — equip on avatar
+    const btn   = document.getElementById('fit-' + id);
+    const badge = document.getElementById('equip-tag-' + id);
+    const card  = document.getElementById('prod-' + id);
     cart.push({ id, name: p.name, price: p.price, size, variantId });
     if (btn)   { btn.textContent = 'EQUIPPED ✓ (' + size + ')'; btn.classList.add('equipped'); }
     if (badge) badge.style.display = 'block';
