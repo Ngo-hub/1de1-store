@@ -1585,8 +1585,7 @@
   let selectedCharName = '';
   let previewedItem = null;
 
-  // ── REPLICATE TRY-ON ──
-  const REPLICATE_TOKEN = 'YOUR_TOKEN_HERE';
+  // ── TRY-ON ──
   const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/main/';
   const charCutouts = { 'UNIT-A': 'alpha-cut.png', 'UNIT-B': 'omega-cut.png', 'UNIT-C': 'delta-cut.png' };
   const tryonCache = {};  // charId:productId -> output URL
@@ -1741,43 +1740,25 @@
   }
 
   async function callTryOn(productId) {
-    if (!REPLICATE_TOKEN || REPLICATE_TOKEN === 'YOUR_TOKEN_HERE') return;
     if (!selectedChar) return;
     const cacheKey = selectedChar + ':' + productId;
     if (tryonCache[cacheKey]) { showTryonResult(tryonCache[cacheKey]); return; }
     const p = products[productId];
-    const modelImg   = RAW_BASE + charCutouts[selectedChar];
-    const garmentImg = RAW_BASE + p.cutout;
-    const catMap = { outerwear: 'tops', tops: 'tops', polo: 'tops' };
-    const category   = catMap[p.cat] || 'tops';
+    const personImage  = RAW_BASE + charCutouts[selectedChar];
+    const garmentImage = RAW_BASE + p.cutout;
     setTryonLoading(true);
     try {
-      const resp = await fetch('https://api.replicate.com/v1/models/fashn-ai/fashn-tryon/predictions', {
+      const resp = await fetch('/api/tryon', {
         method: 'POST',
-        headers: {
-          'Authorization': 'Bearer ' + REPLICATE_TOKEN,
-          'Content-Type': 'application/json',
-          'Prefer': 'wait=60'
-        },
-        body: JSON.stringify({ input: { model_image: modelImg, garment_image: garmentImg, category: category } })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ personImage, garmentImage })
       });
       if (!resp.ok) throw new Error('HTTP ' + resp.status);
-      let result = await resp.json();
-      let attempts = 0;
-      while (result.status !== 'succeeded' && result.status !== 'failed' && attempts < 20) {
-        await new Promise(r => setTimeout(r, 2500));
-        const poll = await fetch('https://api.replicate.com/v1/predictions/' + result.id, {
-          headers: { 'Authorization': 'Bearer ' + REPLICATE_TOKEN }
-        });
-        result = await poll.json();
-        attempts++;
-      }
-      if (result.status !== 'succeeded') throw new Error('Prediction ' + result.status);
-      const output = Array.isArray(result.output) ? result.output[0] : result.output;
-      if (!output) throw new Error('No output');
-      tryonCache[cacheKey] = output;
+      const data = await resp.json();
+      if (!data.imageUrl) throw new Error(data.error || 'No imageUrl');
+      tryonCache[cacheKey] = data.imageUrl;
       setTryonLoading(false);
-      showTryonResult(output);
+      showTryonResult(data.imageUrl);
     } catch (err) {
       console.warn('[1DE1] Try-on failed, using fallback:', err.message);
       setTryonLoading(false);
