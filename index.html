@@ -949,6 +949,7 @@
     flex-shrink: 0;
     overflow: hidden;
     perspective: 1000px;
+    cursor: pointer;
   }
 
   /* Flip card system */
@@ -959,7 +960,14 @@
     transform-style: preserve-3d;
     transition: transform 0.5s ease;
   }
-  .product-thumb:hover .thumb-flip {
+  /* Desktop hover-capable devices only */
+  @media (hover: hover) {
+    .product-thumb:hover .thumb-flip {
+      transform: rotateY(180deg);
+    }
+  }
+  /* Mobile: JS toggles this class on tap */
+  .thumb-flip.flipped {
     transform: rotateY(180deg);
   }
   .thumb-front,
@@ -2303,7 +2311,7 @@
 
         <!-- Product 1 -->
         <div class="product-card" id="prod-1" onclick="previewItem(1)" data-cat="outerwear">
-          <div class="product-thumb">
+          <div class="product-thumb" onclick="toggleFlip(event, this)">
             <div class="thumb-flip">
               <div class="thumb-front">
                 <img src="uni-zip-cut.png" alt="Uni Zip" style="width:100%;height:100%;object-fit:contain;display:block;">
@@ -2339,7 +2347,7 @@
 
         <!-- Product 2 -->
         <div class="product-card" id="prod-2" onclick="previewItem(2)" data-cat="tops">
-          <div class="product-thumb">
+          <div class="product-thumb" onclick="toggleFlip(event, this)">
             <div class="thumb-flip">
               <div class="thumb-front">
                 <img src="uni-tee-cut.png" alt="Uni Tee" style="width:100%;height:100%;object-fit:contain;display:block;">
@@ -2375,7 +2383,7 @@
 
         <!-- Product 3 -->
         <div class="product-card" id="prod-3" onclick="previewItem(3)" data-cat="polo">
-          <div class="product-thumb">
+          <div class="product-thumb" onclick="toggleFlip(event, this)">
             <div class="thumb-flip">
               <div class="thumb-front">
                 <img src="uni-rugby-cut.png" alt="Uni Rugby" style="width:100%;height:100%;object-fit:contain;display:block;">
@@ -3004,6 +3012,16 @@
     console.log('[1DE1] Checkout URL:', url);
     window.open(url, '_blank');
   }
+  // Product image flip — mobile tap toggles, desktop uses CSS :hover
+  function toggleFlip(e, thumbEl) {
+    // Only activate on touch/mobile — desktop relies on CSS :hover
+    if (window.matchMedia('(hover: hover)').matches) return;
+    e.stopPropagation(); // prevent card click (size picker) from firing on image tap
+    const card = thumbEl.querySelector('.thumb-flip');
+    if (card) card.classList.toggle('flipped');
+  }
+
+
 </script>
 </body>
 </html>
