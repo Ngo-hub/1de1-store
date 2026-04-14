@@ -373,7 +373,28 @@
 
   .enter-btn:hover::after { transform: translateX(0); }
   .enter-btn:hover { letter-spacing: 0.5em; }
+  .enter-btn { min-height: 44px; }
   .enter-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  @keyframes card-pulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(200,168,118,0); }
+    50%      { box-shadow: 0 0 0 6px rgba(200,168,118,0.55); }
+  }
+  .character-card.pulse-attention { animation: card-pulse 0.5s ease 2; }
+
+  #select-error-msg {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.35em;
+    color: var(--accent);
+    text-transform: uppercase;
+    text-align: center;
+    margin-top: 12px;
+    height: 18px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  #select-error-msg.visible { opacity: 1; }
 
   .randomize-btn {
     font-family: 'Share Tech Mono', monospace;
@@ -2158,17 +2179,12 @@
     </div>
 
     <div class="btn-row">
-      <button class="enter-btn" id="enter-world-btn" onclick="enterWorld()" disabled>
+      <button class="enter-btn" id="enter-world-btn" onclick="enterWorld()">
         ▶ &nbsp; Enter World
       </button>
       <button class="randomize-btn" onclick="randomize()">Randomize</button>
     </div>
-
-    <div style="margin-top:24px;text-align:center;">
-      <button id="enter-fallback-btn" onclick="showScreen('room')" style="display:none;font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:0.3em;color:#0a0a0a;background:#c8a876;border:none;padding:14px 40px;cursor:pointer;text-transform:uppercase;">
-        ▶ &nbsp; ENTER WORLD
-      </button>
-    </div>
+    <div id="select-error-msg">Select a character first</div>
   </div>
 
   <!-- ══ SCREEN 2: DRESSING ROOM ══ -->
@@ -2616,11 +2632,6 @@
     el.classList.add('selected');
     selectedChar = id;
     selectedCharName = name;
-    document.getElementById('enter-world-btn').disabled = false;
-
-    // Show fallback button
-    const fb = document.getElementById('enter-fallback-btn');
-    if (fb) fb.style.display = 'inline-block';
 
     document.getElementById('active-char-name').textContent = name + ' // ' + id;
 
@@ -2657,14 +2668,16 @@
     document.getElementById('stage-wearing-text').textContent = 'No item equipped';
     document.getElementById('stage-badge').style.display = 'none';
 
-    console.log('[1DE1] calling enterWorld(), selectedChar =', selectedChar);
-    enterWorld();
   }
 
   function randomize() {
     const cards = document.querySelectorAll('.character-card');
-    const idx = Math.floor(Math.random() * cards.length);
-    cards[idx].click();
+    const idx   = Math.floor(Math.random() * cards.length);
+    const card  = cards[idx];
+    const id    = { A: 'UNIT-A', B: 'UNIT-B', C: 'UNIT-C' }[card.dataset.char];
+    const name  = card.querySelector('.char-name').textContent.trim();
+    selectChar(card, id, name);
+    setTimeout(() => showScreen('room'), 500);
   }
 
   function mobileResetTryon() {
@@ -2678,9 +2691,17 @@
   }
 
   function enterWorld() {
-    console.log('[1DE1] enterWorld called, selectedChar =', selectedChar);
     if (!selectedChar) {
-      console.warn('[1DE1] enterWorld: no selectedChar, returning');
+      // Flash error message and pulse the cards
+      const msg = document.getElementById('select-error-msg');
+      msg.classList.add('visible');
+      document.querySelectorAll('.character-card').forEach(c => {
+        c.classList.remove('pulse-attention');
+        void c.offsetWidth; // force reflow to restart animation
+        c.classList.add('pulse-attention');
+      });
+      clearTimeout(enterWorld._msgTimer);
+      enterWorld._msgTimer = setTimeout(() => msg.classList.remove('visible'), 2000);
       return;
     }
     showScreen('room');
