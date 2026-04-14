@@ -656,7 +656,7 @@
     display: none;       /* shown via JS after char select; kept block thereafter */
     opacity: 0;
     z-index: 1;
-    transition: filter 0.4s ease, opacity 0.5s ease;
+    transition: filter 0.4s ease, opacity 0.3s ease;
   }
 
   .product-equipped-badge {
@@ -675,6 +675,9 @@
     box-shadow: 0 0 32px rgba(200,168,118,0.25), inset 0 0 24px rgba(200,168,118,0.06);
   }
   #stage-char-photo.tinted { filter: brightness(0.72) saturate(0.85); }
+  /* Temporary fix: delta-cut.png has a white background baked in.
+     Replace delta-cut.png with a transparent-bg version to fully fix this. */
+  #stage-char-photo.delta-mode  { mix-blend-mode: luminosity; opacity: 0.92; }
   .equip-badge-strip {
     position: absolute;
     bottom: 36px;
@@ -742,7 +745,7 @@
     opacity: 0;
     pointer-events: none;
     z-index: 6;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.6s ease;
   }
   #tryon-result.visible {
     opacity: 1;
@@ -944,11 +947,36 @@
     background: var(--dark);
     border: 1px solid var(--border);
     flex-shrink: 0;
+    overflow: hidden;
+    perspective: 1000px;
+  }
+
+  /* Flip card system */
+  .thumb-flip {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s ease;
+  }
+  .product-thumb:hover .thumb-flip {
+    transform: rotateY(180deg);
+  }
+  .thumb-front,
+  .thumb-back {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
   }
+  .thumb-front { transform: rotateY(0deg); }
+  .thumb-back  { transform: rotateY(180deg); }
 
   .product-thumb svg { width: 80%; height: 80%; opacity: 0.5; }
   .product-card.selected .product-thumb svg { opacity: 0.9; }
@@ -1833,7 +1861,7 @@
       min-height: unset;
       height: calc(52dvh - 30px);
       width: 100%;
-      overflow: visible;
+      overflow: hidden;
       background: #f0f0f0;
       flex-shrink: 0;
       position: relative;
@@ -2276,7 +2304,14 @@
         <!-- Product 1 -->
         <div class="product-card" id="prod-1" onclick="previewItem(1)" data-cat="outerwear">
           <div class="product-thumb">
-            <img src="uni-zip-cut.png" alt="Uni Zip" style="width:100%;height:100%;object-fit:contain;display:block;">
+            <div class="thumb-flip">
+              <div class="thumb-front">
+                <img src="uni-zip-cut.png" alt="Uni Zip" style="width:100%;height:100%;object-fit:contain;display:block;">
+              </div>
+              <div class="thumb-back">
+                <img src="uni-zip-back.png" alt="Uni Zip back" style="width:100%;height:100%;object-fit:contain;display:block;">
+              </div>
+            </div>
           </div>
           <div class="product-info">
             <div class="product-edition">UNI 001 // 1 OF 50</div>
@@ -2305,7 +2340,14 @@
         <!-- Product 2 -->
         <div class="product-card" id="prod-2" onclick="previewItem(2)" data-cat="tops">
           <div class="product-thumb">
-            <img src="uni-tee-cut.png" alt="Uni Tee" style="width:100%;height:100%;object-fit:contain;display:block;">
+            <div class="thumb-flip">
+              <div class="thumb-front">
+                <img src="uni-tee-cut.png" alt="Uni Tee" style="width:100%;height:100%;object-fit:contain;display:block;">
+              </div>
+              <div class="thumb-back">
+                <img src="uni-tee-back.png" alt="Uni Tee back" style="width:100%;height:100%;object-fit:contain;display:block;">
+              </div>
+            </div>
           </div>
           <div class="product-info">
             <div class="product-edition">UNI 001 // 1 OF 75</div>
@@ -2334,7 +2376,14 @@
         <!-- Product 3 -->
         <div class="product-card" id="prod-3" onclick="previewItem(3)" data-cat="polo">
           <div class="product-thumb">
-            <img src="uni-rugby-cut.png" alt="Uni Rugby" style="width:100%;height:100%;object-fit:contain;display:block;">
+            <div class="thumb-flip">
+              <div class="thumb-front">
+                <img src="uni-rugby-cut.png" alt="Uni Rugby" style="width:100%;height:100%;object-fit:contain;display:block;">
+              </div>
+              <div class="thumb-back">
+                <img src="uni-rugby-back.png" alt="Uni Rugby back" style="width:100%;height:100%;object-fit:contain;display:block;">
+              </div>
+            </div>
           </div>
           <div class="product-info">
             <div class="product-edition">UNI 001 // 1 OF 60</div>
@@ -2567,6 +2616,20 @@
       photo.style.display = 'block';
       requestAnimationFrame(() => { photo.style.opacity = '1'; });
       if (svg) svg.style.display = 'none';
+      // Delta temporary blend fix: white bg in delta-cut.png blends into light inner
+      const inner = document.querySelector('.stage-char-inner');
+      if (id === 'UNIT-C') {
+        photo.classList.add('delta-mode');
+        if (inner) inner.classList.add('delta-mode');
+        console.log('[1DE1] delta-mode: multiply blend active');
+      } else {
+        photo.classList.remove('delta-mode');
+        if (inner) inner.classList.remove('delta-mode');
+      }
+      // Verify stage background
+      const stageEl = document.querySelector('.room-stage');
+      if (stageEl) console.log('[1DE1] stage bg:', window.getComputedStyle(stageEl).backgroundColor);
+      if (inner) console.log('[1DE1] inner bg:', window.getComputedStyle(inner).backgroundColor);
     }
 
     // Clear visual fit state + try-on result
@@ -2801,14 +2864,23 @@
     const img   = document.getElementById('tryon-result');
     const photo = document.getElementById('stage-char-photo');
     if (!img) return;
-    // Crossfade: fade avatar out, try-on in simultaneously
-    if (photo) photo.style.opacity = '0';
-    img.src = url;
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      img.classList.add('visible');
-    }));
-    // Show mobile back button
-    if (window.innerWidth < 768) {
+    const isDesktop = window.innerWidth >= 768;
+    if (isDesktop) {
+      // Desktop: fade avatar out first (0.3s), then fade try-on in (0.6s)
+      if (photo) photo.style.opacity = '0';
+      img.src = url;
+      setTimeout(() => {
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          img.classList.add('visible');
+        }));
+      }, 320); // wait for avatar to finish fading (0.3s + small buffer)
+    } else {
+      // Mobile: show try-on immediately, show back button
+      if (photo) photo.style.opacity = '0';
+      img.src = url;
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        img.classList.add('visible');
+      }));
       const back = document.getElementById('mobile-tryon-back');
       if (back) back.style.display = 'block';
     }
@@ -2818,13 +2890,27 @@
     const img   = document.getElementById('tryon-result');
     const photo = document.getElementById('stage-char-photo');
     const back  = document.getElementById('mobile-tryon-back');
-    // Fade try-on out, fade avatar back in
-    if (img) {
-      img.classList.remove('visible');
-      setTimeout(() => { img.src = ''; }, 550); // clear src after transition
+    const isDesktop = window.innerWidth >= 768;
+    if (isDesktop) {
+      // Desktop: fade try-on out first (0.6s), then fade avatar back in
+      if (img) {
+        img.classList.remove('visible');
+        setTimeout(() => {
+          if (img) img.src = '';
+          if (photo && photo.src) photo.style.opacity = '1';
+        }, 650); // wait for try-on to finish fading (0.6s + small buffer)
+      } else if (photo && photo.src) {
+        photo.style.opacity = '1';
+      }
+    } else {
+      // Mobile: restore simultaneously
+      if (img) {
+        img.classList.remove('visible');
+        setTimeout(() => { img.src = ''; }, 550);
+      }
+      if (photo && photo.src) photo.style.opacity = '1';
+      if (back) back.style.display = 'none';
     }
-    if (photo && photo.src) photo.style.opacity = '1';
-    if (back) back.style.display = 'none';
   }
 
   function updateWearingText() {
