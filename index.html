@@ -47,23 +47,6 @@
   }
 
   /* ── BOOT SCREEN ── */
-  /* ── VIDEO INTRO ── */
-  #video-intro {
-    position: fixed;
-    inset: 0;
-    background: #000000;
-    z-index: 2000;
-    opacity: 1;
-    transition: opacity 0.5s ease;
-  }
-  #video-intro.fade-out { opacity: 0; pointer-events: none; }
-  #video-intro video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
   #boot {
     position: fixed;
     inset: 0;
@@ -77,6 +60,15 @@
   }
 
   #boot.hidden { opacity: 0; pointer-events: none; }
+
+  .boot-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 
   .boot-logo {
     font-family: 'Cinzel', serif;
@@ -109,10 +101,6 @@
     background: var(--accent);
     width: 0%;
     animation: load 2s ease forwards 0.5s;
-    animation-play-state: paused;
-  }
-  #boot.boot-running .boot-bar {
-    animation-play-state: running;
   }
 
   .boot-status {
@@ -2140,19 +2128,18 @@
 </div>
 
 <!-- BOOT SCREEN -->
-<div id="video-intro">
-  <video id="intro-video" autoplay muted playsinline>
+<div id="boot">
+  <video autoplay muted loop playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">
     <source src="1de1-boot.mp4" type="video/mp4">
   </video>
-</div>
-
-<div id="boot">
-  <div class="boot-logo"><img src="white_1de1.png" alt="1DE1" style="width:clamp(160px,18vw,320px);display:block;margin:0 auto;filter:brightness(0) invert(1);"></div>
-  <div class="boot-sub">System initializing — Uni 001</div>
-  <div class="boot-bar-wrap">
-    <div class="boot-bar"></div>
+  <div class="boot-content">
+    <div class="boot-logo"><img src="white_1de1.png" alt="1DE1" style="width:clamp(160px,18vw,320px);display:block;margin:0 auto;filter:brightness(0) invert(1);"></div>
+    <div class="boot-sub">System initializing — Uni 001</div>
+    <div class="boot-bar-wrap">
+      <div class="boot-bar"></div>
+    </div>
+    <div class="boot-status"><span class="blink">▮</span> Loading drop environment...</div>
   </div>
-  <div class="boot-status"><span class="blink">▮</span> Loading drop environment...</div>
 </div>
 
 <!-- MAIN APP -->
@@ -2544,14 +2531,12 @@
 
 
   // ── BOOT SEQUENCE ──
-  function startBootSequence() {
+  (function() {
     const boot = document.getElementById('boot');
-    boot.classList.add('boot-running'); // start loading bar animation
     setTimeout(() => {
       boot.classList.add('hidden');
       setTimeout(() => {
         document.getElementById('app').classList.add('visible');
-        // Show email popup unless already seen
         const seen = localStorage.getItem('1de1_email_popup');
         if (!seen) {
           setTimeout(() => {
@@ -2560,45 +2545,6 @@
         }
       }, 300);
     }, 2800);
-  }
-
-  // ── VIDEO INTRO ──
-  (function() {
-    const introEl    = document.getElementById('video-intro');
-    const introVideo = document.getElementById('intro-video');
-
-    function skipToBootImmediate() {
-      introEl.style.display = 'none';
-      startBootSequence();
-    }
-
-    function onVideoEnded() {
-      introEl.classList.add('fade-out');
-      setTimeout(startBootSequence, 500); // wait for 0.5s fade-out
-    }
-
-    introVideo.addEventListener('ended', onVideoEnded);
-    introVideo.addEventListener('error', skipToBootImmediate);
-
-    // Safety timeout: if video hasn't ended within 30s, skip it
-    const safetyTimer = setTimeout(() => {
-      if (introEl.style.display !== 'none' && !introEl.classList.contains('fade-out')) {
-        console.log('[1DE1] Video safety timeout — skipping to boot');
-        skipToBootImmediate();
-      }
-    }, 30000);
-
-    // If video fails to play at all (no src, codec issue), fire error fallback
-    introVideo.addEventListener('stalled', () => {
-      // Only bail if nothing has loaded after 5s of stalling
-      setTimeout(() => {
-        if (introEl.style.display !== 'none' && !introEl.classList.contains('fade-out') && introVideo.readyState < 2) {
-          console.log('[1DE1] Video stalled — skipping to boot');
-          clearTimeout(safetyTimer);
-          skipToBootImmediate();
-        }
-      }, 5000);
-    });
   })();
 
   async function submitEmailPopup() {
