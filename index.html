@@ -633,7 +633,8 @@
     letter-spacing: 0.2em;
     color: var(--accent-dim);
     text-transform: uppercase;
-    z-index: 3;
+    z-index: 8;  /* above #tryon-result (z-index:6) so text stays visible */
+    pointer-events: none;
   }
 
   .stage-item-badge {
@@ -2499,7 +2500,7 @@
   // Load pre-generated results in the background — non-blocking
   fetch('pregen-results.json')
     .then(r => r.ok ? r.json() : {})
-    .then(data => { pregenResults = data; console.log('[1DE1] pregen loaded:', Object.keys(data).length, 'results'); })
+    .then(data => { pregenResults = data; const keys = Object.keys(data); console.log('[1DE1] pregen loaded:', keys.length, 'results'); console.log('[1DE1] pregen keys:', keys.join(', ')); })
     .catch(() => { console.log('[1DE1] pregen-results.json not found — live API only'); });
 
   const products = {
