@@ -46,6 +46,20 @@
     z-index: 9998;
   }
 
+  /* ── INTRO VIDEO ── */
+  #intro-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    object-fit: cover;
+    z-index: 9999;
+    background: #000000;
+    display: block;
+  }
+
   /* ── MAIN APP ── */
   #app {
     opacity: 0;
@@ -2058,7 +2072,7 @@
 </div>
 
 <!-- INTRO VIDEO -->
-<video id="intro-video" autoplay muted playsinline style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:9999;background:#000000;">
+<video id="intro-video" autoplay muted playsinline webkit-playsinline x5-playsinline>
   <source src="1de1-intro.mp4" type="video/mp4">
 </video>
 
@@ -2480,13 +2494,22 @@
       exitIntro();
     }
 
+    // Adjust object-fit based on video vs screen orientation
+    video.addEventListener('loadedmetadata', function() {
+      const videoAspect  = video.videoWidth / video.videoHeight;
+      const screenAspect = window.innerWidth / window.innerHeight;
+      // Portrait video on portrait screen → contain (avoid heavy cropping)
+      // Anything else → cover (fill the screen)
+      video.style.objectFit = (videoAspect < 1 && screenAspect < 1) ? 'contain' : 'cover';
+    });
+
     // Normal: video plays through and ends
     video.addEventListener('ended', skip);
 
     // Error: skip immediately
     video.addEventListener('error', skip);
 
-    // Stall fallback: if not playing within 5s, skip
+    // Stall fallback: if video hasn't loaded within 5s, skip
     const stallTimer = setTimeout(() => {
       if (video.readyState < 2) skip();
     }, 5000);
@@ -2494,6 +2517,26 @@
 
     // Safety timeout: 30s hard cap
     setTimeout(skip, 30000);
+
+    // Programmatic play — show branded tap overlay if autoplay is blocked
+    const playPromise = video.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(function() {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:10000;background:#000000;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;user-select:none;';
+        overlay.innerHTML =
+          '<img src="white_1de1.png" alt="1DE1" style="width:clamp(140px,40vw,240px);display:block;filter:brightness(0) invert(1);margin-bottom:32px;">'
+          + '<div style="font-family:\'Rajdhani\',sans-serif;font-size:clamp(14px,4vw,18px);letter-spacing:0.4em;color:#c8a876;text-transform:uppercase;">Tap to Enter</div>';
+        document.body.appendChild(overlay);
+        function onTap(e) {
+          if (e.cancelable) e.preventDefault();
+          overlay.remove();
+          video.play().catch(function() {});
+        }
+        overlay.addEventListener('click', onTap);
+        overlay.addEventListener('touchend', onTap, { passive: false });
+      });
+    }
   })();
 
   async function submitEmailPopup() {
