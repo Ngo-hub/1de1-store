@@ -977,35 +977,20 @@
 
   .product-btns { display: flex; flex-direction: column; gap: 5px; align-items: flex-end; }
 
-  .add-cart-btn {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 8px;
-    letter-spacing: 0.2em;
-    color: #111111;
-    background: var(--accent);
-    border: 1px solid var(--accent);
-    padding: 6px 14px;
-    cursor: pointer;
-    text-transform: uppercase;
-    transition: all 0.2s;
-    white-space: nowrap;
-  }
-  .add-cart-btn:hover { background: #111111; color: #f5f5f5; border-color: #111111; }
-
   .add-fit-btn {
     font-family: 'Share Tech Mono', monospace;
     font-size: 8px;
     letter-spacing: 0.2em;
-    color: var(--accent);
-    background: transparent;
+    padding: 7px 12px;
+    background: var(--accent);
+    color: #111111;
     border: 1px solid var(--accent);
-    padding: 5px 14px;
     cursor: pointer;
+    transition: background 0.2s, color 0.2s;
     text-transform: uppercase;
-    transition: all 0.2s;
     white-space: nowrap;
   }
-  .add-fit-btn:hover { background: rgba(200,168,118,0.1); }
+  .add-fit-btn:hover { background: #d4b882; border-color: #d4b882; }
   .add-fit-btn.equipped {
     background: rgba(200,168,118,0.18);
     color: var(--accent);
@@ -1989,7 +1974,6 @@
               <div class="product-price">$80</div>
               <div class="product-equipped-badge" id="equip-tag-1">EQUIPPED ✓</div>
               <div class="product-btns">
-                <button class="add-cart-btn" onclick="addToCart(event, 1)">ADD TO CART</button>
                 <button class="add-fit-btn" id="fit-1" onclick="addToFit(event, 1)">ADD TO FIT</button>
               </div>
             </div>
@@ -2019,7 +2003,6 @@
               <div class="product-price">$44</div>
               <div class="product-equipped-badge" id="equip-tag-2">EQUIPPED ✓</div>
               <div class="product-btns">
-                <button class="add-cart-btn" onclick="addToCart(event, 2)">ADD TO CART</button>
                 <button class="add-fit-btn" id="fit-2" onclick="addToFit(event, 2)">ADD TO FIT</button>
               </div>
             </div>
@@ -2049,7 +2032,6 @@
               <div class="product-price">$62</div>
               <div class="product-equipped-badge" id="equip-tag-3">EQUIPPED ✓</div>
               <div class="product-btns">
-                <button class="add-cart-btn" onclick="addToCart(event, 3)">ADD TO CART</button>
                 <button class="add-fit-btn" id="fit-3" onclick="addToFit(event, 3)">ADD TO FIT</button>
               </div>
             </div>
@@ -2327,19 +2309,9 @@
   }
 
   // ── EQUIP / CART ──
-  function addToCart(e, id) {
-    e.stopPropagation();
-    if (cart.find(i => i.id === id)) { toggleDrawer(); return; }
-    const picker = document.getElementById('size-picker-' + id);
-    const isOpen = picker && picker.classList.contains('open') && picker.dataset.mode === 'cart';
-    hideSizePickers();
-    if (!isOpen) openSizePicker(id, 'cart');
-  }
-
-  function openSizePicker(id, mode) {
+  function openSizePicker(id) {
     const picker = document.getElementById('size-picker-' + id);
     if (!picker) return;
-    picker.dataset.mode = mode || 'fit';
     picker.classList.add('open');
   }
 
@@ -2350,21 +2322,24 @@
     const card  = document.getElementById('prod-' + id);
 
     if (fitted.has(id)) {
-      // Un-fit: remove from visual equip
+      // Remove from visual fit AND purchase cart
       fitted.delete(id);
+      cart = cart.filter(i => i.id !== id);
       clearTryonResult();
       hideSizePickers();
       if (btn)   { btn.textContent = 'ADD TO FIT'; btn.classList.remove('equipped'); }
       if (badge) badge.style.display = 'none';
       if (card)  card.classList.remove('selected');
+      updateCartCount();
       updateEquipVisuals();
       updateWearingText();
+      renderDrawer();
     } else {
-      // Show size picker in fit mode (toggle)
+      // Show size picker (toggle)
       const picker = document.getElementById('size-picker-' + id);
-      const isOpen = picker && picker.classList.contains('open') && picker.dataset.mode === 'fit';
+      const isOpen = picker && picker.classList.contains('open');
       hideSizePickers();
-      if (!isOpen) openSizePicker(id, 'fit');
+      if (!isOpen) openSizePicker(id);
     }
   }
 
@@ -2374,23 +2349,18 @@
 
   function selectSize(e, id, size) {
     e.stopPropagation();
-    const picker    = document.getElementById('size-picker-' + id);
-    const mode      = picker ? (picker.dataset.mode || 'fit') : 'fit';
     const p         = products[id];
     const variantId = p.variants ? (p.variants[size] || null) : null;
     hideSizePickers();
 
-    if (mode === 'cart') {
-      // ADD TO CART: push to purchase cart, show in loadout drawer
-      if (!cart.find(i => i.id === id)) {
-        cart.push({ id, name: p.name, price: p.price, size, variantId });
-      }
-      updateCartCount();
-      renderDrawer();
-      return;
+    // Add to purchase cart
+    if (!cart.find(i => i.id === id)) {
+      cart.push({ id, name: p.name, price: p.price, size, variantId });
     }
+    updateCartCount();
+    renderDrawer();
 
-    // fit mode — visual equip on avatar (does NOT touch purchase cart)
+    // Add to visual fit + trigger try-on
     const btn   = document.getElementById('fit-' + id);
     const badge = document.getElementById('equip-tag-' + id);
     const card  = document.getElementById('prod-' + id);
