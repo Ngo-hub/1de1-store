@@ -46,51 +46,6 @@
     z-index: 9998;
   }
 
-  /* ── BOOT SCREEN ── */
-  #boot {
-    position: fixed;
-    inset: 0;
-    background: #111111;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    transition: opacity 0.8s ease;
-  }
-
-  #boot.hidden { opacity: 0; pointer-events: none; }
-
-  .boot-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 1;
-  }
-
-  .boot-content {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .boot-logo {
-    font-family: 'Cinzel', serif;
-    font-size: clamp(48px, 8vw, 96px);
-    font-weight: 700;
-    letter-spacing: 0.3em;
-    color: var(--accent);
-    animation: flicker 3s ease-in-out infinite;
-    margin-bottom: 8px;
-  }
-
-  @keyframes flicker {
-    0%,100%{opacity:1} 92%{opacity:1} 93%{opacity:0.6} 94%{opacity:1} 97%{opacity:0.8} 98%{opacity:1}
-  }
-
   /* ── MAIN APP ── */
   #app {
     opacity: 0;
@@ -1778,10 +1733,6 @@
     /* ── HUD corners — hide on mobile ── */
     .hud-corner { display: none; }
 
-    /* ── Boot screen ── */
-    #boot { padding: 20px; }
-    .boot-logo img { width: clamp(120px,50vw,200px) !important; }
-
     /* ── Character select ── */
     #screen-select {
       padding-top: 70px;
@@ -2106,16 +2057,10 @@
   </div>
 </div>
 
-<!-- BOOT SCREEN -->
-<div id="boot">
-  <video id="boot-video" autoplay muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">
-    <source src="1de1-boot.mp4" type="video/mp4">
-  </video>
-  <div class="boot-overlay"></div>
-  <div class="boot-content">
-    <div class="boot-logo"><img src="white_1de1.png" alt="1DE1" style="width:clamp(160px,18vw,320px);display:block;margin:0 auto;filter:brightness(0) invert(1);"></div>
-  </div>
-</div>
+<!-- INTRO VIDEO -->
+<video id="intro-video" autoplay muted playsinline style="position:fixed;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:9999;background:#000000;">
+  <source src="1de1-intro.mp4" type="video/mp4">
+</video>
 
 <!-- MAIN APP -->
 <div id="app">
@@ -2505,41 +2450,50 @@
   };
 
 
-  // ── BOOT SEQUENCE ──
+  // ── INTRO VIDEO ──
   (function() {
-    const boot  = document.getElementById('boot');
-    const video = document.getElementById('boot-video');
+    const video = document.getElementById('intro-video');
 
-    function exitBoot() {
-      boot.classList.add('hidden');
+    function proceedToApp() {
+      document.getElementById('app').classList.add('visible');
+      const seen = localStorage.getItem('1de1_email_popup');
+      if (!seen) {
+        setTimeout(() => {
+          document.getElementById('email-popup-overlay').classList.add('visible');
+        }, 400);
+      }
+    }
+
+    function exitIntro() {
+      video.style.transition = 'opacity 0.5s ease';
+      video.style.opacity = '0';
       setTimeout(() => {
-        document.getElementById('app').classList.add('visible');
-        const seen = localStorage.getItem('1de1_email_popup');
-        if (!seen) {
-          setTimeout(() => {
-            document.getElementById('email-popup-overlay').classList.add('visible');
-          }, 400);
-        }
-      }, 300);
+        video.remove();
+        proceedToApp();
+      }, 500);
     }
 
-    // Exit when video finishes playing
-    video.addEventListener('ended', exitBoot);
-
-    // Fallback: if video errors or can't load, wait 3s then proceed
-    let fallbackFired = false;
-    function fallback() {
-      if (fallbackFired) return;
-      fallbackFired = true;
-      setTimeout(exitBoot, 3000);
+    let done = false;
+    function skip() {
+      if (done) return;
+      done = true;
+      exitIntro();
     }
-    video.addEventListener('error', fallback);
 
-    // Stall safety: if video hasn't started playing within 8s, treat as failure
+    // Normal: video plays through and ends
+    video.addEventListener('ended', skip);
+
+    // Error: skip immediately
+    video.addEventListener('error', skip);
+
+    // Stall fallback: if not playing within 5s, skip
     const stallTimer = setTimeout(() => {
-      if (video.readyState < 2) fallback();
-    }, 8000);
+      if (video.readyState < 2) skip();
+    }, 5000);
     video.addEventListener('playing', () => clearTimeout(stallTimer));
+
+    // Safety timeout: 30s hard cap
+    setTimeout(skip, 30000);
   })();
 
   async function submitEmailPopup() {
