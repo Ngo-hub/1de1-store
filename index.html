@@ -152,6 +152,20 @@
     gap: 24px;
   }
 
+  .about-link {
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    cursor: pointer;
+    padding: 6px 0;
+    transition: color 0.2s;
+  }
+  .about-link:hover { color: var(--accent); }
+
   .loadout-btn {
     font-family: 'Share Tech Mono', monospace;
     font-size: 10px;
@@ -1441,6 +1455,131 @@
   }
   .email-popup-skip:hover { color: #888888; }
 
+  /* ── ABOUT MODAL ── */
+  #about-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.35s ease;
+    padding: 24px;
+  }
+  #about-overlay.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .about-modal {
+    background: #0a0a0a;
+    border: 1px solid var(--accent);
+    width: min(640px, 100%);
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+  }
+  .about-modal::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 2px;
+    background: var(--accent);
+  }
+  .about-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 28px;
+    border-bottom: 1px solid #1e1e1e;
+    flex-shrink: 0;
+  }
+  .about-modal-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .about-modal-x {
+    background: none;
+    border: none;
+    color: #555555;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px 8px;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+  .about-modal-x:hover { color: #ffffff; }
+  .about-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 36px 36px 28px;
+    scrollbar-width: thin;
+    scrollbar-color: #333333 transparent;
+  }
+  .about-modal-heading {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(22px, 3.5vw, 32px);
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.12em;
+    margin-bottom: 28px;
+  }
+  .about-modal-heading span {
+    color: var(--accent);
+  }
+  .about-modal-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    line-height: 1.75;
+    color: #aaaaaa;
+  }
+  .about-modal-text p {
+    margin-bottom: 20px;
+  }
+  .about-modal-text p:last-child {
+    margin-bottom: 0;
+  }
+  .about-modal-footer {
+    padding: 20px 36px;
+    border-top: 1px solid #1e1e1e;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .about-modal-footer-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: #444444;
+    text-transform: uppercase;
+  }
+  .about-modal-close {
+    background: none;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 10px 22px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+  .about-modal-close:hover { background: var(--accent); color: #111111; }
+
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--black); }
   ::-webkit-scrollbar-thumb { background: var(--border-active); }
@@ -1623,6 +1762,30 @@
   </div>
 </div>
 
+<!-- ABOUT MODAL -->
+<div id="about-overlay" onclick="handleAboutOverlayClick(event)">
+  <div class="about-modal">
+    <div class="about-modal-head">
+      <span class="about-modal-tag"><span class="blink">▮</span> &nbsp;About // 1DE1</span>
+      <button class="about-modal-x" onclick="closeAbout()">✕</button>
+    </div>
+    <div class="about-modal-body">
+      <div class="about-modal-heading">ABOUT <span>1DE1</span></div>
+      <div class="about-modal-text">
+        <p>1DE1 is a limited edition streetwear brand built different. Every piece is numbered. Every drop is final. No restocks. No compromises.</p>
+        <p>We operate under Play NGO Systems — a creative operation founded by Jeffrey and Darielis. 1DE1 doesn't follow trends. It drops when it's ready.</p>
+        <p>Uni 001 is the first drop. Three pieces. Each one limited. The designs are mixed media artwork created by Darielis — cut and assembled by hand from vintage magazines. No computer. No shortcuts. Every graphic is one of one before the clothing even exists.</p>
+        <p>The game store at 1de1.shop isn't just a gimmick. It's how we think about drops — as experiences, not transactions. You pick your character. You try on the fit. You cop or you don't.</p>
+        <p>There won't be another Uni 001. That's the point.</p>
+      </div>
+    </div>
+    <div class="about-modal-footer">
+      <span class="about-modal-footer-text">Play NGO Systems.</span>
+      <button class="about-modal-close" onclick="closeAbout()">BACK TO THE DROP</button>
+    </div>
+  </div>
+</div>
+
 <!-- BOOT SCREEN -->
 <div id="boot">
   <div class="boot-logo"><img src="white_1de1.png" alt="1DE1" style="width:clamp(160px,18vw,320px);display:block;margin:0 auto;filter:brightness(0) invert(1);"></div>
@@ -1643,6 +1806,7 @@
     </div>
     <a class="header-logo" onclick="showScreen('select')" style="display:flex;align-items:center;"><img src="white_1de1.png" alt="1DE1" style="height:28px;display:block;filter:brightness(0) invert(1);"></a>
     <div class="header-right">
+      <button class="about-link" onclick="openAbout()">ABOUT</button>
       <button class="loadout-btn" onclick="toggleDrawer()">
         LOADOUT <span class="loadout-count" id="cart-count">0</span>
       </button>
@@ -2356,6 +2520,18 @@
 
   function updateCartCount() {
     document.getElementById('cart-count').textContent = cart.length;
+  }
+
+  // ── ABOUT MODAL ──
+  function openAbout() {
+    document.getElementById('about-overlay').classList.add('visible');
+  }
+  function closeAbout() {
+    const overlay = document.getElementById('about-overlay');
+    overlay.classList.remove('visible');
+  }
+  function handleAboutOverlayClick(e) {
+    if (e.target === document.getElementById('about-overlay')) closeAbout();
   }
 
   // ── LOADOUT DRAWER ──
