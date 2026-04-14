@@ -1827,7 +1827,7 @@
       min-height: unset;
       height: calc(52dvh - 30px);
       width: 100%;
-      overflow: hidden;
+      overflow: visible;
       background: #f0f0f0;
       flex-shrink: 0;
       position: relative;
@@ -1837,12 +1837,29 @@
       width: 100%;
       height: 100%;
       position: relative;
+      transform: none !important;
     }
     .stage-char-inner {
       width: 100%;
       height: 100%;
       border: none;
       border-radius: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    /* Avatar image: full visibility, no crop, no zoom */
+    #stage-char-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: center bottom;
+      transform: none;
+      max-height: 100%;
     }
 
     /* Try-on overlays avatar in the same panel */
@@ -1851,7 +1868,10 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
+      object-position: center center;
+      transform: none;
+      max-height: 100%;
     }
     .tryon-loading {
       position: absolute;
