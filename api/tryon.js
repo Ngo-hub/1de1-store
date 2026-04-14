@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { personImage, garmentImage } = req.body || {};
+  const { personImage, garmentImage, garmentDesc } = req.body || {};
   if (!personImage || !garmentImage) {
     return res.status(400).json({ error: 'Missing personImage or garmentImage' });
   }
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
           input: {
             human_img: personImage,
             garm_img: garmentImage,
-            garment_des: 'streetwear piece',
+            garment_des: garmentDesc || 'streetwear piece',
             is_checked: true,
             is_checked_crop: false,
             denoise_steps: 30,

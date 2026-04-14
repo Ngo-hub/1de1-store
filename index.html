@@ -2139,15 +2139,27 @@
 
   // ── TRY-ON ──
   const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/main/';
-  const charCutouts = { 'UNIT-A': 'alpha-cut.png', 'UNIT-B': 'omega-cut.png', 'UNIT-C': 'delta-cut.png' };
-  const tryonCache = {};  // charId:productId -> output URL
+  const charCutouts  = { 'UNIT-A': 'alpha-cut.png', 'UNIT-B': 'omega-cut.png', 'UNIT-C': 'delta-cut.png' };
+  const charPregenId = { 'UNIT-A': 'alpha',          'UNIT-B': 'omega',          'UNIT-C': 'delta' };
+  const prodPregenId = { 1: 'uni-zip', 2: 'uni-tee', 3: 'uni-rugby' };
+  const tryonCache   = {};  // charId:productId -> output URL
+  let   pregenResults = {}; // loaded from pregen-results.json
+
+  // Load pre-generated results in the background — non-blocking
+  fetch('pregen-results.json')
+    .then(r => r.ok ? r.json() : {})
+    .then(data => { pregenResults = data; console.log('[1DE1] pregen loaded:', Object.keys(data).length, 'results'); })
+    .catch(() => { console.log('[1DE1] pregen-results.json not found — live API only'); });
 
   const products = {
     1: { name: 'Uni Zip',   edition: '1 of 50', price: 80, cat: 'outerwear', layer: 1, cutout: 'uni-zip-cut.png',   shopifyUrl: 'https://1de1.co/products/uni-zip',
+         garmentDesc: 'green zip-up hoodie with mixed media artwork patch',
          variants: { S: 51431795753184, M: 51431795785952, L: 51431795818720, XL: 51431795851488, '2XL': 51431795884256 } },
     2: { name: 'Uni Tee',   edition: '1 of 75', price: 44, cat: 'tops',      layer: 2, cutout: 'uni-tee-cut.png',   shopifyUrl: 'https://1de1.co/products/uni-tee',
+         garmentDesc: 'black oversized t-shirt with gothic logo',
          variants: { S: 51431795982560, M: 51431796015328, L: 51431796048096, XL: 51431796080864, '2XL': 51431796113632 } },
     3: { name: 'Uni Rugby', edition: '1 of 60', price: 62, cat: 'polo',      layer: 3, cutout: 'uni-rugby-cut.png', shopifyUrl: 'https://1de1.co/products/uni-rugby',
+         garmentDesc: 'red and white striped rugby polo with embroidered logo',
          variants: { S: 51431796211936, M: 51431796244704, L: 51431796277472, XL: 51431796310240 } }
   };
 
@@ -2416,6 +2428,16 @@
     if (!selectedChar) return;
     const cacheKey = selectedChar + ':' + productId;
     if (tryonCache[cacheKey]) { showTryonResult(tryonCache[cacheKey]); return; }
+
+    // Check pre-generated results first
+    const pregenKey = charPregenId[selectedChar] + '-' + prodPregenId[productId];
+    if (pregenResults[pregenKey]) {
+      console.log('[1DE1] Using pre-generated result for', pregenKey);
+      tryonCache[cacheKey] = pregenResults[pregenKey];
+      showTryonResult(pregenResults[pregenKey], true); // true = instant fade
+      return;
+    }
+
     const p = products[productId];
     const personImage  = RAW_BASE + charCutouts[selectedChar];
     const garmentImage = RAW_BASE + p.cutout;
@@ -2425,7 +2447,7 @@
       const createResp = await fetch('/api/tryon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ personImage, garmentImage })
+        body: JSON.stringify({ personImage, garmentImage, garmentDesc: p.garmentDesc || 'streetwear piece' })
       });
       if (!createResp.ok) throw new Error('HTTP ' + createResp.status);
       const { predictionId } = await createResp.json();
@@ -2482,10 +2504,18 @@
     }
   }
 
-  function showTryonResult(url) {
+  function showTryonResult(url, instant) {
     const img   = document.getElementById('tryon-result');
     const photo = document.getElementById('stage-char-photo');
     if (!img) return;
+    if (instant) {
+      img.style.opacity = '0';
+      img.style.transition = 'opacity 0.6s ease';
+      img.src = url;
+      img.style.display = 'block';
+      requestAnimationFrame(() => requestAnimationFrame(() => { img.style.opacity = '1'; }));
+      return;
+    }
     img.src = url;
     img.classList.add('visible');
     if (photo) photo.style.display = 'none';
