@@ -1822,19 +1822,24 @@
     }
     .character-grid {
       gap: 12px;
-      padding: 0;
+      padding: 0 16px;
+      margin-left: -16px;
+      margin-right: -16px;
+      width: calc(100% + 32px);
       margin-bottom: 28px;
       flex-wrap: nowrap;
-      overflow-x: auto;
+      overflow-x: scroll;
       justify-content: flex-start;
-      width: 100%;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
+      scroll-snap-type: x mandatory;
+      touch-action: pan-x;
     }
     .character-grid::-webkit-scrollbar { display: none; }
     .character-card {
       width: clamp(130px, 38vw, 180px);
       flex-shrink: 0;
+      scroll-snap-align: start;
       transform: none !important;
     }
     .character-card:hover { transform: none !important; }
