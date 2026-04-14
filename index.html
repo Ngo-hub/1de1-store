@@ -1368,20 +1368,44 @@
     letter-spacing: 0.3em;
     color: #666666;
     text-transform: uppercase;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
+  .email-popup-code-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: #1a1a1a;
+    border: 1px solid var(--accent);
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+    margin-bottom: 10px;
+  }
+  .email-popup-code-box:hover { background: #222222; }
   .email-popup-code-value {
     font-family: 'Cinzel', serif;
-    font-size: 28px;
+    font-size: 30px;
     font-weight: 700;
     color: var(--accent);
-    letter-spacing: 0.3em;
+    letter-spacing: 0.35em;
+    line-height: 1;
   }
+  .email-popup-code-copy {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    color: #555555;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    transition: color 0.15s;
+  }
+  .email-popup-code-box:hover .email-popup-code-copy { color: var(--accent); }
   .email-popup-code-sub {
     font-family: 'Rajdhani', sans-serif;
     font-size: 13px;
     color: #666666;
-    margin-top: 6px;
   }
   .email-popup-continue {
     display: none;
@@ -1580,16 +1604,19 @@
 <div id="email-popup-overlay">
   <div class="email-popup">
     <div class="email-popup-tag"><span class="blink">▮</span> &nbsp;Exclusive Access</div>
-    <div class="email-popup-heading">GET 10% OFF<br>YOUR FIRST ORDER</div>
-    <div class="email-popup-sub">Enter your email to unlock code <strong style="color:#ffffff;">UNI10</strong> and get early access to future drops.</div>
+    <div class="email-popup-heading">JOIN THE<br>INNER CIRCLE</div>
+    <div class="email-popup-sub">Enter your email for early access to future drops and an exclusive first order discount.</div>
     <div class="email-popup-form" id="email-popup-form">
       <input class="email-popup-input" id="email-popup-field" type="email" placeholder="YOUR@EMAIL.COM" autocomplete="email">
-      <button class="email-popup-submit" id="email-popup-btn" onclick="submitEmailPopup()">UNLOCK 10% OFF</button>
+      <button class="email-popup-submit" id="email-popup-btn" onclick="submitEmailPopup()">GET EARLY ACCESS</button>
     </div>
     <div class="email-popup-code" id="email-popup-code">
-      <div class="email-popup-code-label">Your discount code</div>
-      <div class="email-popup-code-value">UNI10</div>
-      <div class="email-popup-code-sub">Apply at checkout for 10% off your first order.</div>
+      <div class="email-popup-code-label">Your exclusive code</div>
+      <div class="email-popup-code-box" onclick="copyDiscountCode(this)" title="Tap to copy">
+        <span class="email-popup-code-value">UNI10</span>
+        <span class="email-popup-code-copy" id="copy-label">TAP TO COPY</span>
+      </div>
+      <div class="email-popup-code-sub">Use this code at checkout for 10% off your first order.</div>
     </div>
     <button class="email-popup-continue" id="email-popup-continue" onclick="dismissEmailPopup(true)">ENTER THE STORE →</button>
     <button class="email-popup-skip" onclick="dismissEmailPopup(false)">No thanks</button>
@@ -1999,9 +2026,26 @@
 
     localStorage.setItem('1de1_email_popup', 'submitted');
     document.getElementById('email-popup-form').style.display = 'none';
+    document.querySelector('.email-popup-sub').style.display = 'none';
     document.getElementById('email-popup-code').style.display = 'block';
     document.getElementById('email-popup-continue').style.display = 'block';
     document.querySelector('.email-popup-skip').style.display = 'none';
+  }
+
+  function copyDiscountCode(box) {
+    navigator.clipboard.writeText('UNI10').then(function() {
+      const label = document.getElementById('copy-label');
+      label.textContent = 'COPIED!';
+      label.style.color = 'var(--accent)';
+      setTimeout(function() {
+        label.textContent = 'TAP TO COPY';
+        label.style.color = '';
+      }, 2000);
+    }).catch(function() {
+      // Fallback for browsers without clipboard API
+      const label = document.getElementById('copy-label');
+      label.textContent = 'CODE: UNI10';
+    });
   }
 
   function dismissEmailPopup(submitted) {

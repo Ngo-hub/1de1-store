@@ -44,7 +44,7 @@ export default async function handler(req, res) {
           input: {
             email,
             acceptsMarketing: true,
-            tags: ['email-popup', 'discount-UNI10'],
+            tags: ['email-popup', 'discount-UNI10', 'uni001-waitlist'],
           },
         },
       }),
