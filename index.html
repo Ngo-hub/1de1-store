@@ -653,8 +653,10 @@
     height: 100%;
     object-fit: contain;
     object-position: center bottom;
-    display: none;
+    display: none;       /* shown via JS after char select; kept block thereafter */
+    opacity: 0;
     z-index: 1;
+    transition: filter 0.4s ease, opacity 0.5s ease;
   }
 
   .product-equipped-badge {
@@ -672,7 +674,6 @@
     border-color: var(--accent);
     box-shadow: 0 0 32px rgba(200,168,118,0.25), inset 0 0 24px rgba(200,168,118,0.06);
   }
-  #stage-char-photo { transition: filter 0.4s ease; }
   #stage-char-photo.tinted { filter: brightness(0.72) saturate(0.85); }
   .equip-badge-strip {
     position: absolute;
@@ -737,11 +738,16 @@
     height: 100%;
     object-fit: contain;
     object-position: center center;
-    display: none;
+    display: block;        /* always in layout; visibility controlled by opacity */
+    opacity: 0;
+    pointer-events: none;
     z-index: 6;
     transition: opacity 0.5s ease;
   }
-  #tryon-result.visible { display: block; }
+  #tryon-result.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
 
   /* Scanner overlay — sits on top of the character, doesn't blank it */
   .tryon-loading {
@@ -2559,6 +2565,7 @@
     if (photo && charImages[id]) {
       photo.src = charImages[id];
       photo.style.display = 'block';
+      requestAnimationFrame(() => { photo.style.opacity = '1'; });
       if (svg) svg.style.display = 'none';
     }
 
@@ -2593,12 +2600,12 @@
 
   function mobileResetTryon() {
     // Hide try-on result, show avatar — does NOT un-equip the item
-    const img  = document.getElementById('tryon-result');
-    const back = document.getElementById('mobile-tryon-back');
-    if (img)  { img.style.opacity = '0'; setTimeout(() => { img.style.display = 'none'; }, 300); }
-    if (back) back.style.display = 'none';
+    const img   = document.getElementById('tryon-result');
     const photo = document.getElementById('stage-char-photo');
-    if (photo && photo.src) photo.style.display = 'block';
+    const back  = document.getElementById('mobile-tryon-back');
+    if (img)   img.classList.remove('visible');
+    if (photo && photo.src) photo.style.opacity = '1';
+    if (back)  back.style.display = 'none';
   }
 
   function enterWorld() {
@@ -2720,7 +2727,7 @@
     if (pregenResults[pregenKey]) {
       console.log('[1DE1] Using pre-generated result for', pregenKey);
       tryonCache[cacheKey] = pregenResults[pregenKey];
-      showTryonResult(pregenResults[pregenKey], true); // true = instant fade
+      showTryonResult(pregenResults[pregenKey]);
       return;
     }
 
@@ -2790,22 +2797,17 @@
     }
   }
 
-  function showTryonResult(url, instant) {
+  function showTryonResult(url) {
     const img   = document.getElementById('tryon-result');
     const photo = document.getElementById('stage-char-photo');
     if (!img) return;
-    if (instant) {
-      img.style.opacity = '0';
-      img.style.transition = 'opacity 0.6s ease';
-      img.src = url;
-      img.style.display = 'block';
-      requestAnimationFrame(() => requestAnimationFrame(() => { img.style.opacity = '1'; }));
-    } else {
-      img.src = url;
+    // Crossfade: fade avatar out, try-on in simultaneously
+    if (photo) photo.style.opacity = '0';
+    img.src = url;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
       img.classList.add('visible');
-      if (photo) photo.style.display = 'none';
-    }
-    // Show mobile back button when try-on result is visible
+    }));
+    // Show mobile back button
     if (window.innerWidth < 768) {
       const back = document.getElementById('mobile-tryon-back');
       if (back) back.style.display = 'block';
@@ -2816,9 +2818,13 @@
     const img   = document.getElementById('tryon-result');
     const photo = document.getElementById('stage-char-photo');
     const back  = document.getElementById('mobile-tryon-back');
-    if (img)   { img.src = ''; img.style.display = 'none'; img.classList.remove('visible'); }
-    if (photo && photo.src) photo.style.display = 'block';
-    if (back)  back.style.display = 'none';
+    // Fade try-on out, fade avatar back in
+    if (img) {
+      img.classList.remove('visible');
+      setTimeout(() => { img.src = ''; }, 550); // clear src after transition
+    }
+    if (photo && photo.src) photo.style.opacity = '1';
+    if (back) back.style.display = 'none';
   }
 
   function updateWearingText() {
