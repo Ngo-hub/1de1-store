@@ -676,9 +676,7 @@
     box-shadow: 0 0 32px rgba(200,168,118,0.25), inset 0 0 24px rgba(200,168,118,0.06);
   }
   #stage-char-photo.tinted { filter: brightness(0.72) saturate(0.85); }
-  /* Temporary fix: delta-cut.png has a white background baked in.
-     Replace delta-cut.png with a transparent-bg version to fully fix this. */
-  #stage-char-photo.delta-mode  { mix-blend-mode: luminosity; opacity: 0.92; }
+  /* delta-cut.png — no blend mode applied; shows in full color */
   .equip-badge-strip {
     position: absolute;
     bottom: 36px;
@@ -1934,12 +1932,12 @@
     .room-products {
       border-left: none;
       border-top: 1px solid var(--border);
-      overflow-y: hidden;
+      overflow-y: visible;   /* allow size pickers to expand below without clipping */
       overflow-x: auto;
       padding: 0;
       display: flex;
       flex-direction: row;
-      align-items: stretch;
+      align-items: flex-start;  /* flex-start so cards don't force equal height stretch */
       flex: 1;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
@@ -2627,20 +2625,9 @@
       photo.style.display = 'block';
       requestAnimationFrame(() => { photo.style.opacity = '1'; });
       if (svg) svg.style.display = 'none';
-      // Delta temporary blend fix: white bg in delta-cut.png blends into light inner
-      const inner = document.querySelector('.stage-char-inner');
-      if (id === 'UNIT-C') {
-        photo.classList.add('delta-mode');
-        if (inner) inner.classList.add('delta-mode');
-        console.log('[1DE1] delta-mode: multiply blend active');
-      } else {
-        photo.classList.remove('delta-mode');
-        if (inner) inner.classList.remove('delta-mode');
-      }
-      // Verify stage background
+      // Log stage state for debugging
       const stageEl = document.querySelector('.room-stage');
       if (stageEl) console.log('[1DE1] stage bg:', window.getComputedStyle(stageEl).backgroundColor);
-      if (inner) console.log('[1DE1] inner bg:', window.getComputedStyle(inner).backgroundColor);
     }
 
     // Clear visual fit state + try-on result
@@ -2792,18 +2779,25 @@
   }
 
   async function callTryOn(productId) {
-    if (!selectedChar) return;
-    const cacheKey = selectedChar + ':' + productId;
-    if (tryonCache[cacheKey]) { showTryonResult(tryonCache[cacheKey]); return; }
+    if (!selectedChar) { console.warn('[1DE1] callTryOn: no character selected'); return; }
+    const cacheKey  = selectedChar + ':' + productId;
+    const pregenKey = charPregenId[selectedChar] + '-' + prodPregenId[productId];
+    console.log('[1DE1] callTryOn — char:', selectedChar, '| productId:', productId, '| pregenKey:', pregenKey, '| pregenResultsKeys:', Object.keys(pregenResults).join(',') || '(empty — still loading?)');
+
+    if (tryonCache[cacheKey]) {
+      console.log('[1DE1] Using cache for', cacheKey);
+      showTryonResult(tryonCache[cacheKey]); return;
+    }
 
     // Check pre-generated results first
-    const pregenKey = charPregenId[selectedChar] + '-' + prodPregenId[productId];
     if (pregenResults[pregenKey]) {
-      console.log('[1DE1] Using pre-generated result for', pregenKey);
-      tryonCache[cacheKey] = pregenResults[pregenKey];
-      showTryonResult(pregenResults[pregenKey]);
+      const url = pregenResults[pregenKey];
+      console.log('[1DE1] Using pre-generated result for', pregenKey, '→', url);
+      tryonCache[cacheKey] = url;
+      showTryonResult(url);
       return;
     }
+    console.log('[1DE1] No pregen for', pregenKey, '— falling back to live API');
 
     const p = products[productId];
     const personImage  = RAW_BASE + charCutouts[selectedChar];
