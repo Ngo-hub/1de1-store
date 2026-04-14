@@ -607,7 +607,7 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .stage-char-inner::before {
@@ -624,16 +624,16 @@
   }
 
   .stage-wearing {
-    position: absolute;
-    bottom: 16px;
-    left: 16px;
-    right: 16px;
+    position: relative;
+    z-index: 10;
+    margin-top: 12px;
     font-family: 'Share Tech Mono', monospace;
     font-size: 9px;
     letter-spacing: 0.2em;
     color: var(--accent-dim);
     text-transform: uppercase;
-    z-index: 8;  /* above #tryon-result (z-index:6) so text stays visible */
+    text-align: center;
+    width: 280px;
     pointer-events: none;
   }
 
@@ -1926,8 +1926,9 @@
       display: flex;
     }
 
-    /* Hide desktop stage extras */
+    /* Hide desktop stage extras (not the wearing text) */
     .stage-char + * { display: none; }
+    #stage-wearing-text { display: block !important; font-size: 8px; text-align: center; width: 100%; padding: 6px 12px; }
 
     /* Product cards: horizontal scroll row at bottom */
     .room-products {
@@ -2021,12 +2022,12 @@
     /* Stage bottom hint — hide on mobile */
     .room-stage > div[style*="CLICK A PIECE"] { display: none; }
 
-    /* Wearing text — reposition inside avatar pane */
+    /* Wearing text — sits below avatar pane on mobile */
     .stage-wearing {
       font-size: 8px;
       letter-spacing: 0.15em;
-      padding: 4px 6px;
-      max-width: 100%;
+      margin-top: 8px;
+      width: 100%;
     }
 
     /* Equip badge strip — smaller on mobile */
@@ -2286,14 +2287,15 @@
             </div>
             <button class="mobile-tryon-back" id="mobile-tryon-back" onclick="mobileResetTryon()" style="display:none;">← AVATAR</button>
             <div class="equip-badge-strip" id="equip-badge-strip"></div>
-            <div class="stage-wearing" id="stage-wearing-text">No item equipped</div>
             <div class="stage-item-badge" id="stage-badge" style="display:none">
               <div class="stage-item-badge-text" id="stage-badge-text"></div>
             </div>
           </div>
         </div>
 
-        <div style="margin-top: 20px; font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.3em; color: var(--muted); text-align: center; position: relative; z-index: 2;">
+        <div class="stage-wearing" id="stage-wearing-text">No item equipped</div>
+
+        <div style="margin-top: 8px; font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.3em; color: var(--muted); text-align: center; position: relative; z-index: 2;">
           CLICK A PIECE TO PREVIEW &nbsp;|&nbsp; ADD TO FIT TO EQUIP
         </div>
       </div>

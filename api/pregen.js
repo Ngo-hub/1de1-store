@@ -1,13 +1,14 @@
 #!/usr/bin/env node
 /**
  * 1DE1 Pre-generation script
- * Generates all 9 character × product try-on combinations via Replicate IDM-VTON
- * and saves result URLs to pregen-results.json at the repo root.
+ * Generates all 9 character × product try-on combinations via Replicate IDM-VTON,
+ * downloads each result image to a local static file, and saves local paths to
+ * pregen-results.json so URLs never expire.
  *
  * Usage:
  *   REPLICATE_TOKEN=r8_xxx node api/pregen.js
  *
- * Skips combinations that already have a result in pregen-results.json.
+ * Skips combinations where the local result file already exists.
  * Run again to fill in any failed/missing combos.
  */
 
@@ -19,6 +20,7 @@ const TOKEN    = process.env.REPLICATE_TOKEN;
 const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/main/';
 const VERSION  = 'c871bb9b046607b680449ecbae55fd8c6d945e0a1948644bf2361b3d021d3ff4';
 const OUT_FILE = path.join(__dirname, '..', 'pregen-results.json');
+const REPO_DIR = path.join(__dirname, '..');
 const POLL_INTERVAL_MS = 4000;
 const MAX_POLLS        = 60; // 4 min max per combo
 
@@ -60,6 +62,29 @@ function fetchJSON(url, options = {}) {
     });
     req.on('error', reject);
     if (options.body) req.write(options.body);
+    req.end();
+  });
+}
+
+/** Download binary file from url and save to destPath */
+function downloadFile(url, destPath) {
+  return new Promise((resolve, reject) => {
+    const file = fs.createWriteStream(destPath);
+    const urlObj = new URL(url);
+    const req = https.request(
+      { hostname: urlObj.hostname, path: urlObj.pathname + urlObj.search, method: 'GET' },
+      res => {
+        if (res.statusCode >= 400) {
+          file.destroy();
+          fs.unlink(destPath, () => {});
+          return reject(new Error('Download HTTP ' + res.statusCode));
+        }
+        res.pipe(file);
+        file.on('finish', () => file.close(resolve));
+        file.on('error', err => { fs.unlink(destPath, () => {}); reject(err); });
+      }
+    );
+    req.on('error', err => { fs.unlink(destPath, () => {}); reject(err); });
     req.end();
   });
 }
@@ -124,6 +149,8 @@ async function pollPrediction(predictionId) {
 
 async function generateCombo(charId, charCutout, garmentId, garmentCutout, garmentDesc) {
   const key          = charId + '-' + garmentId;
+  const localFile    = key + '-result.jpg';
+  const localPath    = path.join(REPO_DIR, localFile);
   const personImage  = RAW_BASE + charCutout;
   const garmentImage = RAW_BASE + garmentCutout;
 
@@ -131,9 +158,15 @@ async function generateCombo(charId, charCutout, garmentId, garmentCutout, garme
   const predId = await createPrediction(personImage, garmentImage, garmentDesc);
   console.log('[' + key + '] ID: ' + predId + '  polling', { interval: POLL_INTERVAL_MS + 'ms', max: MAX_POLLS });
 
-  const imageUrl = await pollPrediction(predId);
-  console.log('\n[' + key + '] ✓  ' + imageUrl);
-  return imageUrl;
+  const replicateUrl = await pollPrediction(predId);
+  console.log('\n[' + key + '] ✓  Replicate URL: ' + replicateUrl);
+
+  // Download image to local file so it never expires
+  console.log('[' + key + '] Downloading → ' + localFile + ' ...');
+  await downloadFile(replicateUrl, localPath);
+  console.log('[' + key + '] ✓  Saved: ' + localFile + ' (' + Math.round(fs.statSync(localPath).size / 1024) + ' KB)');
+
+  return '/' + localFile; // local path stored in pregen-results.json
 }
 
 // ── Main ─────────────────────────────────────────────────────────────────────
@@ -145,17 +178,25 @@ async function generateCombo(charId, charCutout, garmentId, garmentCutout, garme
   const combos = [];
   for (const char of characters) {
     for (const garment of garments) {
-      const key = char.id + '-' + garment.id;
-      if (results[key]) {
-        console.log('[' + key + '] already cached — skipping');
+      const key       = char.id + '-' + garment.id;
+      const localFile = key + '-result.jpg';
+      const localPath = path.join(REPO_DIR, localFile);
+      const cached    = results[key];
+
+      // Skip only if cached value is a local path AND the file exists on disk
+      if (cached && cached.startsWith('/') && fs.existsSync(localPath)) {
+        console.log('[' + key + '] already downloaded — skipping (' + localFile + ')');
       } else {
+        if (cached && !cached.startsWith('/')) {
+          console.log('[' + key + '] cached URL is a Replicate URL (may expire) — re-downloading');
+        }
         combos.push({ char, garment, key });
       }
     }
   }
 
   if (combos.length === 0) {
-    console.log('\nAll 9 combinations already generated. Nothing to do.');
+    console.log('\nAll 9 combinations already downloaded locally. Nothing to do.');
     return;
   }
 
@@ -163,11 +204,11 @@ async function generateCombo(charId, charCutout, garmentId, garmentCutout, garme
 
   for (const { char, garment, key } of combos) {
     try {
-      const url = await generateCombo(
+      const localPath = await generateCombo(
         char.id, char.cutout,
         garment.id, garment.cutout, garment.desc
       );
-      results[key] = url;
+      results[key] = localPath;
       saveResults(results);
       console.log('[' + key + '] saved to', OUT_FILE);
     } catch (err) {
@@ -177,7 +218,8 @@ async function generateCombo(charId, charCutout, garmentId, garmentCutout, garme
   }
 
   const total = Object.keys(results).length;
-  console.log('\nDone. ' + total + '/9 combinations cached in pregen-results.json');
+  const localCount = Object.values(results).filter(v => v.startsWith('/')).length;
+  console.log('\nDone. ' + total + '/9 combinations in pregen-results.json (' + localCount + ' downloaded locally)');
   if (total < 9) {
     console.log('Run again to retry failed combinations.');
     process.exit(1);
