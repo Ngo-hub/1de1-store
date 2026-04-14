@@ -1267,6 +1267,156 @@
 
 
   /* Scrollbar */
+  /* ── EMAIL POPUP ── */
+  #email-popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  #email-popup-overlay.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .email-popup {
+    background: #0e0e0e;
+    border: 1px solid var(--accent);
+    width: min(480px, 92vw);
+    padding: 44px 40px 36px;
+    position: relative;
+    text-align: center;
+  }
+  .email-popup::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 2px;
+    background: var(--accent);
+  }
+  .email-popup-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .email-popup-heading {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(18px, 3vw, 26px);
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.08em;
+    line-height: 1.25;
+    margin-bottom: 14px;
+  }
+  .email-popup-sub {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    color: #888888;
+    line-height: 1.5;
+    margin-bottom: 30px;
+  }
+  .email-popup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .email-popup-input {
+    background: #1a1a1a;
+    border: 1px solid #333333;
+    color: #ffffff;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    padding: 14px 16px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .email-popup-input::placeholder { color: #555555; }
+  .email-popup-input:focus { border-color: var(--accent); }
+  .email-popup-submit {
+    background: var(--accent);
+    color: #111111;
+    border: none;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 14px;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+    width: 100%;
+  }
+  .email-popup-submit:hover { background: #d4b882; }
+  .email-popup-submit:disabled { opacity: 0.5; cursor: default; }
+  .email-popup-code {
+    display: none;
+    margin-top: 20px;
+  }
+  .email-popup-code-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: #666666;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .email-popup-code-value {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 0.3em;
+  }
+  .email-popup-code-sub {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    color: #666666;
+    margin-top: 6px;
+  }
+  .email-popup-continue {
+    display: none;
+    margin-top: 24px;
+    background: none;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    padding: 10px 28px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    width: 100%;
+  }
+  .email-popup-continue:hover { background: var(--accent); color: #111111; }
+  .email-popup-skip {
+    margin-top: 18px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: #444444;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    background: none;
+    border: none;
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+  .email-popup-skip:hover { color: #888888; }
+
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--black); }
   ::-webkit-scrollbar-thumb { background: var(--border-active); }
@@ -1425,6 +1575,26 @@
 </style>
 </head>
 <body>
+
+<!-- EMAIL POPUP -->
+<div id="email-popup-overlay">
+  <div class="email-popup">
+    <div class="email-popup-tag"><span class="blink">▮</span> &nbsp;Exclusive Access</div>
+    <div class="email-popup-heading">GET 10% OFF<br>YOUR FIRST ORDER</div>
+    <div class="email-popup-sub">Enter your email to unlock code <strong style="color:#ffffff;">UNI10</strong> and get early access to future drops.</div>
+    <div class="email-popup-form" id="email-popup-form">
+      <input class="email-popup-input" id="email-popup-field" type="email" placeholder="YOUR@EMAIL.COM" autocomplete="email">
+      <button class="email-popup-submit" id="email-popup-btn" onclick="submitEmailPopup()">UNLOCK 10% OFF</button>
+    </div>
+    <div class="email-popup-code" id="email-popup-code">
+      <div class="email-popup-code-label">Your discount code</div>
+      <div class="email-popup-code-value">UNI10</div>
+      <div class="email-popup-code-sub">Apply at checkout for 10% off your first order.</div>
+    </div>
+    <button class="email-popup-continue" id="email-popup-continue" onclick="dismissEmailPopup(true)">ENTER THE STORE →</button>
+    <button class="email-popup-skip" onclick="dismissEmailPopup(false)">No thanks</button>
+  </div>
+</div>
 
 <!-- BOOT SCREEN -->
 <div id="boot">
@@ -1796,8 +1966,52 @@
     document.getElementById('boot').classList.add('hidden');
     setTimeout(() => {
       document.getElementById('app').classList.add('visible');
+      // Show email popup unless already seen
+      const seen = localStorage.getItem('1de1_email_popup');
+      if (!seen) {
+        setTimeout(() => {
+          document.getElementById('email-popup-overlay').classList.add('visible');
+        }, 400);
+      }
     }, 300);
   }, 2800);
+
+  async function submitEmailPopup() {
+    const field = document.getElementById('email-popup-field');
+    const btn   = document.getElementById('email-popup-btn');
+    const email = field.value.trim();
+    if (!email || !email.includes('@')) {
+      field.style.borderColor = '#c0392b';
+      field.focus();
+      return;
+    }
+    field.style.borderColor = '';
+    btn.disabled = true;
+    btn.textContent = 'SUBMITTING...';
+
+    try {
+      await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+    } catch (_) { /* non-blocking — show code regardless */ }
+
+    localStorage.setItem('1de1_email_popup', 'submitted');
+    document.getElementById('email-popup-form').style.display = 'none';
+    document.getElementById('email-popup-code').style.display = 'block';
+    document.getElementById('email-popup-continue').style.display = 'block';
+    document.querySelector('.email-popup-skip').style.display = 'none';
+  }
+
+  function dismissEmailPopup(submitted) {
+    if (!submitted) localStorage.setItem('1de1_email_popup', 'dismissed');
+    const overlay = document.getElementById('email-popup-overlay');
+    overlay.style.transition = 'opacity 0.3s ease';
+    overlay.style.opacity = '0';
+    overlay.style.pointerEvents = 'none';
+    setTimeout(() => { overlay.style.display = 'none'; }, 320);
+  }
 
   // ── SCREEN MANAGEMENT ──
   function showScreen(name) {
