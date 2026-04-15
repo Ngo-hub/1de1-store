@@ -2726,13 +2726,23 @@
 
     fetch('https://a.klaviyo.com/client/subscriptions/?company_id=WKkFRp', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'revision': '2023-12-15' },
+      headers: {
+        'Content-Type': 'application/json',
+        'revision': '2024-10-15'
+      },
       body: JSON.stringify({
         data: {
           type: 'subscription',
           attributes: {
-            list_id: 'QNQJYU',
-            email: email
+            profile: {
+              data: {
+                type: 'profile',
+                attributes: {
+                  email: email
+                }
+              }
+            },
+            list_id: 'QNQJYU'
           }
         }
       })
