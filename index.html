@@ -2746,7 +2746,7 @@
           }
         }
       })
-    });
+    }).then(r => r.json()).then(d => console.log('KLAVIYO RESPONSE:', JSON.stringify(d))).catch(e => console.log('KLAVIYO ERROR:', e));
 
     fetch('https://1de1.co/contact', {
       method: 'POST',
