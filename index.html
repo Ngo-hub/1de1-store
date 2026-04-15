@@ -2724,13 +2724,19 @@
     btn.disabled = true;
     btn.textContent = 'SUBMITTING...';
 
-    try {
-      await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-    } catch (_) { /* non-blocking — show code regardless */ }
+    fetch('https://a.klaviyo.com/client/subscriptions/?company_id=WKkFRp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'revision': '2023-12-15' },
+      body: JSON.stringify({
+        data: {
+          type: 'subscription',
+          attributes: {
+            list_id: 'QNQJYU',
+            email: email
+          }
+        }
+      })
+    });
 
     fetch('https://1de1.co/contact', {
       method: 'POST',
