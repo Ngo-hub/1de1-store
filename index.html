@@ -2733,6 +2733,14 @@
       body: JSON.stringify({
         data: {
           type: 'subscription',
+          relationships: {
+            list: {
+              data: {
+                type: 'list',
+                id: 'QNQJYU'
+              }
+            }
+          },
           attributes: {
             profile: {
               data: {
@@ -2741,12 +2749,11 @@
                   email: email
                 }
               }
-            },
-            list_id: 'QNQJYU'
+            }
           }
         }
       })
-    }).then(r => r.json()).then(d => console.log('KLAVIYO RESPONSE:', JSON.stringify(d))).catch(e => console.log('KLAVIYO ERROR:', e));
+    }).then(r => r.text()).then(d => console.log('KLAVIYO RESPONSE:', d)).catch(e => console.log('KLAVIYO ERROR:', e));
 
     fetch('https://1de1.co/contact', {
       method: 'POST',
