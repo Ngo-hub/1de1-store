@@ -36,9 +36,12 @@ const characters = [
 ];
 
 const garments = [
-  { id: 'uni-zip',   cutout: 'uni-zip-cut.png',   desc: 'green zip-up hoodie with mixed media artwork patch' },
-  { id: 'uni-tee',   cutout: 'uni-tee-cut.png',   desc: 'black oversized t-shirt with gothic logo' },
-  { id: 'uni-rugby', cutout: 'uni-rugby-cut.png', desc: 'red and white striped rugby polo with embroidered logo' },
+  { id: 'uni-tee',          cutout: 'uni-tee-cut.png',                      desc: 'black oversized t-shirt with gothic logo' },
+  { id: 'uni-rugby-green',  cutout: 'Uni_rugby_green_front.webp',            desc: 'green rugby polo with mixed media embroidered patch' },
+  { id: 'uni-rugby-red',    cutout: 'uni-rugby-2.png',                       desc: 'red rugby polo with mixed media embroidered patch' },
+  { id: 'uni-long-sleeve',  cutout: 'Uni_LongSleeve_front.webp',             desc: 'black long sleeve shirt with mixed media logo' },
+  { id: 'uni-romper-black', cutout: 'Uni-TieWaistRomper-Front_Black.webp',   desc: 'black tie waist romper with mixed media detail' },
+  { id: 'uni-romper-pink',  cutout: 'Uni-TieWaistRomper-Front_Pink.webp',    desc: 'pink tie waist romper with mixed media detail' },
 ];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -219,8 +222,9 @@ async function generateCombo(charId, charCutout, garmentId, garmentCutout, garme
 
   const total = Object.keys(results).length;
   const localCount = Object.values(results).filter(v => v.startsWith('/')).length;
-  console.log('\nDone. ' + total + '/9 combinations in pregen-results.json (' + localCount + ' downloaded locally)');
-  if (total < 9) {
+  const expected = characters.length * garments.length;
+  console.log('\nDone. ' + total + '/' + expected + ' combinations in pregen-results.json (' + localCount + ' downloaded locally)');
+  if (total < expected) {
     console.log('Run again to retry failed combinations.');
     process.exit(1);
   }
