@@ -40,8 +40,8 @@ const garments = [
   { id: 'uni-rugby-green',  cutout: 'Uni_rugby_green_front.webp',            desc: 'green rugby polo with mixed media embroidered patch' },
   { id: 'uni-rugby-red',    cutout: 'uni-rugby-2.png',                       desc: 'red rugby polo with mixed media embroidered patch' },
   { id: 'uni-long-sleeve',  cutout: 'Uni_LongSleeve_front.webp',             desc: 'black long sleeve shirt with mixed media logo' },
-  { id: 'uni-romper-black', cutout: 'Uni-TieWaistRomper-Front_Black.webp',   desc: 'black tie waist romper with mixed media detail' },
-  { id: 'uni-romper-pink',  cutout: 'Uni-TieWaistRomper-Front_Pink.webp',    desc: 'pink tie waist romper with mixed media detail' },
+  { id: 'uni-romper-black', cutout: 'Uni-TieWaistRomper-Front_Black.webp',   desc: 'black one-piece short romper, shorts cut ending upper thigh, short sleeves, scoop neckline, ribbed fabric, tied waist, replaces full outfit from shoulder to upper thigh, bare legs visible below shorts' },
+  { id: 'uni-romper-pink',  cutout: 'Uni-TieWaistRomper-Front_Pink.webp',    desc: 'pink one-piece short romper, shorts cut ending upper thigh, short sleeves, scoop neckline, ribbed fabric, tied waist, replaces full outfit from shoulder to upper thigh, bare legs visible below shorts' },
 ];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────

@@ -1785,13 +1785,18 @@
   }
 
   /* ── SIZE NOTE ── */
+  @keyframes size-note-pulse {
+    0%, 100% { text-shadow: 0 0 4px rgba(200,168,118,0.4), 0 0 10px rgba(200,168,118,0.15); opacity: 1; }
+    50%       { text-shadow: 0 0 8px rgba(200,168,118,0.8), 0 0 20px rgba(200,168,118,0.3); opacity: 0.85; }
+  }
   .size-note {
     font-family: 'Share Tech Mono', monospace;
     font-size: 8px;
     letter-spacing: 0.2em;
     color: var(--accent);
-    margin-bottom: 5px;
+    margin-bottom: 6px;
     text-transform: uppercase;
+    animation: size-note-pulse 2.8s ease-in-out infinite;
   }
 
   ::-webkit-scrollbar { width: 4px; }
@@ -2148,17 +2153,17 @@
 
     .product-info { flex: 1; display: flex; flex-direction: column; }
 
-    .product-edition { font-size: 7px; letter-spacing: 0.15em; margin-bottom: 3px; }
-    .product-name { font-size: 13px; margin-bottom: 2px; }
+    .product-edition { font-size: 7px; letter-spacing: 0.15em; margin-bottom: 4px; }
+    .product-name { font-size: 15px; margin-bottom: 4px; line-height: 1.2; }
     .product-desc { display: none; }
 
     .product-bottom {
       flex-direction: column;
       align-items: flex-start;
-      gap: 6px;
-      margin-top: 6px;
+      gap: 8px;
+      margin-top: 8px;
     }
-    .product-price { font-size: 12px; }
+    .product-price { font-size: 14px; }
     .product-equipped-badge {
       font-size: 7px;
       letter-spacing: 0.15em;
@@ -2866,15 +2871,15 @@
          shopifyUrl: 'https://1de1.co/products/uni-long-sleeve',
          garmentDesc: 'black long sleeve shirt with mixed media logo',
          variants: { S: 52666505068768, M: 52666505101536, L: 52666505134304, XL: 52666505167072, '2XL': 52666505199840 } },
-    5: { name: 'Uni Romper Black', edition: '1 of 75', price: 44, cat: 'tops', layer: 2,
+    5: { name: 'Uni Romper Black', edition: '1 of 75', price: 44, cat: 'tops', layer: 2, onePiece: true,
          cutout: 'Uni-TieWaistRomper-Front_Black.webp', back: 'Uni-TieWaistRomper-Back_Black.webp',
          shopifyUrl: 'https://1de1.co/products/uni-tie-waist-romper',
-         garmentDesc: 'black tie waist romper with mixed media detail',
+         garmentDesc: 'black one-piece short romper, shorts cut ending upper thigh, short sleeves, scoop neckline, ribbed fabric, tied waist, replaces full outfit from shoulder to upper thigh, bare legs visible below shorts',
          variants: { S: 52666506051808, M: 52666506084576, L: 52666506117344, XL: 52666506150112, '2XL': 52666506182880 } },
-    6: { name: 'Uni Romper Pink',  edition: '1 of 75', price: 44, cat: 'tops', layer: 2,
+    6: { name: 'Uni Romper Pink',  edition: '1 of 75', price: 44, cat: 'tops', layer: 2, onePiece: true,
          cutout: 'Uni-TieWaistRomper-Front_Pink.webp', back: 'Uni-TieWaistRomper-Back_Pink.webp',
          shopifyUrl: 'https://1de1.co/products/uni-tie-waist-romper',
-         garmentDesc: 'pink tie waist romper with mixed media detail',
+         garmentDesc: 'pink one-piece short romper, shorts cut ending upper thigh, short sleeves, scoop neckline, ribbed fabric, tied waist, replaces full outfit from shoulder to upper thigh, bare legs visible below shorts',
          variants: { S: 52666506215648, M: 52666506248416, L: 52666506281184, XL: 52666506313952, '2XL': 52666506346720 } }
   };
 
