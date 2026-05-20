@@ -2643,11 +2643,12 @@
 
     function proceedToApp() {
       document.getElementById('app').classList.add('visible');
-      if (sessionStorage.getItem('de1_unlocked') !== '1') {
-        setTimeout(() => {
-          document.getElementById('email-popup-overlay').classList.add('visible');
-        }, 400);
-      }
+      // GATE DISABLED — store is live. Re-enable by uncommenting the block below.
+      // if (sessionStorage.getItem('de1_unlocked') !== '1') {
+      //   setTimeout(() => {
+      //     document.getElementById('email-popup-overlay').classList.add('visible');
+      //   }, 400);
+      // }
     }
 
     function exitIntro() {
