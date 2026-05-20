@@ -1704,6 +1704,96 @@
   }
   .about-modal-close:hover { background: var(--accent); color: #111111; }
 
+  /* ── LIGHTBOX ── */
+  #lightbox-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    padding: 20px;
+  }
+  #lightbox-overlay.visible { opacity: 1; pointer-events: all; }
+  .lightbox-inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    max-width: 520px;
+    width: 100%;
+  }
+  .lightbox-images {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    justify-content: center;
+  }
+  .lightbox-img-wrap {
+    flex: 1;
+    max-width: 240px;
+    background: #111;
+    border: 1px solid var(--border-active);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .lightbox-img-wrap img {
+    width: 100%;
+    height: auto;
+    max-height: 60vh;
+    object-fit: contain;
+    display: block;
+  }
+  .lightbox-img-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    padding: 6px 0 8px;
+    text-align: center;
+  }
+  .lightbox-name {
+    font-family: 'Cinzel', serif;
+    font-size: 14px;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    text-transform: uppercase;
+    text-align: center;
+  }
+  .lightbox-close {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    background: none;
+    border: 1px solid var(--border-active);
+    color: var(--muted);
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .lightbox-close:hover { color: var(--accent); border-color: var(--accent); }
+  @media (max-width: 600px) {
+    .lightbox-img-wrap { max-width: 45vw; }
+    .lightbox-img-wrap img { max-height: 52vh; }
+    .lightbox-name { font-size: 12px; }
+  }
+
+  /* ── SIZE NOTE ── */
+  .size-note {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: var(--black); }
   ::-webkit-scrollbar-thumb { background: var(--border-active); }
@@ -2037,7 +2127,7 @@
       display: flex;
       flex-direction: column;
       flex-shrink: 0;
-      width: 140px;
+      width: 160px;
       padding: 12px 10px 10px;
       border-bottom: none;
       border-right: 1px solid var(--border);
@@ -2052,7 +2142,7 @@
 
     .product-thumb {
       width: 100%;
-      height: 110px;
+      height: 150px;
       margin-bottom: 8px;
     }
 
@@ -2202,19 +2292,19 @@
       <div class="ep-success-text">10% OFF YOUR FIRST ORDER<br>YOU'LL BE NOTIFIED WHEN WE DROP</div>
       <div class="ep-products">
         <div class="ep-product-card">
-          <img class="ep-product-img" src="uni-zip-cut.png" alt="UNI ZIP">
-          <div class="ep-product-name">UNI ZIP</div>
-          <div class="ep-product-edition">1 OF 50</div>
-        </div>
-        <div class="ep-product-card">
           <img class="ep-product-img" src="uni-tee-cut.png" alt="UNI TEE">
           <div class="ep-product-name">UNI TEE</div>
           <div class="ep-product-edition">1 OF 75</div>
         </div>
         <div class="ep-product-card">
-          <img class="ep-product-img" src="uni-rugby-cut.png" alt="UNI RUGBY">
+          <img class="ep-product-img" src="Uni_rugby_green_front.webp" alt="UNI RUGBY GREEN">
           <div class="ep-product-name">UNI RUGBY</div>
-          <div class="ep-product-edition">1 OF 60</div>
+          <div class="ep-product-edition">1 OF 75</div>
+        </div>
+        <div class="ep-product-card">
+          <img class="ep-product-img" src="Uni_LongSleeve_front.webp" alt="UNI LONG SLEEVE">
+          <div class="ep-product-name">UNI L/S</div>
+          <div class="ep-product-edition">1 OF 75</div>
         </div>
       </div>
       <div class="ep-store-unlock-text" id="ep-store-unlock-text">STORE UNLOCKS JUNE 2</div>
@@ -2249,6 +2339,24 @@
       <span class="about-modal-footer-text">Play NGO Systems.</span>
       <button class="about-modal-close" onclick="closeAbout()">BACK TO THE DROP</button>
     </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox-overlay" onclick="closeLightbox(event)">
+  <div class="lightbox-inner" onclick="event.stopPropagation()">
+    <div class="lightbox-name" id="lightbox-name"></div>
+    <div class="lightbox-images">
+      <div class="lightbox-img-wrap">
+        <img id="lightbox-front" src="" alt="front">
+        <div class="lightbox-img-label">FRONT</div>
+      </div>
+      <div class="lightbox-img-wrap">
+        <img id="lightbox-back" src="" alt="back">
+        <div class="lightbox-img-label">BACK</div>
+      </div>
+    </div>
+    <button class="lightbox-close" onclick="document.getElementById('lightbox-overlay').classList.remove('visible')">✕ CLOSE</button>
   </div>
 </div>
 
@@ -2431,45 +2539,9 @@
 
         <div class="products-label">Uni 001</div>
 
-        <!-- Product 1 -->
-        <div class="product-card" id="prod-1" onclick="previewItem(1)" data-cat="outerwear">
-          <div class="product-thumb" onclick="toggleFlip(event, this)">
-            <div class="thumb-flip">
-              <div class="thumb-front">
-                <img src="uni-zip-cut.png" alt="Uni Zip" style="width:100%;height:100%;object-fit:contain;display:block;">
-              </div>
-              <div class="thumb-back">
-                <img src="uni-zip-back.png" alt="Uni Zip back" style="width:100%;height:100%;object-fit:contain;display:block;">
-              </div>
-            </div>
-          </div>
-          <div class="product-info">
-            <div class="product-edition">UNI 001 // 1 OF 50</div>
-            <div class="product-name">Uni Zip</div>
-            <div class="product-desc">Washed zip hoodie. Mixed media icon.</div>
-            <div class="product-bottom">
-              <div class="product-price">$80</div>
-              <div class="product-equipped-badge" id="equip-tag-1">EQUIPPED ✓</div>
-              <div class="product-btns">
-                <button class="add-fit-btn" id="fit-1" onclick="addToFit(event, 1)">ADD TO FIT</button>
-              </div>
-            </div>
-            <div class="size-picker" id="size-picker-1">
-              <span class="size-label">SELECT SIZE</span>
-              <div class="size-btns">
-                <button class="size-btn" onclick="selectSize(event,1,'S')">S</button>
-                <button class="size-btn" onclick="selectSize(event,1,'M')">M</button>
-                <button class="size-btn" onclick="selectSize(event,1,'L')">L</button>
-                <button class="size-btn" onclick="selectSize(event,1,'XL')">XL</button>
-                <button class="size-btn" onclick="selectSize(event,1,'2XL')">2XL</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Product 2 -->
-        <div class="product-card" id="prod-2" onclick="previewItem(2)" data-cat="tops">
-          <div class="product-thumb" onclick="toggleFlip(event, this)">
+        <!-- Product 1: Uni Tee -->
+        <div class="product-card" id="prod-1" onclick="previewItem(1)" data-cat="tops">
+          <div class="product-thumb" onclick="openLightbox(event,1)">
             <div class="thumb-flip">
               <div class="thumb-front">
                 <img src="uni-tee-cut.png" alt="Uni Tee" style="width:100%;height:100%;object-fit:contain;display:block;">
@@ -2485,54 +2557,203 @@
             <div class="product-desc">Acid washed tee. Black. Mixed media icon.</div>
             <div class="product-bottom">
               <div class="product-price">$44</div>
+              <div class="product-equipped-badge" id="equip-tag-1">EQUIPPED ✓</div>
+              <div class="product-btns">
+                <button class="add-fit-btn" id="fit-1" onclick="addToFit(event, 1)">ADD TO FIT</button>
+              </div>
+            </div>
+            <div class="size-picker" id="size-picker-1">
+              <div class="size-note">⚠ SIZES RUN SMALL — SIZE UP</div>
+              <span class="size-label">SELECT SIZE</span>
+              <div class="size-btns">
+                <button class="size-btn" onclick="selectSize(event,1,'S')">S</button>
+                <button class="size-btn" onclick="selectSize(event,1,'M')">M</button>
+                <button class="size-btn" onclick="selectSize(event,1,'L')">L</button>
+                <button class="size-btn" onclick="selectSize(event,1,'XL')">XL</button>
+                <button class="size-btn" onclick="selectSize(event,1,'2XL')">2XL</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 2: Uni Rugby Green -->
+        <div class="product-card" id="prod-2" onclick="previewItem(2)" data-cat="polo">
+          <div class="product-thumb" onclick="openLightbox(event,2)">
+            <div class="thumb-flip">
+              <div class="thumb-front">
+                <img src="Uni_rugby_green_front.webp" alt="Uni Rugby Green" style="width:100%;height:100%;object-fit:contain;display:block;">
+              </div>
+              <div class="thumb-back">
+                <img src="Uni_rugby_green_back.webp" alt="Uni Rugby Green back" style="width:100%;height:100%;object-fit:contain;display:block;">
+              </div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-edition">UNI 001 // 1 OF 75</div>
+            <div class="product-name">Uni Rugby Green</div>
+            <div class="product-desc">Rugby collar. Green. Mixed media patch.</div>
+            <div class="product-bottom">
+              <div class="product-price">$53</div>
               <div class="product-equipped-badge" id="equip-tag-2">EQUIPPED ✓</div>
               <div class="product-btns">
                 <button class="add-fit-btn" id="fit-2" onclick="addToFit(event, 2)">ADD TO FIT</button>
               </div>
             </div>
             <div class="size-picker" id="size-picker-2">
+              <div class="size-note">⚠ SIZES RUN SMALL — SIZE UP</div>
               <span class="size-label">SELECT SIZE</span>
               <div class="size-btns">
                 <button class="size-btn" onclick="selectSize(event,2,'S')">S</button>
                 <button class="size-btn" onclick="selectSize(event,2,'M')">M</button>
                 <button class="size-btn" onclick="selectSize(event,2,'L')">L</button>
                 <button class="size-btn" onclick="selectSize(event,2,'XL')">XL</button>
-                <button class="size-btn" onclick="selectSize(event,2,'2XL')">2XL</button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Product 3 -->
+        <!-- Product 3: Uni Rugby Red -->
         <div class="product-card" id="prod-3" onclick="previewItem(3)" data-cat="polo">
-          <div class="product-thumb" onclick="toggleFlip(event, this)">
+          <div class="product-thumb" onclick="openLightbox(event,3)">
             <div class="thumb-flip">
               <div class="thumb-front">
-                <img src="uni-rugby-cut.png" alt="Uni Rugby" style="width:100%;height:100%;object-fit:contain;display:block;">
+                <img src="uni-rugby-2.png" alt="Uni Rugby Red" style="width:100%;height:100%;object-fit:contain;display:block;">
               </div>
               <div class="thumb-back">
-                <img src="uni-rugby-back.png" alt="Uni Rugby back" style="width:100%;height:100%;object-fit:contain;display:block;">
+                <img src="uni-rugby-2-back.png" alt="Uni Rugby Red back" style="width:100%;height:100%;object-fit:contain;display:block;">
               </div>
             </div>
           </div>
           <div class="product-info">
-            <div class="product-edition">UNI 001 // 1 OF 60</div>
-            <div class="product-name">Uni Rugby</div>
-            <div class="product-desc">Red and white rugby collar. Heavyweight cotton.</div>
+            <div class="product-edition">UNI 001 // 1 OF 75</div>
+            <div class="product-name">Uni Rugby Red</div>
+            <div class="product-desc">Rugby collar. Red. Mixed media patch.</div>
             <div class="product-bottom">
-              <div class="product-price">$62</div>
+              <div class="product-price">$53</div>
               <div class="product-equipped-badge" id="equip-tag-3">EQUIPPED ✓</div>
               <div class="product-btns">
                 <button class="add-fit-btn" id="fit-3" onclick="addToFit(event, 3)">ADD TO FIT</button>
               </div>
             </div>
             <div class="size-picker" id="size-picker-3">
+              <div class="size-note">⚠ SIZES RUN SMALL — SIZE UP</div>
               <span class="size-label">SELECT SIZE</span>
               <div class="size-btns">
                 <button class="size-btn" onclick="selectSize(event,3,'S')">S</button>
                 <button class="size-btn" onclick="selectSize(event,3,'M')">M</button>
                 <button class="size-btn" onclick="selectSize(event,3,'L')">L</button>
                 <button class="size-btn" onclick="selectSize(event,3,'XL')">XL</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 4: Uni Long Sleeve -->
+        <div class="product-card" id="prod-4" onclick="previewItem(4)" data-cat="tops">
+          <div class="product-thumb" onclick="openLightbox(event,4)">
+            <div class="thumb-flip">
+              <div class="thumb-front">
+                <img src="Uni_LongSleeve_front.webp" alt="Uni Long Sleeve" style="width:100%;height:100%;object-fit:contain;display:block;">
+              </div>
+              <div class="thumb-back">
+                <img src="Uni_LongSleeve_black.webp" alt="Uni Long Sleeve back" style="width:100%;height:100%;object-fit:contain;display:block;">
+              </div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-edition">UNI 001 // 1 OF 75</div>
+            <div class="product-name">Uni Long Sleeve</div>
+            <div class="product-desc">Black long sleeve. Mixed media icon.</div>
+            <div class="product-bottom">
+              <div class="product-price">$44</div>
+              <div class="product-equipped-badge" id="equip-tag-4">EQUIPPED ✓</div>
+              <div class="product-btns">
+                <button class="add-fit-btn" id="fit-4" onclick="addToFit(event, 4)">ADD TO FIT</button>
+              </div>
+            </div>
+            <div class="size-picker" id="size-picker-4">
+              <div class="size-note">⚠ SIZES RUN SMALL — SIZE UP</div>
+              <span class="size-label">SELECT SIZE</span>
+              <div class="size-btns">
+                <button class="size-btn" onclick="selectSize(event,4,'S')">S</button>
+                <button class="size-btn" onclick="selectSize(event,4,'M')">M</button>
+                <button class="size-btn" onclick="selectSize(event,4,'L')">L</button>
+                <button class="size-btn" onclick="selectSize(event,4,'XL')">XL</button>
+                <button class="size-btn" onclick="selectSize(event,4,'2XL')">2XL</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 5: Romper Black -->
+        <div class="product-card" id="prod-5" onclick="previewItem(5)" data-cat="tops">
+          <div class="product-thumb" onclick="openLightbox(event,5)">
+            <div class="thumb-flip">
+              <div class="thumb-front">
+                <img src="Uni-TieWaistRomper-Front_Black.webp" alt="Romper Black" style="width:100%;height:100%;object-fit:contain;display:block;">
+              </div>
+              <div class="thumb-back">
+                <img src="Uni-TieWaistRomper-Back_Black.webp" alt="Romper Black back" style="width:100%;height:100%;object-fit:contain;display:block;">
+              </div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-edition">UNI 001 // 1 OF 75</div>
+            <div class="product-name">Uni Romper Black</div>
+            <div class="product-desc">Tie waist romper. Black. Mixed media detail.</div>
+            <div class="product-bottom">
+              <div class="product-price">$44</div>
+              <div class="product-equipped-badge" id="equip-tag-5">EQUIPPED ✓</div>
+              <div class="product-btns">
+                <button class="add-fit-btn" id="fit-5" onclick="addToFit(event, 5)">ADD TO FIT</button>
+              </div>
+            </div>
+            <div class="size-picker" id="size-picker-5">
+              <div class="size-note">⚠ SIZES RUN SMALL — SIZE UP</div>
+              <span class="size-label">SELECT SIZE</span>
+              <div class="size-btns">
+                <button class="size-btn" onclick="selectSize(event,5,'S')">S</button>
+                <button class="size-btn" onclick="selectSize(event,5,'M')">M</button>
+                <button class="size-btn" onclick="selectSize(event,5,'L')">L</button>
+                <button class="size-btn" onclick="selectSize(event,5,'XL')">XL</button>
+                <button class="size-btn" onclick="selectSize(event,5,'2XL')">2XL</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product 6: Romper Pink -->
+        <div class="product-card" id="prod-6" onclick="previewItem(6)" data-cat="tops">
+          <div class="product-thumb" onclick="openLightbox(event,6)">
+            <div class="thumb-flip">
+              <div class="thumb-front">
+                <img src="Uni-TieWaistRomper-Front_Pink.webp" alt="Romper Pink" style="width:100%;height:100%;object-fit:contain;display:block;">
+              </div>
+              <div class="thumb-back">
+                <img src="Uni-TieWaistRomper-Back_Pink.webp" alt="Romper Pink back" style="width:100%;height:100%;object-fit:contain;display:block;">
+              </div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-edition">UNI 001 // 1 OF 75</div>
+            <div class="product-name">Uni Romper Pink</div>
+            <div class="product-desc">Tie waist romper. Pink. Mixed media detail.</div>
+            <div class="product-bottom">
+              <div class="product-price">$44</div>
+              <div class="product-equipped-badge" id="equip-tag-6">EQUIPPED ✓</div>
+              <div class="product-btns">
+                <button class="add-fit-btn" id="fit-6" onclick="addToFit(event, 6)">ADD TO FIT</button>
+              </div>
+            </div>
+            <div class="size-picker" id="size-picker-6">
+              <div class="size-note">⚠ SIZES RUN SMALL — SIZE UP</div>
+              <span class="size-label">SELECT SIZE</span>
+              <div class="size-btns">
+                <button class="size-btn" onclick="selectSize(event,6,'S')">S</button>
+                <button class="size-btn" onclick="selectSize(event,6,'M')">M</button>
+                <button class="size-btn" onclick="selectSize(event,6,'L')">L</button>
+                <button class="size-btn" onclick="selectSize(event,6,'XL')">XL</button>
+                <button class="size-btn" onclick="selectSize(event,6,'2XL')">2XL</button>
               </div>
             </div>
           </div>
@@ -2614,7 +2835,7 @@
   const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/main/';
   const charCutouts  = { 'UNIT-A': 'alpha-cut.png', 'UNIT-B': 'omega-cut.png', 'UNIT-C': 'delta-cut.png' };
   const charPregenId = { 'UNIT-A': 'alpha',          'UNIT-B': 'omega',          'UNIT-C': 'delta' };
-  const prodPregenId = { 1: 'uni-zip', 2: 'uni-tee', 3: 'uni-rugby' };
+  const prodPregenId = { 1: 'uni-tee', 2: 'uni-rugby-green', 3: 'uni-rugby-red', 4: 'uni-long-sleeve', 5: 'uni-romper-black', 6: 'uni-romper-pink' };
   const tryonCache   = {};  // charId:productId -> output URL
   let   pregenResults = {}; // loaded from pregen-results.json
 
@@ -2625,15 +2846,36 @@
     .catch(() => { console.log('[1DE1] pregen-results.json not found — live API only'); });
 
   const products = {
-    1: { name: 'Uni Zip',   edition: '1 of 50', price: 80, cat: 'outerwear', layer: 1, cutout: 'uni-zip-cut.png',   shopifyUrl: 'https://1de1.co/products/uni-zip',
-         garmentDesc: 'green zip-up hoodie with mixed media artwork patch',
-         variants: { S: 51431795753184, M: 51431795785952, L: 51431795818720, XL: 51431795851488, '2XL': 51431795884256 } },
-    2: { name: 'Uni Tee',   edition: '1 of 75', price: 44, cat: 'tops',      layer: 2, cutout: 'uni-tee-cut.png',   shopifyUrl: 'https://1de1.co/products/uni-tee',
+    1: { name: 'Uni Tee',          edition: '1 of 75', price: 44, cat: 'tops', layer: 2,
+         cutout: 'uni-tee-cut.png', back: 'uni-tee-back.png',
+         shopifyUrl: 'https://1de1.co/products/uni-tee',
          garmentDesc: 'black oversized t-shirt with gothic logo',
          variants: { S: 51431795982560, M: 51431796015328, L: 51431796048096, XL: 51431796080864, '2XL': 51431796113632 } },
-    3: { name: 'Uni Rugby', edition: '1 of 60', price: 62, cat: 'polo',      layer: 3, cutout: 'uni-rugby-cut.png', shopifyUrl: 'https://1de1.co/products/uni-rugby',
-         garmentDesc: 'red and white striped rugby polo with embroidered logo',
-         variants: { S: 51431796211936, M: 51431796244704, L: 51431796277472, XL: 51431796310240 } }
+    2: { name: 'Uni Rugby Green',  edition: '1 of 75', price: 53, cat: 'polo', layer: 3,
+         cutout: 'Uni_rugby_green_front.webp', back: 'Uni_rugby_green_back.webp',
+         shopifyUrl: 'https://1de1.co/products/uni-rugby-green',
+         garmentDesc: 'green rugby polo with mixed media embroidered patch',
+         variants: { S: 52666505429216, M: 52666505461984, L: 52666505494752, XL: 52666505527520 } },
+    3: { name: 'Uni Rugby Red',    edition: '1 of 75', price: 53, cat: 'polo', layer: 3,
+         cutout: 'uni-rugby-2.png', back: 'uni-rugby-2-back.png',
+         shopifyUrl: 'https://1de1.co/products/uni-rugby-red',
+         garmentDesc: 'red rugby polo with mixed media embroidered patch',
+         variants: { S: 52666505855200, M: 52666505887968, L: 52666505920736, XL: 52666505953504 } },
+    4: { name: 'Uni Long Sleeve',  edition: '1 of 75', price: 44, cat: 'tops', layer: 2,
+         cutout: 'Uni_LongSleeve_front.webp', back: 'Uni_LongSleeve_black.webp',
+         shopifyUrl: 'https://1de1.co/products/uni-long-sleeve',
+         garmentDesc: 'black long sleeve shirt with mixed media logo',
+         variants: { S: 52666505068768, M: 52666505101536, L: 52666505134304, XL: 52666505167072, '2XL': 52666505199840 } },
+    5: { name: 'Uni Romper Black', edition: '1 of 75', price: 44, cat: 'tops', layer: 2,
+         cutout: 'Uni-TieWaistRomper-Front_Black.webp', back: 'Uni-TieWaistRomper-Back_Black.webp',
+         shopifyUrl: 'https://1de1.co/products/uni-tie-waist-romper',
+         garmentDesc: 'black tie waist romper with mixed media detail',
+         variants: { S: 52666506051808, M: 52666506084576, L: 52666506117344, XL: 52666506150112, '2XL': 52666506182880 } },
+    6: { name: 'Uni Romper Pink',  edition: '1 of 75', price: 44, cat: 'tops', layer: 2,
+         cutout: 'Uni-TieWaistRomper-Front_Pink.webp', back: 'Uni-TieWaistRomper-Back_Pink.webp',
+         shopifyUrl: 'https://1de1.co/products/uni-tie-waist-romper',
+         garmentDesc: 'pink tie waist romper with mixed media detail',
+         variants: { S: 52666506215648, M: 52666506248416, L: 52666506281184, XL: 52666506313952, '2XL': 52666506346720 } }
   };
 
 
@@ -3271,10 +3513,30 @@
   function toggleFlip(e, thumbEl) {
     // Only activate on touch/mobile — desktop relies on CSS :hover
     if (window.matchMedia('(hover: hover)').matches) return;
-    e.stopPropagation(); // prevent card click (size picker) from firing on image tap
+    e.stopPropagation();
     const card = thumbEl.querySelector('.thumb-flip');
     if (card) card.classList.toggle('flipped');
   }
+
+  function openLightbox(e, productId) {
+    e.stopPropagation();
+    const p = products[productId];
+    if (!p) return;
+    document.getElementById('lightbox-front').src = p.cutout;
+    document.getElementById('lightbox-back').src  = p.back || p.cutout;
+    document.getElementById('lightbox-name').textContent = p.name.toUpperCase();
+    document.getElementById('lightbox-overlay').classList.add('visible');
+  }
+
+  function closeLightbox(e) {
+    if (e.target === document.getElementById('lightbox-overlay')) {
+      document.getElementById('lightbox-overlay').classList.remove('visible');
+    }
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') document.getElementById('lightbox-overlay').classList.remove('visible');
+  });
 
 
 </script>
