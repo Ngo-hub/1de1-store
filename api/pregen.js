@@ -40,8 +40,8 @@ const garments = [
   { id: 'uni-rugby-green',  cutout: 'Uni_rugby_green_front.webp',            desc: 'green rugby polo with mixed media embroidered patch' },
   { id: 'uni-rugby-red',    cutout: 'uni-rugby-2.png',                       desc: 'red rugby polo with mixed media embroidered patch' },
   { id: 'uni-long-sleeve',  cutout: 'Uni_LongSleeve_front.webp',             desc: 'black long sleeve shirt with mixed media logo' },
-  { id: 'uni-romper-black', cutout: 'Uni-TieWaistRomper-Front_Black.webp',   desc: 'black one-piece short romper, shorts cut ending upper thigh, short sleeves, scoop neckline, ribbed fabric, tied waist, replaces full outfit from shoulder to upper thigh, bare legs visible below shorts' },
-  { id: 'uni-romper-pink',  cutout: 'Uni-TieWaistRomper-Front_Pink.webp',    desc: 'pink one-piece short romper, shorts cut ending upper thigh, short sleeves, scoop neckline, ribbed fabric, tied waist, replaces full outfit from shoulder to upper thigh, bare legs visible below shorts' },
+  { id: 'uni-romper-black', cutout: 'Uni-TieWaistRomper-Front_Black.webp',   desc: 'very short black romper, hemline ends at upper thigh, bare legs below, short sleeves, scoop neckline, ribbed fabric, tied waist', category: 'dresses' },
+  { id: 'uni-romper-pink',  cutout: 'Uni-TieWaistRomper-Front_Pink.webp',    desc: 'very short pink romper, hemline ends at upper thigh, bare legs below, short sleeves, scoop neckline, ribbed fabric, tied waist', category: 'dresses' },
 ];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -105,26 +105,26 @@ function saveResults(results) {
 
 // ── Core ─────────────────────────────────────────────────────────────────────
 
-async function createPrediction(personImage, garmentImage, garmentDesc) {
+async function createPrediction(personImage, garmentImage, garmentDesc, category) {
+  const input = {
+    human_img:        personImage,
+    garm_img:         garmentImage,
+    garment_des:      garmentDesc,
+    is_checked:       true,
+    is_checked_crop:  true,
+    denoise_steps:    35,
+    guidance_scale:   2.0,
+    seed:             42,
+  };
+  if (category) input.category = category;
+
   const { status, body } = await fetchJSON('https://api.replicate.com/v1/predictions', {
     method: 'POST',
     headers: {
       'Authorization':  'Bearer ' + TOKEN,
       'Content-Type':   'application/json',
     },
-    body: JSON.stringify({
-      version: VERSION,
-      input: {
-        human_img:        personImage,
-        garm_img:         garmentImage,
-        garment_des:      garmentDesc,
-        is_checked:       true,
-        is_checked_crop:  true,
-        denoise_steps:    35,
-        guidance_scale:   2.0,
-        seed:             42,
-      },
-    }),
+    body: JSON.stringify({ version: VERSION, input }),
   });
 
   if (status !== 201) throw new Error('Create failed HTTP ' + status + ': ' + JSON.stringify(body));
@@ -150,7 +150,7 @@ async function pollPrediction(predictionId) {
   throw new Error('Polling timed out after ' + MAX_POLLS + ' attempts');
 }
 
-async function generateCombo(charId, charCutout, garmentId, garmentCutout, garmentDesc) {
+async function generateCombo(charId, charCutout, garmentId, garmentCutout, garmentDesc, category) {
   const key          = charId + '-' + garmentId;
   const localFile    = key + '-result.jpg';
   const localPath    = path.join(REPO_DIR, localFile);
@@ -158,7 +158,7 @@ async function generateCombo(charId, charCutout, garmentId, garmentCutout, garme
   const garmentImage = RAW_BASE + garmentCutout;
 
   console.log('\n[' + key + '] Creating prediction...');
-  const predId = await createPrediction(personImage, garmentImage, garmentDesc);
+  const predId = await createPrediction(personImage, garmentImage, garmentDesc, category);
   console.log('[' + key + '] ID: ' + predId + '  polling', { interval: POLL_INTERVAL_MS + 'ms', max: MAX_POLLS });
 
   const replicateUrl = await pollPrediction(predId);
@@ -209,7 +209,7 @@ async function generateCombo(charId, charCutout, garmentId, garmentCutout, garme
     try {
       const localPath = await generateCombo(
         char.id, char.cutout,
-        garment.id, garment.cutout, garment.desc
+        garment.id, garment.cutout, garment.desc, garment.category
       );
       results[key] = localPath;
       saveResults(results);
