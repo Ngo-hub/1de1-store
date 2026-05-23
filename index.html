@@ -2704,7 +2704,7 @@
           </div>
           <div class="product-info">
             <div class="product-edition">UNI 001 // 1 OF 75</div>
-            <div class="product-name">Uni Romper Black</div>
+            <div class="product-name">Uni Tie Waist Romper Black</div>
             <div class="product-desc">Tie waist romper. Black. Mixed media detail.</div>
             <div class="product-bottom">
               <div class="product-price">$44</div>
@@ -2741,7 +2741,7 @@
           </div>
           <div class="product-info">
             <div class="product-edition">UNI 001 // 1 OF 75</div>
-            <div class="product-name">Uni Romper Pink</div>
+            <div class="product-name">Uni Tie Waist Romper Pink</div>
             <div class="product-desc">Tie waist romper. Pink. Mixed media detail.</div>
             <div class="product-bottom">
               <div class="product-price">$44</div>
@@ -2871,12 +2871,12 @@
          shopifyUrl: 'https://1de1.co/products/uni-long-sleeve',
          garmentDesc: 'black long sleeve shirt with mixed media logo',
          variants: { S: 52666505068768, M: 52666505101536, L: 52666505134304, XL: 52666505167072, '2XL': 52666505199840 } },
-    5: { name: 'Uni Romper Black', edition: '1 of 75', price: 44, cat: 'tops', layer: 2, onePiece: true,
+    5: { name: 'Uni Tie Waist Romper Black', edition: '1 of 75', price: 44, cat: 'tops', layer: 2, onePiece: true,
          cutout: 'Uni-TieWaistRomper-Front_Black.webp', back: 'Uni-TieWaistRomper-Back_Black.webp',
          shopifyUrl: 'https://1de1.co/products/uni-tie-waist-romper',
          garmentDesc: 'black one-piece short romper, shorts cut ending upper thigh, short sleeves, scoop neckline, ribbed fabric, tied waist, replaces full outfit from shoulder to upper thigh, bare legs visible below shorts',
          variants: { S: 52666506051808, M: 52666506084576, L: 52666506117344, XL: 52666506150112, '2XL': 52666506182880 } },
-    6: { name: 'Uni Romper Pink',  edition: '1 of 75', price: 44, cat: 'tops', layer: 2, onePiece: true,
+    6: { name: 'Uni Tie Waist Romper Pink', edition: '1 of 75', price: 44, cat: 'tops', layer: 2, onePiece: true,
          cutout: 'Uni-TieWaistRomper-Front_Pink.webp', back: 'Uni-TieWaistRomper-Back_Pink.webp',
          shopifyUrl: 'https://1de1.co/products/uni-tie-waist-romper',
          garmentDesc: 'pink one-piece short romper, shorts cut ending upper thigh, short sleeves, scoop neckline, ribbed fabric, tied waist, replaces full outfit from shoulder to upper thigh, bare legs visible below shorts',
@@ -3122,9 +3122,10 @@
       if (svg) svg.style.display = 'none';
     }
 
-    // Set stage background per character:
-    // UNIT-B (omega) uses a square photo with dark background — match the stage to it.
-    // UNIT-A / UNIT-C use portrait transparent PNGs — keep the light default.
+    // Per-character stage background + photo fit:
+    // UNIT-B (omega) is a 1024x1024 square with dark background — use cover to fill
+    // the portrait container and match the stage colour to her background.
+    // UNIT-A / UNIT-C are portrait transparent PNGs — keep the light default + contain.
     const charStageBg = {
       'UNIT-A': 'linear-gradient(180deg, #f8f8f8 0%, #f0f0f0 100%)',
       'UNIT-B': 'linear-gradient(180deg, #0d0d0d 0%, #080808 100%)',
@@ -3132,6 +3133,18 @@
     };
     const stageInner = document.querySelector('.stage-char-inner');
     if (stageInner) stageInner.style.background = charStageBg[id] || '';
+
+    // Omega: cover fills the frame, top-anchor keeps head visible
+    // Alpha/Delta: reset to CSS defaults (contain, center bottom)
+    if (photo) {
+      if (id === 'UNIT-B') {
+        photo.style.objectFit = 'cover';
+        photo.style.objectPosition = 'center 12%';
+      } else {
+        photo.style.objectFit = '';
+        photo.style.objectPosition = '';
+      }
+    }
 
     // Clear visual fit state + try-on result
     clearTryonResult();
