@@ -1,20 +1,14 @@
-﻿{
-    "alpha-uni-tee":  "/alpha-uni-tee-result.jpg",
-    "alpha-uni-rugby-green":  "/alpha-uni-rugby-green-result.jpg",
-    "alpha-uni-rugby-red":  "/alpha-uni-rugby-red-result.jpg",
-    "alpha-uni-long-sleeve":  "/alpha-uni-long-sleeve-result.jpg",
-    "delta-uni-tee":  "/delta-uni-tee-result.jpg",
-    "delta-uni-rugby-green":  "/delta-uni-rugby-green-result.jpg",
-    "delta-uni-rugby-red":  "/delta-uni-rugby-red-result.jpg",
-    "delta-uni-long-sleeve":  "/delta-uni-long-sleeve-result.jpg",
-    "alpha-uni-romper-black":  "/alpha-uni-romper-black-result.jpg",
-    "alpha-uni-romper-pink":  "/alpha-uni-romper-pink-result.jpg",
-    "delta-uni-romper-black":  "/delta-uni-romper-black-result.jpg",
-    "delta-uni-romper-pink":  "/delta-uni-romper-pink-result.jpg",
-    "omega-uni-tee":          "/omega-uni-tee-result.jpg",
-    "omega-uni-rugby-green":  "/omega-uni-rugby-green-result.jpg",
-    "omega-uni-rugby-red":    "/omega-uni-rugby-red-result.jpg",
-    "omega-uni-long-sleeve":  "/omega-uni-long-sleeve-result.jpg",
-    "omega-uni-romper-black": "/omega-uni-romper-black-result.jpg",
-    "omega-uni-romper-pink":  "/omega-uni-romper-pink-result.jpg"
+{
+  "alpha-uni-tee": "/alpha-uni-tee-result.jpg",
+  "alpha-uni-rugby-green": "/alpha-uni-rugby-green-result.jpg",
+  "alpha-uni-rugby-red": "/alpha-uni-rugby-red-result.jpg",
+  "alpha-uni-long-sleeve": "/alpha-uni-long-sleeve-result.jpg",
+  "alpha-uni-romper-black": "/alpha-uni-romper-black-result.jpg",
+  "alpha-uni-romper-pink": "/alpha-uni-romper-pink-result.jpg",
+  "delta-uni-tee": "/delta-uni-tee-result.jpg",
+  "delta-uni-rugby-green": "/delta-uni-rugby-green-result.jpg",
+  "delta-uni-rugby-red": "/delta-uni-rugby-red-result.jpg",
+  "delta-uni-long-sleeve": "/delta-uni-long-sleeve-result.jpg",
+  "delta-uni-romper-black": "/delta-uni-romper-black-result.jpg",
+  "delta-uni-romper-pink": "/delta-uni-romper-pink-result.jpg"
 }

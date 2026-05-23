@@ -3120,10 +3120,18 @@
       photo.style.display = 'block';
       requestAnimationFrame(() => { photo.style.opacity = '1'; });
       if (svg) svg.style.display = 'none';
-      // Log stage state for debugging
-      const stageEl = document.querySelector('.room-stage');
-      if (stageEl) console.log('[1DE1] stage bg:', window.getComputedStyle(stageEl).backgroundColor);
     }
+
+    // Set stage background per character:
+    // UNIT-B (omega) uses a square photo with dark background — match the stage to it.
+    // UNIT-A / UNIT-C use portrait transparent PNGs — keep the light default.
+    const charStageBg = {
+      'UNIT-A': 'linear-gradient(180deg, #f8f8f8 0%, #f0f0f0 100%)',
+      'UNIT-B': 'linear-gradient(180deg, #0d0d0d 0%, #080808 100%)',
+      'UNIT-C': 'linear-gradient(180deg, #f8f8f8 0%, #f0f0f0 100%)'
+    };
+    const stageInner = document.querySelector('.stage-char-inner');
+    if (stageInner) stageInner.style.background = charStageBg[id] || '';
 
     // Clear visual fit state + try-on result
     clearTryonResult();
