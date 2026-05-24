@@ -3,7 +3,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { personImage, garmentImage, garmentDesc } = req.body || {};
+  const { personImage, garmentImage, garmentDesc, category } = req.body || {};
   if (!personImage || !garmentImage) {
     return res.status(400).json({ error: 'Missing personImage or garmentImage' });
   }
@@ -29,9 +29,10 @@ export default async function handler(req, res) {
             garm_img: garmentImage,
             garment_des: garmentDesc || 'streetwear piece',
             is_checked: true,
-            is_checked_crop: false,
-            denoise_steps: 30,
+            is_checked_crop: true,
+            denoise_steps: 20,
             seed: 42,
+            ...(category ? { category } : {}),
           },
         }),
       }
