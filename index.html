@@ -3395,6 +3395,17 @@
     const img   = document.getElementById('tryon-result');
     const photo = document.getElementById('stage-char-photo');
     if (!img) return;
+
+    // Omega outputs a 1024x1024 square — match the same cover/position as the avatar
+    // so the result fills the frame identically. Alpha/Delta use portrait outputs → defaults.
+    if (selectedChar === 'UNIT-B') {
+      img.style.objectFit = 'cover';
+      img.style.objectPosition = 'center 12%';
+    } else {
+      img.style.objectFit = '';
+      img.style.objectPosition = '';
+    }
+
     const isDesktop = window.innerWidth >= 768;
     if (isDesktop) {
       // Desktop: fade avatar out first (0.3s), then fade try-on in (0.6s)
@@ -3421,6 +3432,8 @@
     const img   = document.getElementById('tryon-result');
     const photo = document.getElementById('stage-char-photo');
     const back  = document.getElementById('mobile-tryon-back');
+    // Reset any per-character overrides on the result image
+    if (img) { img.style.objectFit = ''; img.style.objectPosition = ''; }
     const isDesktop = window.innerWidth >= 768;
     if (isDesktop) {
       // Desktop: fade try-on out first (0.6s), then fade avatar back in
