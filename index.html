@@ -2301,11 +2301,6 @@
           <div class="ep-product-name">UNI TEE</div>
           <div class="ep-product-edition">1 OF 75</div>
         </div>
-        <div class="ep-product-card">
-          <img class="ep-product-img" src="Uni_rugby_green_front.webp" alt="UNI RUGBY GREEN">
-          <div class="ep-product-name">UNI RUGBY</div>
-          <div class="ep-product-edition">1 OF 75</div>
-        </div>
       </div>
       <div class="ep-store-unlock-text" id="ep-store-unlock-text">STORE UNLOCKS JUNE 2</div>
       <button class="ep-enter-store-btn" id="ep-enter-store-btn" onclick="enterStore()">ENTER STORE →</button>
@@ -2576,42 +2571,6 @@
           </div>
         </div>
 
-        <!-- Product 2: Uni Rugby Green -->
-        <div class="product-card" id="prod-2" onclick="previewItem(2)" data-cat="polo">
-          <div class="product-thumb" onclick="openLightbox(event,2)">
-            <div class="thumb-flip">
-              <div class="thumb-front">
-                <img src="Uni_rugby_green_front.webp" alt="Uni Rugby Green" style="width:100%;height:100%;object-fit:contain;display:block;">
-              </div>
-              <div class="thumb-back">
-                <img src="Uni_rugby_green_back.webp" alt="Uni Rugby Green back" style="width:100%;height:100%;object-fit:contain;display:block;">
-              </div>
-            </div>
-          </div>
-          <div class="product-info">
-            <div class="product-edition">UNI 001 // 1 OF 75</div>
-            <div class="product-name">Uni Rugby Green</div>
-            <div class="product-desc">Rugby collar. Green. Mixed media patch.</div>
-            <div class="product-bottom">
-              <div class="product-price">$53</div>
-              <div class="product-equipped-badge" id="equip-tag-2">EQUIPPED ✓</div>
-              <div class="product-btns">
-                <button class="add-fit-btn" id="fit-2" onclick="addToFit(event, 2)">ADD TO FIT</button>
-              </div>
-            </div>
-            <div class="size-picker" id="size-picker-2">
-              <div class="size-note">⚠ SIZES RUN SMALL — SIZE UP</div>
-              <span class="size-label">SELECT SIZE</span>
-              <div class="size-btns">
-                <button class="size-btn" onclick="selectSize(event,2,'S')">S</button>
-                <button class="size-btn" onclick="selectSize(event,2,'M')">M</button>
-                <button class="size-btn" onclick="selectSize(event,2,'L')">L</button>
-                <button class="size-btn" onclick="selectSize(event,2,'XL')">XL</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <!-- Product 3: Uni Rugby Red -->
         <div class="product-card" id="prod-3" onclick="previewItem(3)" data-cat="polo">
           <div class="product-thumb" onclick="openLightbox(event,3)">
@@ -2798,7 +2757,7 @@
   const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/main/';
   const charCutouts  = { 'UNIT-A': 'alpha-cut.png', 'UNIT-B': 'omega-cut.png', 'UNIT-C': 'delta-cut.png' };
   const charPregenId = { 'UNIT-A': 'alpha',          'UNIT-B': 'omega',          'UNIT-C': 'delta' };
-  const prodPregenId = { 1: 'uni-tee', 2: 'uni-rugby-green', 3: 'uni-rugby-red', 5: 'uni-romper-black', 6: 'uni-romper-pink' };
+  const prodPregenId = { 1: 'uni-tee', 3: 'uni-rugby-red', 5: 'uni-romper-black', 6: 'uni-romper-pink' };
   const tryonCache   = {};  // charId:productId -> output URL
   let   pregenResults = {}; // loaded from pregen-results.json
 
@@ -2814,11 +2773,6 @@
          shopifyUrl: 'https://1de1.co/products/uni-tee',
          garmentDesc: 'black oversized t-shirt with gothic logo',
          variants: { S: 51431795982560, M: 51431796015328, L: 51431796048096, XL: 51431796080864, '2XL': 51431796113632 } },
-    2: { name: 'Uni Rugby Green',  edition: '1 of 75', price: 53, cat: 'polo', layer: 3,
-         cutout: 'Uni_rugby_green_front.webp', back: 'Uni_rugby_green_back.webp',
-         shopifyUrl: 'https://1de1.co/products/uni-rugby-green',
-         garmentDesc: 'green rugby polo with mixed media embroidered patch',
-         variants: { S: 52666505429216, M: 52666505461984, L: 52666505494752, XL: 52666505527520 } },
     3: { name: 'Uni Rugby Red',    edition: '1 of 75', price: 53, cat: 'polo', layer: 3,
          cutout: 'uni-rugby-2.png', back: 'uni-rugby-2-back.png',
          shopifyUrl: 'https://1de1.co/products/uni-rugby-red',
