@@ -3289,7 +3289,7 @@
       const createResp = await fetch('/api/tryon', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ personImage, garmentImage, garmentDesc: p.garmentDesc || 'streetwear piece', ...(p.onePiece ? { category: 'dresses' } : {}) })
+        body: JSON.stringify({ personImage, garmentImage, garmentDesc: p.garmentDesc || 'streetwear piece', ...(p.onePiece ? { category: 'dresses' } : p.category ? { category: p.category } : {}) })
       });
       if (!createResp.ok) throw new Error('HTTP ' + createResp.status);
       const { predictionId } = await createResp.json();
