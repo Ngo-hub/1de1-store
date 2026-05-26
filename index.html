@@ -2833,7 +2833,7 @@
     7: { name: 'Uni Jeans',           edition: '1 of 75', price: 62, cat: 'bottoms', layer: 1,
          cutout: 'Uni_Pants_front.webp', back: 'Uni_Pants_back.webp',
          shopifyUrl: 'https://1de1.co/products/uni-jeans',
-         garmentDesc: 'extremely baggy wide leg denim jeans, very loose fit from hip to ankle, full length covering feet, heavy draping fabric, oversized silhouette, large gothic 1DE1 logo printed on the front thigh',
+         garmentDesc: 'extremely baggy wide leg denim jeans, very loose fit from hip to ankle, full length covering feet, heavy draping fabric, oversized silhouette, large gothic 1DE1 logo printed on the left thigh',
          category: 'lower_body',
          variants: { S: 0, M: 0, L: 0, XL: 0, '2XL': 0 } }
   };
@@ -3259,61 +3259,91 @@
     }
   }
 
+  // ── Live try-on helper — returns result URL or throws ────────────────────────
+  async function runLiveTryOn(personImage, garmentImage, p) {
+    const createResp = await fetch('/api/tryon', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        personImage, garmentImage,
+        garmentDesc: p.garmentDesc || 'streetwear piece',
+        ...(p.onePiece ? { category: 'dresses' } : p.category ? { category: p.category } : {})
+      })
+    });
+    if (!createResp.ok) throw new Error('HTTP ' + createResp.status);
+    const { predictionId } = await createResp.json();
+    if (!predictionId) throw new Error('No predictionId');
+    for (let i = 0; i < 40; i++) {
+      await new Promise(r => setTimeout(r, 3000));
+      const pollResp = await fetch('/api/poll?id=' + predictionId);
+      if (!pollResp.ok) throw new Error('Poll HTTP ' + pollResp.status);
+      const result = await pollResp.json();
+      if (result.status === 'succeeded') {
+        if (!result.imageUrl) throw new Error('No imageUrl in result');
+        return result.imageUrl;
+      }
+      if (result.status === 'failed') throw new Error(result.error || 'Prediction failed');
+    }
+    throw new Error('Polling timed out');
+  }
+
+  // ── callTryOn — single item OR chained combo (bottoms → tops) ────────────────
   async function callTryOn(productId) {
     if (!selectedChar) { console.warn('[1DE1] callTryOn: no character selected'); return; }
-    const cacheKey  = selectedChar + ':' + productId;
-    const pregenKey = charPregenId[selectedChar] + '-' + prodPregenId[productId];
-    console.log('[1DE1] callTryOn — char:', selectedChar, '| productId:', productId, '| pregenKey:', pregenKey, '| pregenResultsKeys:', Object.keys(pregenResults).join(',') || '(empty — still loading?)');
 
-    if (tryonCache[cacheKey]) {
-      console.log('[1DE1] Using cache for', cacheKey);
-      showTryonResult(tryonCache[cacheKey]); return;
-    }
+    // Sort fitted items by layer so bottoms (1) are applied before tops (2+)
+    const fittedSorted = [...fitted].sort((a, b) => (products[a].layer || 2) - (products[b].layer || 2));
 
-    // Check pre-generated results first
-    if (pregenResults[pregenKey]) {
-      const url = pregenResults[pregenKey];
-      console.log('[1DE1] Using pre-generated result for', pregenKey, '→', url);
-      tryonCache[cacheKey] = url;
-      showTryonResult(url);
+    // ── Single item fast path ─────────────────────────────────────────────────
+    if (fittedSorted.length === 1) {
+      const pid       = fittedSorted[0];
+      const cacheKey  = selectedChar + ':' + pid;
+      const pregenKey = charPregenId[selectedChar] + '-' + prodPregenId[pid];
+      console.log('[1DE1] callTryOn single — char:', selectedChar, '| pid:', pid, '| pregenKey:', pregenKey);
+      if (tryonCache[cacheKey])       { showTryonResult(tryonCache[cacheKey]); return; }
+      if (pregenResults[pregenKey])   { tryonCache[cacheKey] = pregenResults[pregenKey]; showTryonResult(pregenResults[pregenKey]); return; }
+      const p = products[pid];
+      setTryonLoading(true);
+      try {
+        const url = await runLiveTryOn(RAW_BASE + charCutouts[selectedChar], RAW_BASE + p.cutout, p);
+        tryonCache[cacheKey] = url;
+        setTryonLoading(false);
+        showTryonResult(url);
+      } catch (err) { console.warn('[1DE1] Try-on failed:', err.message); setTryonLoading(false); }
       return;
     }
-    console.log('[1DE1] No pregen for', pregenKey, '— falling back to live API');
 
-    const p = products[productId];
-    const personImage  = RAW_BASE + charCutouts[selectedChar];
-    const garmentImage = RAW_BASE + p.cutout;
+    // ── Combo path — chain layers ─────────────────────────────────────────────
+    const comboKey = selectedChar + ':combo:' + fittedSorted.join('+');
+    if (tryonCache[comboKey]) { showTryonResult(tryonCache[comboKey]); return; }
+    console.log('[1DE1] Combo try-on — layers:', fittedSorted);
+
     setTryonLoading(true);
     try {
-      // Step 1: create prediction, get ID back immediately
-      const createResp = await fetch('/api/tryon', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ personImage, garmentImage, garmentDesc: p.garmentDesc || 'streetwear piece', ...(p.onePiece ? { category: 'dresses' } : p.category ? { category: p.category } : {}) })
-      });
-      if (!createResp.ok) throw new Error('HTTP ' + createResp.status);
-      const { predictionId } = await createResp.json();
-      if (!predictionId) throw new Error('No predictionId');
-      // Step 2: poll /api/poll every 3 seconds until done
-      let attempts = 0;
-      while (attempts < 40) {
-        await new Promise(r => setTimeout(r, 3000));
-        const pollResp = await fetch('/api/poll?id=' + predictionId);
-        if (!pollResp.ok) throw new Error('Poll HTTP ' + pollResp.status);
-        const result = await pollResp.json();
-        if (result.status === 'succeeded') {
-          if (!result.imageUrl) throw new Error('No imageUrl in result');
-          tryonCache[cacheKey] = result.imageUrl;
-          setTryonLoading(false);
-          showTryonResult(result.imageUrl);
-          return;
+      let personImage = RAW_BASE + charCutouts[selectedChar];
+
+      for (let i = 0; i < fittedSorted.length; i++) {
+        const pid       = fittedSorted[i];
+        const p         = products[pid];
+        const pregenKey = charPregenId[selectedChar] + '-' + prodPregenId[pid];
+
+        // If first layer has a pregen, use it as starting person image (saves one API call)
+        if (i === 0 && pregenResults[pregenKey]) {
+          const local = pregenResults[pregenKey];
+          personImage = local.startsWith('http') ? local : window.location.origin + local;
+          console.log('[1DE1] Combo layer 0 from pregen:', personImage);
+          continue;
         }
-        if (result.status === 'failed') throw new Error(result.error || 'Prediction failed');
-        attempts++;
+
+        console.log('[1DE1] Combo layer', i, '— applying', p.name, 'onto', personImage.slice(0, 60) + '...');
+        personImage = await runLiveTryOn(personImage, RAW_BASE + p.cutout, p);
       }
-      throw new Error('Polling timed out');
+
+      tryonCache[comboKey] = personImage;
+      setTryonLoading(false);
+      showTryonResult(personImage);
     } catch (err) {
-      console.warn('[1DE1] Try-on failed, using fallback:', err.message);
+      console.warn('[1DE1] Combo try-on failed:', err.message);
       setTryonLoading(false);
     }
   }
