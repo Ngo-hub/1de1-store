@@ -37,11 +37,10 @@ const characters = [
 
 const garments = [
   { id: 'uni-tee',          cutout: 'uni-tee-cut.png',                      desc: 'black oversized t-shirt with gothic logo' },
-  { id: 'uni-rugby-green',  cutout: 'Uni_rugby_green_front.webp',            desc: 'green rugby polo with mixed media embroidered patch' },
   { id: 'uni-rugby-red',    cutout: 'uni-rugby-2.png',                       desc: 'red rugby polo with mixed media embroidered patch' },
-  { id: 'uni-long-sleeve',  cutout: 'Uni_LongSleeve_front.webp',             desc: 'black oversized long sleeve shirt with white contrast sleeves, large mixed media graphic print on chest, gothic logo text' },
   { id: 'uni-romper-black', cutout: 'Uni-TieWaistRomper-Front_Black.webp',   desc: 'very short black romper, hemline ends at upper thigh, bare legs below, short sleeves, scoop neckline, ribbed fabric, tied waist', category: 'dresses' },
   { id: 'uni-romper-pink',  cutout: 'Uni-TieWaistRomper-Front_Pink.webp',    desc: 'very short pink romper, hemline ends at upper thigh, bare legs below, short sleeves, scoop neckline, ribbed fabric, tied waist', category: 'dresses' },
+  { id: 'uni-jeans',        cutout: 'Uni_Pants_front.webp',                   desc: 'wide leg denim jeans with mixed media detail', category: 'lower_body' },
 ];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
