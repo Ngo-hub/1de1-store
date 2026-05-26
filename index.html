@@ -2306,11 +2306,6 @@
           <div class="ep-product-name">UNI RUGBY</div>
           <div class="ep-product-edition">1 OF 75</div>
         </div>
-        <div class="ep-product-card">
-          <img class="ep-product-img" src="Uni_LongSleeve_front.webp" alt="UNI LONG SLEEVE">
-          <div class="ep-product-name">UNI L/S</div>
-          <div class="ep-product-edition">1 OF 75</div>
-        </div>
       </div>
       <div class="ep-store-unlock-text" id="ep-store-unlock-text">STORE UNLOCKS JUNE 2</div>
       <button class="ep-enter-store-btn" id="ep-enter-store-btn" onclick="enterStore()">ENTER STORE →</button>
@@ -2653,43 +2648,6 @@
           </div>
         </div>
 
-        <!-- Product 4: Uni Long Sleeve -->
-        <div class="product-card" id="prod-4" onclick="previewItem(4)" data-cat="tops">
-          <div class="product-thumb" onclick="openLightbox(event,4)">
-            <div class="thumb-flip">
-              <div class="thumb-front">
-                <img src="Uni_LongSleeve_front.webp" alt="Uni Long Sleeve" style="width:100%;height:100%;object-fit:contain;display:block;">
-              </div>
-              <div class="thumb-back">
-                <img src="Uni_LongSleeve_black.webp" alt="Uni Long Sleeve back" style="width:100%;height:100%;object-fit:contain;display:block;">
-              </div>
-            </div>
-          </div>
-          <div class="product-info">
-            <div class="product-edition">UNI 001 // 1 OF 75</div>
-            <div class="product-name">Uni Long Sleeve</div>
-            <div class="product-desc">Black long sleeve. Mixed media icon.</div>
-            <div class="product-bottom">
-              <div class="product-price">$44</div>
-              <div class="product-equipped-badge" id="equip-tag-4">EQUIPPED ✓</div>
-              <div class="product-btns">
-                <button class="add-fit-btn" id="fit-4" onclick="addToFit(event, 4)">ADD TO FIT</button>
-              </div>
-            </div>
-            <div class="size-picker" id="size-picker-4">
-              <div class="size-note">⚠ SIZES RUN SMALL — SIZE UP</div>
-              <span class="size-label">SELECT SIZE</span>
-              <div class="size-btns">
-                <button class="size-btn" onclick="selectSize(event,4,'S')">S</button>
-                <button class="size-btn" onclick="selectSize(event,4,'M')">M</button>
-                <button class="size-btn" onclick="selectSize(event,4,'L')">L</button>
-                <button class="size-btn" onclick="selectSize(event,4,'XL')">XL</button>
-                <button class="size-btn" onclick="selectSize(event,4,'2XL')">2XL</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <!-- Product 5: Romper Black -->
         <div class="product-card" id="prod-5" onclick="previewItem(5)" data-cat="tops">
           <div class="product-thumb" onclick="openLightbox(event,5)">
@@ -2840,7 +2798,7 @@
   const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/main/';
   const charCutouts  = { 'UNIT-A': 'alpha-cut.png', 'UNIT-B': 'omega-cut.png', 'UNIT-C': 'delta-cut.png' };
   const charPregenId = { 'UNIT-A': 'alpha',          'UNIT-B': 'omega',          'UNIT-C': 'delta' };
-  const prodPregenId = { 1: 'uni-tee', 2: 'uni-rugby-green', 3: 'uni-rugby-red', 4: 'uni-long-sleeve', 5: 'uni-romper-black', 6: 'uni-romper-pink' };
+  const prodPregenId = { 1: 'uni-tee', 2: 'uni-rugby-green', 3: 'uni-rugby-red', 5: 'uni-romper-black', 6: 'uni-romper-pink' };
   const tryonCache   = {};  // charId:productId -> output URL
   let   pregenResults = {}; // loaded from pregen-results.json
 
@@ -2866,11 +2824,6 @@
          shopifyUrl: 'https://1de1.co/products/uni-rugby-red',
          garmentDesc: 'red rugby polo with mixed media embroidered patch',
          variants: { S: 52666505855200, M: 52666505887968, L: 52666505920736, XL: 52666505953504 } },
-    4: { name: 'Uni Long Sleeve',  edition: '1 of 75', price: 44, cat: 'tops', layer: 2,
-         cutout: 'Uni_LongSleeve_front.webp', back: 'Uni_LongSleeve_black.webp',
-         shopifyUrl: 'https://1de1.co/products/uni-long-sleeve',
-         garmentDesc: 'black oversized long sleeve shirt with white contrast sleeves, large mixed media graphic print on chest, gothic logo text',
-         variants: { S: 52666505068768, M: 52666505101536, L: 52666505134304, XL: 52666505167072, '2XL': 52666505199840 } },
     5: { name: 'Uni Tie Waist Romper Black', edition: '1 of 75', price: 44, cat: 'tops', layer: 2, onePiece: true,
          cutout: 'Uni-TieWaistRomper-Front_Black.webp', back: 'Uni-TieWaistRomper-Back_Black.webp',
          shopifyUrl: 'https://1de1.co/products/uni-tie-waist-romper',
