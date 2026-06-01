@@ -3318,7 +3318,13 @@
     if (tryonCache[comboKey]) { showTryonResult(tryonCache[comboKey]); return; }
     console.log('[1DE1] Combo try-on — layers:', fittedSorted);
 
-    setTryonLoading(true);
+    // Show the base layer pregen immediately so the stage isn't blank while generating
+    const basePregenKey = charPregenId[selectedChar] + '-' + prodPregenId[fittedSorted[0]];
+    if (pregenResults[basePregenKey]) {
+      showTryonResult(pregenResults[basePregenKey]);
+    }
+
+    // Generate full combo silently in background — no loading screen
     try {
       let personImage = RAW_BASE + charCutouts[selectedChar];
 
@@ -3331,20 +3337,17 @@
         if (i === 0 && pregenResults[pregenKey]) {
           const local = pregenResults[pregenKey];
           personImage = local.startsWith('http') ? local : window.location.origin + local;
-          console.log('[1DE1] Combo layer 0 from pregen:', personImage);
           continue;
         }
 
-        console.log('[1DE1] Combo layer', i, '— applying', p.name, 'onto', personImage.slice(0, 60) + '...');
+        console.log('[1DE1] Combo layer', i, '— applying', p.name);
         personImage = await runLiveTryOn(personImage, RAW_BASE + p.cutout, p);
       }
 
       tryonCache[comboKey] = personImage;
-      setTryonLoading(false);
       showTryonResult(personImage);
     } catch (err) {
       console.warn('[1DE1] Combo try-on failed:', err.message);
-      setTryonLoading(false);
     }
   }
 
