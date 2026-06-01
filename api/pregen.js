@@ -39,8 +39,6 @@ const garments = [
   { id: 'uni-tee',          cutout: 'uni-tee-cut.png',                      desc: 'black oversized t-shirt with gothic logo' },
   { id: 'uni-rugby-red',    cutout: 'uni-rugby-2.png',                       desc: 'red rugby polo with mixed media embroidered patch' },
   { id: 'uni-romper-black', cutout: 'Uni-TieWaistRomper-Front_Black.webp',   desc: 'very short black romper, hemline ends at upper thigh, bare legs below, short sleeves, scoop neckline, ribbed fabric, tied waist', category: 'dresses' },
-  { id: 'uni-romper-pink',  cutout: 'Uni-TieWaistRomper-Front_Pink.webp',    desc: 'very short pink romper, hemline ends at upper thigh, bare legs below, short sleeves, scoop neckline, ribbed fabric, tied waist', category: 'dresses' },
-  { id: 'uni-jeans',        cutout: 'Uni_Pants_front.webp',                   desc: 'extremely baggy wide leg denim jeans, very loose fit from hip to ankle, full length covering feet, heavy draping fabric, oversized silhouette, large gothic 1DE1 logo printed on the left thigh', category: 'lower_body' },
 ];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────

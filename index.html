@@ -2301,11 +2301,6 @@
           <div class="ep-product-name">UNI TEE</div>
           <div class="ep-product-edition">1 OF 75</div>
         </div>
-        <div class="ep-product-card">
-          <img class="ep-product-img" src="Uni_Pants_front.webp" alt="UNI JEANS">
-          <div class="ep-product-name">UNI JEANS</div>
-          <div class="ep-product-edition">1 OF 75</div>
-        </div>
       </div>
       <div class="ep-store-unlock-text" id="ep-store-unlock-text">STORE UNLOCKS JUNE 2</div>
       <button class="ep-enter-store-btn" id="ep-enter-store-btn" onclick="enterStore()">ENTER STORE →</button>
@@ -2649,80 +2644,6 @@
           </div>
         </div>
 
-        <!-- Product 6: Romper Pink -->
-        <div class="product-card" id="prod-6" onclick="previewItem(6)" data-cat="tops">
-          <div class="product-thumb" onclick="openLightbox(event,6)">
-            <div class="thumb-flip">
-              <div class="thumb-front">
-                <img src="Uni-TieWaistRomper-Front_Pink.webp" alt="Romper Pink" style="width:100%;height:100%;object-fit:contain;display:block;">
-              </div>
-              <div class="thumb-back">
-                <img src="Uni-TieWaistRomper-Back_Pink.webp" alt="Romper Pink back" style="width:100%;height:100%;object-fit:contain;display:block;">
-              </div>
-            </div>
-          </div>
-          <div class="product-info">
-            <div class="product-edition">UNI 001 // 1 OF 75</div>
-            <div class="product-name">Uni Tie Waist Romper Pink</div>
-            <div class="product-desc">Tie waist romper. Pink. Mixed media detail.</div>
-            <div class="product-bottom">
-              <div class="product-price">$44</div>
-              <div class="product-equipped-badge" id="equip-tag-6">EQUIPPED ✓</div>
-              <div class="product-btns">
-                <button class="add-fit-btn" id="fit-6" onclick="addToFit(event, 6)">ADD TO FIT</button>
-              </div>
-            </div>
-            <div class="size-picker" id="size-picker-6">
-              <div class="size-note">⚠ SIZES RUN SMALL — SIZE UP</div>
-              <span class="size-label">SELECT SIZE</span>
-              <div class="size-btns">
-                <button class="size-btn" onclick="selectSize(event,6,'S')">S</button>
-                <button class="size-btn" onclick="selectSize(event,6,'M')">M</button>
-                <button class="size-btn" onclick="selectSize(event,6,'L')">L</button>
-                <button class="size-btn" onclick="selectSize(event,6,'XL')">XL</button>
-                <button class="size-btn" onclick="selectSize(event,6,'2XL')">2XL</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Product 7: Uni Jeans -->
-        <div class="product-card" id="prod-7" onclick="previewItem(7)" data-cat="bottoms">
-          <div class="product-thumb" onclick="openLightbox(event,7)">
-            <div class="thumb-flip">
-              <div class="thumb-front">
-                <img src="Uni_Pants_front.webp" alt="Uni Jeans" style="width:100%;height:100%;object-fit:contain;display:block;">
-              </div>
-              <div class="thumb-back">
-                <img src="Uni_Pants_back.webp" alt="Uni Jeans back" style="width:100%;height:100%;object-fit:contain;display:block;">
-              </div>
-            </div>
-          </div>
-          <div class="product-info">
-            <div class="product-edition">UNI 001 // 1 OF 75</div>
-            <div class="product-name">Uni Jeans</div>
-            <div class="product-desc">Wide leg denim. Mixed media detail.</div>
-            <div class="product-bottom">
-              <div class="product-price">$62</div>
-              <div class="product-equipped-badge" id="equip-tag-7">EQUIPPED ✓</div>
-              <div class="product-btns">
-                <button class="add-fit-btn" id="fit-7" onclick="addToFit(event, 7)">ADD TO FIT</button>
-              </div>
-            </div>
-            <div class="size-picker" id="size-picker-7">
-              <div class="size-note">⚠ SIZES RUN SMALL — SIZE UP</div>
-              <span class="size-label">SELECT SIZE</span>
-              <div class="size-btns">
-                <button class="size-btn" onclick="selectSize(event,7,'S')">S</button>
-                <button class="size-btn" onclick="selectSize(event,7,'M')">M</button>
-                <button class="size-btn" onclick="selectSize(event,7,'L')">L</button>
-                <button class="size-btn" onclick="selectSize(event,7,'XL')">XL</button>
-                <button class="size-btn" onclick="selectSize(event,7,'2XL')">2XL</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
   </div>
@@ -2799,7 +2720,7 @@
   const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/main/';
   const charCutouts  = { 'UNIT-A': 'alpha-cut.png', 'UNIT-B': 'omega-cut.png', 'UNIT-C': 'delta-cut.png' };
   const charPregenId = { 'UNIT-A': 'alpha',          'UNIT-B': 'omega',          'UNIT-C': 'delta' };
-  const prodPregenId = { 1: 'uni-tee', 3: 'uni-rugby-red', 5: 'uni-romper-black', 6: 'uni-romper-pink', 7: 'uni-jeans' };
+  const prodPregenId = { 1: 'uni-tee', 3: 'uni-rugby-red', 5: 'uni-romper-black' };
   const tryonCache   = {};  // charId:productId -> output URL
   let   pregenResults = {}; // loaded from pregen-results.json
 
@@ -2824,18 +2745,7 @@
          cutout: 'Uni-TieWaistRomper-Front_Black.webp', back: 'Uni-TieWaistRomper-Back_Black.webp',
          shopifyUrl: 'https://1de1.co/products/uni-tie-waist-romper',
          garmentDesc: 'black one-piece short romper, shorts cut ending upper thigh, short sleeves, scoop neckline, ribbed fabric, tied waist, replaces full outfit from shoulder to upper thigh, bare legs visible below shorts',
-         variants: { S: 52666506051808, M: 52666506084576, L: 52666506117344, XL: 52666506150112, '2XL': 52666506182880 } },
-    6: { name: 'Uni Tie Waist Romper Pink', edition: '1 of 75', price: 44, cat: 'tops', layer: 2, onePiece: true,
-         cutout: 'Uni-TieWaistRomper-Front_Pink.webp', back: 'Uni-TieWaistRomper-Back_Pink.webp',
-         shopifyUrl: 'https://1de1.co/products/uni-tie-waist-romper',
-         garmentDesc: 'pink one-piece short romper, shorts cut ending upper thigh, short sleeves, scoop neckline, ribbed fabric, tied waist, replaces full outfit from shoulder to upper thigh, bare legs visible below shorts',
-         variants: { S: 52666506215648, M: 52666506248416, L: 52666506281184, XL: 52666506313952, '2XL': 52666506346720 } },
-    7: { name: 'Uni Jeans',           edition: '1 of 75', price: 62, cat: 'bottoms', layer: 1,
-         cutout: 'Uni_Pants_front.webp', back: 'Uni_Pants_back.webp',
-         shopifyUrl: 'https://1de1.co/products/uni-jeans',
-         garmentDesc: 'extremely baggy wide leg denim jeans, very loose fit from hip to ankle, full length covering feet, heavy draping fabric, oversized silhouette, large gothic 1DE1 logo printed on the left thigh',
-         category: 'lower_body',
-         variants: { S: 52734479270112, M: 52734479302880, L: 52734479335648, XL: 52734479368416, '2XL': 52734479401184 } }
+         variants: { S: 52666506051808, M: 52666506084576, L: 52666506117344, XL: 52666506150112, '2XL': 52666506182880 } }
   };
 
 
