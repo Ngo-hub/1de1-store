@@ -3333,10 +3333,12 @@
         const p         = products[pid];
         const pregenKey = charPregenId[selectedChar] + '-' + prodPregenId[pid];
 
-        // If first layer has a pregen, use it as starting person image (saves one API call)
+        // If first layer has a pregen, use GitHub raw URL so Replicate can fetch it
         if (i === 0 && pregenResults[pregenKey]) {
           const local = pregenResults[pregenKey];
-          personImage = local.startsWith('http') ? local : window.location.origin + local;
+          const filename = local.startsWith('/') ? local.slice(1) : local;
+          personImage = RAW_BASE + filename;
+          console.log('[1DE1] Combo base layer from GitHub raw:', personImage);
           continue;
         }
 
