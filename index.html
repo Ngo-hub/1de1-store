@@ -2453,9 +2453,12 @@
     letter-spacing: 0.05em;
   }
   .lp-size-note {
-    font-family: 'Share Tech Mono', monospace; font-size: 8.5px; letter-spacing: 0.12em;
-    color: #e0a000; text-transform: uppercase;
+    font-family: 'Share Tech Mono', monospace; font-size: 11px; line-height: 1.3;
+    letter-spacing: 0.08em; font-weight: 700;
+    color: #000; background: #ffcf33; text-transform: uppercase;
+    padding: 6px 8px; border-radius: 3px; text-align: center;
   }
+  @media (min-width: 720px) { .lp-size-note { font-size: 12px; } }
   .lp-size-row { display: flex; flex-wrap: wrap; gap: 5px; }
   .lp-size-pill {
     flex: 1 0 auto; min-width: 38px; min-height: 40px;
@@ -2529,6 +2532,106 @@
     color: #fff; text-transform: uppercase; text-align: center;
   }
   .drawer-discount b { color: var(--neon); letter-spacing: 0.2em; }
+
+  /* ── Story section (how it's made) ── */
+  .lp-story {
+    max-width: 880px; margin: 0 auto; padding: 46px 18px 6px; text-align: center;
+  }
+  .lp-story-kicker {
+    font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.32em;
+    color: var(--neon); text-transform: uppercase; margin-bottom: 14px;
+    text-shadow: 0 0 10px rgba(255,46,62,0.5);
+  }
+  .lp-story-title {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: clamp(24px, 7vw, 40px); line-height: 1.05; letter-spacing: 0.02em;
+    text-transform: uppercase; color: #fff; margin-bottom: 18px;
+  }
+  .lp-story-text {
+    font-family: 'Rajdhani', sans-serif; font-weight: 400;
+    font-size: clamp(15px, 4.2vw, 18px); line-height: 1.6; letter-spacing: 0.01em;
+    color: rgba(255,255,255,0.75); max-width: 620px; margin: 0 auto 10px;
+  }
+  .lp-story-text b { color: #fff; font-weight: 600; }
+  .lp-designs {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+    margin: 28px auto 0; max-width: 720px;
+  }
+  .lp-design {
+    position: relative; background: #0d0d0d; border: 1px solid #1c1c1c;
+    border-radius: 6px; overflow: hidden; aspect-ratio: 1/1;
+  }
+  .lp-design img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lp-design-fallback {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: repeating-linear-gradient(45deg,#0d0d0d,#0d0d0d 10px,#111 10px,#111 20px);
+    font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.4); text-align: center; padding: 12px; text-transform: uppercase;
+  }
+  .lp-design-cap {
+    position: absolute; bottom: 8px; left: 8px; z-index: 2;
+    font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.18em;
+    color: var(--neon); background: rgba(0,0,0,0.78); padding: 4px 8px; border-radius: 3px;
+    text-transform: uppercase; border: 1px solid rgba(255,46,62,0.4);
+  }
+  .lp-story-spec {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px;
+    margin: 26px auto 0; max-width: 640px;
+  }
+  .lp-story-spec span {
+    font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.55); text-transform: uppercase;
+  }
+  .lp-story-spec span b { color: var(--neon); }
+  .lp-divider {
+    width: 100%; max-width: 880px; margin: 40px auto 0; height: 1px;
+    background: linear-gradient(90deg, transparent, #2a2a2a, transparent);
+  }
+
+  /* ════ DRESSING ROOM RESKIN — match the clean landing look ════ */
+  #screen-select, #screen-room {
+    background: #050505; color: #fff;
+  }
+  #screen-select { background: radial-gradient(circle at 50% 30%, #140206 0%, #050505 70%); }
+  /* Character select */
+  #screen-select .screen-title { color: var(--neon); letter-spacing: 0.3em; }
+  #screen-select .screen-heading { color: #fff; }
+  #screen-room .room-layout { background: transparent; }
+  #screen-room .room-nav { background: #0b0b0b; border-color: #1c1c1c; }
+  #screen-room .nav-label, #screen-room .nav-item { color: rgba(255,255,255,0.7); }
+  #screen-room .nav-item.active { color: var(--neon); }
+  #screen-room .room-products { background: #0b0b0b; border-color: #1c1c1c; }
+  #screen-room .products-label { color: #fff; }
+  #screen-room .product-card {
+    background: #0d0d0d; border: 1px solid #1c1c1c; border-radius: 6px;
+  }
+  #screen-room .product-card.selected { border-color: var(--neon); }
+  #screen-room .product-thumb { background: #fff; border-radius: 4px; }
+  #screen-room .product-name { color: #fff; }
+  #screen-room .product-desc { color: rgba(255,255,255,0.55); }
+  #screen-room .product-edition { color: var(--neon); }
+  #screen-room .product-price { color: var(--neon); }
+  #screen-room .add-fit-btn {
+    background: #fff; color: #000; border: none; border-radius: 4px; font-weight: 700;
+  }
+  #screen-room .add-fit-btn.equipped { background: var(--neon); color: #000; }
+  #screen-room .size-note {
+    font-size: 11px; font-weight: 700; color: #000; background: #ffcf33;
+    padding: 6px 8px; border-radius: 3px; text-align: center; letter-spacing: 0.06em;
+  }
+  #screen-room .size-btn {
+    background: #161616; border: 1px solid #2a2a2a; color: #ccc; min-height: 40px;
+  }
+  #screen-room .size-btn:hover { border-color: var(--neon); color: #fff; }
+  #screen-room .back-link, #screen-select .back-link { color: rgba(255,255,255,0.6); }
+  #screen-room .back-link:hover, #screen-select .back-link:hover { color: var(--neon); }
+  #screen-room .drop-banner { background: #0d0d0d; border-color: #1c1c1c; }
+  #screen-room .drop-banner-text { color: #fff; }
+  #screen-room .char-preview-mini { border-color: #1c1c1c; }
+  #screen-room .char-preview-mini-name { color: var(--neon); }
+  #screen-select .character-card:hover,
+  #screen-select .character-card.selected { border-color: var(--neon); }
+  #screen-select .character-card::before { background: linear-gradient(180deg, transparent 40%, rgba(255,46,62,0.12) 100%); }
 
   /* Tablet / desktop: 3-up grid, contained hero */
   @media (min-width: 720px) {
@@ -2670,6 +2773,43 @@
         <div class="lp-hero-sub">Limited · Numbered · No Restocks</div>
         <button class="lp-enter-btn" onclick="document.getElementById('lp-products').scrollIntoView({behavior:'smooth'})">ENTER THE DROP ▼</button>
       </div>
+    </section>
+
+    <!-- STORY — how it's made -->
+    <section class="lp-story">
+      <div class="lp-story-kicker">// ONE OF ONE BEFORE IT'S CLOTHING</div>
+      <h2 class="lp-story-title">Hand-Cut From<br>Vintage Archives</h2>
+      <p class="lp-story-text">
+        Every UNI 001 graphic is original mixed-media artwork by <b>Darielis</b> —
+        cut and assembled by hand from <b>vintage magazines</b>. No computer.
+        No shortcuts. Each piece is a one-of-one collage before it ever becomes a garment.
+      </p>
+      <p class="lp-story-text">
+        This drop carries <b>two original designs</b>. Once the run of <b>75</b> is gone,
+        it's gone — no restocks, no reprints.
+      </p>
+
+      <div class="lp-designs">
+        <div class="lp-design">
+          <img src="drop-art.jpg" alt="UNI 001 — Design 01" loading="lazy">
+          <span class="lp-design-cap">DESIGN 01</span>
+        </div>
+        <div class="lp-design">
+          <img src="drop-art-2.jpg" alt="UNI 001 — Design 02" loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="lp-design-fallback" style="display:none;">DESIGN 02<br>DROPPING SOON</div>
+          <span class="lp-design-cap">DESIGN 02</span>
+        </div>
+      </div>
+
+      <div class="lp-story-spec">
+        <span><b>✂</b> HAND-CUT COLLAGE</span>
+        <span><b>◷</b> VINTAGE ARCHIVE</span>
+        <span><b>#</b> 1 OF 75</span>
+        <span><b>✕</b> NO RESTOCKS</span>
+      </div>
+
+      <div class="lp-divider"></div>
     </section>
 
     <!-- PRODUCTS -->
