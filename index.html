@@ -2459,6 +2459,17 @@
     padding: 6px 8px; border-radius: 3px; text-align: center;
   }
   @media (min-width: 720px) { .lp-size-note { font-size: 12px; } }
+  .lp-color-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .lp-color-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #161616; border: 1px solid #2a2a2a; color: #ccc;
+    font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+    cursor: pointer; border-radius: 4px; padding: 8px 10px; min-height: 38px;
+    text-transform: uppercase; transition: all 0.15s;
+  }
+  .lp-color-pill:hover, .lp-color-pill:active { border-color: var(--neon); color: #fff; }
+  .lp-color-pill.sel { border-color: var(--neon); color: #fff; background: #221015; }
+  .lp-sw { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3); display: inline-block; }
   .lp-size-row { display: flex; flex-wrap: wrap; gap: 5px; }
   .lp-size-pill {
     flex: 1 0 auto; min-width: 38px; min-height: 40px;
@@ -2820,13 +2831,19 @@
         <div class="lp-card" id="lp-card-1">
           <div class="lp-card-thumb" onclick="lpFlip(this)">
             <span class="lp-edition-tag">1 OF 75</span>
-            <img class="lp-img-front" src="uni-tee-cut.png" alt="Uni Tee" loading="lazy">
-            <img class="lp-img-back" src="uni-tee-back.png" alt="Uni Tee back" loading="lazy">
+            <img class="lp-img-front" id="lp-front-1" src="uni-tee-cut.png" alt="Uni Tee" loading="lazy"
+                 onerror="if(this.src.indexOf('uni-tee-cut')<0)this.src='uni-tee-cut.png';">
+            <img class="lp-img-back" id="lp-back-1" src="uni-tee-back.png" alt="Uni Tee back" loading="lazy"
+                 onerror="if(this.src.indexOf('uni-tee-back')<0)this.src='uni-tee-back.png';">
             <span class="lp-flip-hint">TAP ⤺</span>
           </div>
           <div class="lp-card-body">
             <div class="lp-card-name">Uni Tee</div>
             <div class="lp-card-price">$44</div>
+            <div class="lp-color-row" id="lp-colors-1">
+              <button class="lp-color-pill sel" onclick="lpPickColor(1,'black',this)"><span class="lp-sw" style="background:#111;"></span>BLACK</button>
+              <button class="lp-color-pill" onclick="lpPickColor(1,'grey',this)"><span class="lp-sw" style="background:#6b6b6b;"></span>GREY</button>
+            </div>
             <div class="lp-size-note">⚠ RUNS SMALL — SIZE UP</div>
             <div class="lp-size-row" id="lp-sizes-1">
               <button class="lp-size-pill" onclick="lpPickSize(1,'S',this)">S</button>
@@ -3229,6 +3246,7 @@
   let selectedCharName = '';
   let previewedItem = null;
   let lpSize = {};   // landing: selected size per product id
+  let lpColor = {};  // landing: selected color per product id (for multi-color products)
   let discountCode = localStorage.getItem('1de1_discount') || '';
 
   // ── CART PERSISTENCE ──
@@ -3261,7 +3279,13 @@
          cutout: 'uni-tee-cut.png', back: 'uni-tee-back.png',
          shopifyUrl: 'https://1de1.co/products/uni-tee',
          garmentDesc: 'black oversized t-shirt with gothic logo',
-         variants: { S: 51431795982560, M: 51431796015328, L: 51431796048096, XL: 51431796080864, '2XL': 51431796113632 } },
+         variants: { S: 51431795982560, M: 51431796015328, L: 51431796048096, XL: 51431796080864, '2XL': 51431796113632 },
+         colors: {
+           black: { label: 'BLACK', front: 'uni-tee-cut.png',   back: 'uni-tee-back.png',
+                    variants: { S: 51431795982560, M: 51431796015328, L: 51431796048096, XL: 51431796080864, '2XL': 51431796113632 } },
+           grey:  { label: 'GREY',  front: 'tee-grey-front.png', back: 'tee-grey-back.png',
+                    variants: { S: 52766292345056, M: 52766292377824, L: 52766292410592, XL: 52766292443360, '2XL': 52766292476128 } }
+         } },
     3: { name: 'Uni Rugby Red',    edition: '1 of 75', price: 53, cat: 'polo', layer: 3,
          cutout: 'uni-rugby-2.png', back: 'uni-rugby-2-back.png',
          shopifyUrl: 'https://1de1.co/products/uni-rugby-red',
@@ -3590,6 +3614,33 @@
     if (btn) btn.classList.add('sel');
   }
 
+  function lpPickColor(id, color, btn) {
+    const p = products[id];
+    if (!p || !p.colors || !p.colors[color]) return;
+    lpColor[id] = color;
+    const row = document.getElementById('lp-colors-' + id);
+    if (row) row.querySelectorAll('.lp-color-pill').forEach(c => c.classList.remove('sel'));
+    if (btn) btn.classList.add('sel');
+    // swap card images
+    const c = p.colors[color];
+    const f = document.getElementById('lp-front-' + id);
+    const b = document.getElementById('lp-back-' + id);
+    if (f) f.src = c.front;
+    if (b) b.src = c.back;
+    // if this item is already in the cart, update its color/variant/thumb to match
+    const item = cart.find(i => i.id === id);
+    if (item) {
+      item.color = color;
+      item.img = c.front;
+      item.name = p.name + ' — ' + c.label;
+      item.variantId = item.size ? (c.variants[item.size] || null) : null;
+      saveCart();
+      updateCartCount();
+      renderDrawer();
+      refreshCardStates();
+    }
+  }
+
   function lpAdd(id) {
     const p = products[id];
     if (!p) return;
@@ -3611,8 +3662,17 @@
       const firstPill = document.querySelector('#lp-sizes-' + id + ' .lp-size-pill');
       if (firstPill) { size = firstPill.textContent.trim(); lpPickSize(id, size, firstPill); }
     }
-    const variantId = p.variants ? (p.variants[size] || null) : null;
-    cart.push({ id, name: p.name, price: p.price, size, variantId });
+    // Resolve color (multi-color products) → variant set + image + label
+    let color = null, variants = p.variants, img = p.cutout, name = p.name;
+    if (p.colors) {
+      color = lpColor[id] || Object.keys(p.colors)[0];
+      const c = p.colors[color];
+      variants = c.variants;
+      img = c.front;
+      name = p.name + ' — ' + c.label;
+    }
+    const variantId = variants ? (variants[size] || null) : null;
+    cart.push({ id, name, price: p.price, size, variantId, color, img });
     saveCart();
 
     // Power-up flash + sticky pulse
@@ -3639,6 +3699,19 @@
       if (inCart && item && item.size) {
         const row = document.getElementById('lp-sizes-' + id);
         if (row) row.querySelectorAll('.lp-size-pill').forEach(pp => pp.classList.toggle('sel', pp.textContent.trim() === item.size));
+      }
+      // mirror selected color (multi-color products)
+      const p = products[id];
+      if (inCart && item && item.color && p && p.colors && p.colors[item.color]) {
+        lpColor[id] = item.color;
+        const crow = document.getElementById('lp-colors-' + id);
+        if (crow) crow.querySelectorAll('.lp-color-pill').forEach(function(cp) {
+          cp.classList.toggle('sel', cp.textContent.trim().toUpperCase().indexOf(p.colors[item.color].label) >= 0);
+        });
+        const f = document.getElementById('lp-front-' + id);
+        const b = document.getElementById('lp-back-' + id);
+        if (f) f.src = p.colors[item.color].front;
+        if (b) b.src = p.colors[item.color].back;
       }
     });
   }
@@ -4019,7 +4092,7 @@
     itemsEl.innerHTML = cart.map(item => {
       const p = products[item.id];
       return `<div class="drawer-item fade-in">
-        <div class="drawer-item-thumb"><img src="${p.cutout}" alt="${item.name}"></div>
+        <div class="drawer-item-thumb"><img src="${item.img || p.cutout}" alt="${item.name}"></div>
         <div class="drawer-item-info">
           <div class="drawer-item-name">${item.name}${item.size ? ' <span style="opacity:.6;font-size:.85em">// ' + item.size + '</span>' : ''}</div>
           <div class="drawer-item-edition">${p.edition.toUpperCase()} // UNI 001</div>
