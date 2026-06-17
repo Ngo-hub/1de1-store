@@ -2249,61 +2249,440 @@
   }
   .mobile-tryon-back:hover { background: rgba(0,0,0,0.85); }
 
+  /* ════════════════════════════════════════════════════════════════
+     ONE-PAGE LANDING REBUILD — mobile-first, cyberpunk black/neon-red
+     ════════════════════════════════════════════════════════════════ */
+  :root {
+    --neon: #ff2e3e;
+    --neon-dim: #b3151f;
+  }
+
+  /* ── Email popup additions ── */
+  .ep-offer-big {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: clamp(20px, 6vw, 30px);
+    line-height: 1.1;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+    text-align: center;
+    margin: 18px 0 20px;
+  }
+  .ep-offer-big span {
+    color: var(--neon);
+    font-size: 0.62em;
+    letter-spacing: 0.14em;
+    display: inline-block;
+    margin-top: 8px;
+    text-shadow: 0 0 12px rgba(255,46,62,0.5);
+  }
+  .ep-skip {
+    display: block;
+    width: 100%;
+    margin-top: 18px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.55);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 14px;
+    cursor: pointer;
+    transition: color 0.2s;
+    min-height: 44px;
+  }
+  .ep-skip:hover, .ep-skip:active { color: #fff; }
+  .ep-code-box {
+    display: block;
+    width: 100%;
+    background: rgba(255,46,62,0.08);
+    border: 1px dashed var(--neon);
+    border-radius: 4px;
+    padding: 16px;
+    margin: 14px 0;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .ep-code-box:hover, .ep-code-box:active { background: rgba(255,46,62,0.16); }
+  .ep-code-value {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(26px, 9vw, 38px);
+    letter-spacing: 0.3em;
+    color: var(--neon);
+    text-align: center;
+    text-shadow: 0 0 14px rgba(255,46,62,0.6);
+  }
+  .ep-code-copy {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    margin-top: 8px;
+  }
+
+  /* ── Landing screen ── */
+  #screen-landing {
+    display: none;
+    background: #050505;
+    color: #fff;
+    padding: 0;
+    min-height: 100vh;
+  }
+  #screen-landing.active { display: block; }
+
+  /* Hero */
+  .lp-hero {
+    position: relative;
+    width: 100%;
+    min-height: 78vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    overflow: hidden;
+    background: #000;
+    text-align: center;
+  }
+  .lp-hero-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
+  }
+  .lp-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(180deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.1) 40%, rgba(5,5,5,0.95) 100%);
+    pointer-events: none;
+  }
+  /* scanline overlay on hero */
+  .lp-hero-scan {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(255,46,62,0.04) 0px, rgba(255,46,62,0.04) 1px, transparent 2px, transparent 4px);
+    mix-blend-mode: screen;
+  }
+  .lp-hero-content { position: relative; z-index: 3; padding: 0 20px 38px; width: 100%; }
+  .lp-hero-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--neon); margin-bottom: 14px;
+    text-shadow: 0 0 10px rgba(255,46,62,0.6);
+  }
+  .lp-hero-title {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: clamp(40px, 16vw, 96px); line-height: 0.92;
+    letter-spacing: 0.02em; text-transform: uppercase; color: #fff;
+    margin-bottom: 10px;
+  }
+  .lp-hero-sub {
+    font-family: 'Rajdhani', sans-serif; font-weight: 500;
+    font-size: clamp(13px, 4vw, 18px); letter-spacing: 0.18em;
+    text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 24px;
+  }
+  .lp-enter-btn {
+    display: inline-block; background: var(--neon); color: #000;
+    font-family: 'Share Tech Mono', monospace; font-weight: 700;
+    font-size: 14px; letter-spacing: 0.22em; text-transform: uppercase;
+    border: none; padding: 16px 34px; min-height: 52px; cursor: pointer;
+    box-shadow: 0 0 22px rgba(255,46,62,0.5); transition: transform 0.15s, box-shadow 0.2s;
+  }
+  .lp-enter-btn:hover, .lp-enter-btn:active { transform: translateY(-1px); box-shadow: 0 0 32px rgba(255,46,62,0.8); }
+
+  /* Products section */
+  .lp-products-wrap { padding: 38px 14px 140px; max-width: 980px; margin: 0 auto; }
+  .lp-section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 18px; padding: 0 2px;
+  }
+  .lp-section-title {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: clamp(22px, 7vw, 34px); letter-spacing: 0.04em;
+    text-transform: uppercase; color: #fff;
+  }
+  .lp-section-meta {
+    font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    letter-spacing: 0.25em; color: var(--neon); text-transform: uppercase;
+  }
+  .lp-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+  }
+  .lp-card {
+    background: #0d0d0d; border: 1px solid #1c1c1c; border-radius: 6px;
+    overflow: hidden; display: flex; flex-direction: column;
+    transition: border-color 0.2s;
+  }
+  .lp-card.added { border-color: var(--neon); }
+  .lp-card-thumb {
+    position: relative; width: 100%; aspect-ratio: 1/1; background: #fff;
+    cursor: pointer; overflow: hidden;
+  }
+  .lp-card-thumb img {
+    width: 100%; height: 100%; object-fit: contain; display: block;
+    transition: opacity 0.25s;
+  }
+  .lp-card-thumb .lp-img-back { position: absolute; inset: 0; opacity: 0; }
+  .lp-card-thumb.flipped .lp-img-front { opacity: 0; }
+  .lp-card-thumb.flipped .lp-img-back { opacity: 1; }
+  .lp-flip-hint {
+    position: absolute; bottom: 6px; right: 6px; z-index: 2;
+    font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 0.15em;
+    color: #000; background: rgba(255,255,255,0.8); padding: 3px 6px; border-radius: 3px;
+    text-transform: uppercase; pointer-events: none;
+  }
+  .lp-edition-tag {
+    position: absolute; top: 6px; left: 6px; z-index: 2;
+    font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 0.12em;
+    color: var(--neon); background: rgba(0,0,0,0.8); padding: 3px 7px; border-radius: 3px;
+    text-transform: uppercase; border: 1px solid rgba(255,46,62,0.4);
+  }
+  .lp-card-body { padding: 12px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .lp-card-name {
+    font-family: 'Rajdhani', sans-serif; font-weight: 600; font-size: 15px;
+    line-height: 1.1; color: #fff; text-transform: uppercase; letter-spacing: 0.01em;
+  }
+  .lp-card-price {
+    font-family: 'Share Tech Mono', monospace; font-size: 15px; color: var(--neon);
+    letter-spacing: 0.05em;
+  }
+  .lp-size-note {
+    font-family: 'Share Tech Mono', monospace; font-size: 11px; line-height: 1.3;
+    letter-spacing: 0.08em; font-weight: 700;
+    color: #000; background: #ffcf33; text-transform: uppercase;
+    padding: 6px 8px; border-radius: 3px; text-align: center;
+  }
+  @media (min-width: 720px) { .lp-size-note { font-size: 12px; } }
+  .lp-color-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .lp-color-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #161616; border: 1px solid #2a2a2a; color: #ccc;
+    font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+    cursor: pointer; border-radius: 4px; padding: 8px 10px; min-height: 38px;
+    text-transform: uppercase; transition: all 0.15s;
+  }
+  .lp-color-pill:hover, .lp-color-pill:active { border-color: var(--neon); color: #fff; }
+  .lp-color-pill.sel { border-color: var(--neon); color: #fff; background: #221015; }
+  .lp-sw { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.3); display: inline-block; }
+  .lp-size-row { display: flex; flex-wrap: wrap; gap: 5px; }
+  .lp-size-pill {
+    flex: 1 0 auto; min-width: 38px; min-height: 40px;
+    background: #161616; border: 1px solid #2a2a2a; color: #ccc;
+    font-family: 'Share Tech Mono', monospace; font-size: 12px; letter-spacing: 0.08em;
+    cursor: pointer; border-radius: 4px; transition: all 0.15s; padding: 0 4px;
+  }
+  .lp-size-pill:hover, .lp-size-pill:active { border-color: var(--neon); color: #fff; }
+  .lp-size-pill.sel { background: var(--neon); border-color: var(--neon); color: #000; font-weight: 700; }
+  .lp-add-btn {
+    margin-top: 2px; width: 100%; min-height: 46px;
+    background: #fff; color: #000; border: none; border-radius: 4px;
+    font-family: 'Share Tech Mono', monospace; font-weight: 700; font-size: 12px;
+    letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .lp-add-btn:hover, .lp-add-btn:active { background: var(--neon); }
+  .lp-add-btn.added { background: var(--neon); color: #000; }
+  .lp-add-btn.flash { animation: powerup 0.5s ease; }
+  @keyframes powerup {
+    0%   { box-shadow: 0 0 0 0 rgba(255,46,62,0.9); transform: scale(1); }
+    40%  { box-shadow: 0 0 0 10px rgba(255,46,62,0); transform: scale(1.05); }
+    100% { box-shadow: 0 0 0 0 rgba(255,46,62,0); transform: scale(1); }
+  }
+
+  /* Optional dressing-room entry */
+  .lp-dressing-cta {
+    margin: 30px auto 0; max-width: 520px; text-align: center;
+    border: 1px solid #1c1c1c; border-radius: 8px; padding: 22px 18px;
+    background: linear-gradient(180deg, #0d0d0d, #070707);
+  }
+  .lp-dressing-cta .lp-dc-label {
+    font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.3em;
+    color: rgba(255,255,255,0.45); text-transform: uppercase; margin-bottom: 10px;
+  }
+  .lp-dressing-btn {
+    display: inline-block; background: none; border: 1px solid var(--neon);
+    color: var(--neon); font-family: 'Share Tech Mono', monospace; font-weight: 700;
+    font-size: 13px; letter-spacing: 0.2em; text-transform: uppercase;
+    padding: 14px 26px; min-height: 48px; cursor: pointer; border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .lp-dressing-btn:hover, .lp-dressing-btn:active { background: var(--neon); color: #000; }
+
+  /* ── Sticky floating LOADOUT button ── */
+  .sticky-loadout {
+    position: fixed; right: 16px; bottom: 16px; z-index: 900;
+    display: none; align-items: center; gap: 10px;
+    background: var(--neon); color: #000; border: none; border-radius: 50px;
+    font-family: 'Share Tech Mono', monospace; font-weight: 700;
+    font-size: 13px; letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 14px 20px; min-height: 54px; cursor: pointer;
+    box-shadow: 0 6px 24px rgba(255,46,62,0.5); transition: transform 0.15s;
+  }
+  .sticky-loadout.show { display: inline-flex; }
+  .sticky-loadout:active { transform: scale(0.96); }
+  .sticky-loadout .sl-count {
+    background: #000; color: var(--neon); border-radius: 50px;
+    min-width: 22px; height: 22px; display: inline-flex; align-items: center;
+    justify-content: center; font-size: 12px; padding: 0 6px;
+  }
+  .sticky-loadout .sl-total { font-size: 14px; }
+  .sticky-loadout.pulse { animation: slpulse 0.4s ease; }
+  @keyframes slpulse { 0%{transform:scale(1);} 50%{transform:scale(1.12);} 100%{transform:scale(1);} }
+
+  /* Discount reminder in drawer */
+  .drawer-discount {
+    margin: 0 0 12px; padding: 12px 14px; border: 1px dashed var(--neon);
+    border-radius: 4px; background: rgba(255,46,62,0.08);
+    font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.1em;
+    color: #fff; text-transform: uppercase; text-align: center;
+  }
+  .drawer-discount b { color: var(--neon); letter-spacing: 0.2em; }
+
+  /* ── Story section (how it's made) ── */
+  .lp-story {
+    max-width: 880px; margin: 0 auto; padding: 46px 18px 6px; text-align: center;
+  }
+  .lp-story-kicker {
+    font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.32em;
+    color: var(--neon); text-transform: uppercase; margin-bottom: 14px;
+    text-shadow: 0 0 10px rgba(255,46,62,0.5);
+  }
+  .lp-story-title {
+    font-family: 'Rajdhani', sans-serif; font-weight: 700;
+    font-size: clamp(24px, 7vw, 40px); line-height: 1.05; letter-spacing: 0.02em;
+    text-transform: uppercase; color: #fff; margin-bottom: 18px;
+  }
+  .lp-story-text {
+    font-family: 'Rajdhani', sans-serif; font-weight: 400;
+    font-size: clamp(15px, 4.2vw, 18px); line-height: 1.6; letter-spacing: 0.01em;
+    color: rgba(255,255,255,0.75); max-width: 620px; margin: 0 auto 10px;
+  }
+  .lp-story-text b { color: #fff; font-weight: 600; }
+  .lp-designs {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+    margin: 28px auto 0; max-width: 720px;
+  }
+  .lp-designs.lp-designs-single { grid-template-columns: 1fr; max-width: 440px; }
+  .lp-design {
+    position: relative; background: #0d0d0d; border: 1px solid #1c1c1c;
+    border-radius: 6px; overflow: hidden; aspect-ratio: 1/1;
+  }
+  .lp-design img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .lp-design-fallback {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: repeating-linear-gradient(45deg,#0d0d0d,#0d0d0d 10px,#111 10px,#111 20px);
+    font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.4); text-align: center; padding: 12px; text-transform: uppercase;
+  }
+  .lp-design-cap {
+    position: absolute; bottom: 8px; left: 8px; z-index: 2;
+    font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.18em;
+    color: var(--neon); background: rgba(0,0,0,0.78); padding: 4px 8px; border-radius: 3px;
+    text-transform: uppercase; border: 1px solid rgba(255,46,62,0.4);
+  }
+  .lp-story-spec {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px;
+    margin: 26px auto 0; max-width: 640px;
+  }
+  .lp-story-spec span {
+    font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.18em;
+    color: rgba(255,255,255,0.55); text-transform: uppercase;
+  }
+  .lp-story-spec span b { color: var(--neon); }
+  .lp-divider {
+    width: 100%; max-width: 880px; margin: 40px auto 0; height: 1px;
+    background: linear-gradient(90deg, transparent, #2a2a2a, transparent);
+  }
+
+  /* ════ DRESSING ROOM RESKIN — match the clean landing look ════ */
+  #screen-select, #screen-room {
+    background: #050505; color: #fff;
+  }
+  #screen-select { background: radial-gradient(circle at 50% 30%, #140206 0%, #050505 70%); }
+  /* Character select */
+  #screen-select .screen-title { color: var(--neon); letter-spacing: 0.3em; }
+  #screen-select .screen-heading { color: #fff; }
+  #screen-room .room-layout { background: transparent; }
+  #screen-room .room-nav { background: #0b0b0b; border-color: #1c1c1c; }
+  #screen-room .nav-label, #screen-room .nav-item { color: rgba(255,255,255,0.7); }
+  #screen-room .nav-item.active { color: var(--neon); }
+  #screen-room .room-products { background: #0b0b0b; border-color: #1c1c1c; }
+  #screen-room .products-label { color: #fff; }
+  #screen-room .product-card {
+    background: #0d0d0d; border: 1px solid #1c1c1c; border-radius: 6px;
+  }
+  #screen-room .product-card.selected { border-color: var(--neon); }
+  #screen-room .product-thumb { background: #fff; border-radius: 4px; }
+  #screen-room .product-name { color: #fff; }
+  #screen-room .product-desc { color: rgba(255,255,255,0.55); }
+  #screen-room .product-edition { color: var(--neon); }
+  #screen-room .product-price { color: var(--neon); }
+  #screen-room .add-fit-btn {
+    background: #fff; color: #000; border: none; border-radius: 4px; font-weight: 700;
+  }
+  #screen-room .add-fit-btn.equipped { background: var(--neon); color: #000; }
+  #screen-room .size-note {
+    font-size: 11px; font-weight: 700; color: #000; background: #ffcf33;
+    padding: 6px 8px; border-radius: 3px; text-align: center; letter-spacing: 0.06em;
+  }
+  #screen-room .size-btn {
+    background: #161616; border: 1px solid #2a2a2a; color: #ccc; min-height: 40px;
+  }
+  #screen-room .size-btn:hover { border-color: var(--neon); color: #fff; }
+  #screen-room .back-link, #screen-select .back-link { color: rgba(255,255,255,0.6); }
+  #screen-room .back-link:hover, #screen-select .back-link:hover { color: var(--neon); }
+  #screen-room .drop-banner { background: #0d0d0d; border-color: #1c1c1c; }
+  #screen-room .drop-banner-text { color: #fff; }
+  #screen-room .char-preview-mini { border-color: #1c1c1c; }
+  #screen-room .char-preview-mini-name { color: var(--neon); }
+  #screen-select .character-card:hover,
+  #screen-select .character-card.selected { border-color: var(--neon); }
+  #screen-select .character-card::before { background: linear-gradient(180deg, transparent 40%, rgba(255,46,62,0.12) 100%); }
+
+  /* Tablet / desktop: 3-up grid, contained hero */
+  @media (min-width: 720px) {
+    .lp-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .lp-hero { min-height: 88vh; }
+    .lp-card-name { font-size: 16px; }
+  }
+  @media (hover: hover) {
+    .lp-card-thumb:hover .lp-img-front { opacity: 0; }
+    .lp-card-thumb:hover .lp-img-back { opacity: 1; }
+  }
+
 </style>
 </head>
 <body>
 
-<!-- EMAIL POPUP -->
+<!-- EMAIL POPUP — skippable 10% offer over the drop -->
 <div id="email-popup-overlay">
   <div class="email-popup">
-    <div class="ep-system-locked">// SYSTEM LOCKED //</div>
+    <div class="ep-system-locked"><span class="blink">▮</span> SYS:ACTIVE // UNI_001</div>
     <div class="ep-logo">1DE1</div>
-    <div class="ep-subtitle">UNI_001 — DROPPING JUNE 2</div>
-    <div class="ep-countdown">
-      <div class="ep-countdown-unit">
-        <span class="ep-countdown-num" id="ep-days">00</span>
-        <span class="ep-countdown-label">DAYS</span>
-      </div>
-      <div class="ep-countdown-sep">:</div>
-      <div class="ep-countdown-unit">
-        <span class="ep-countdown-num" id="ep-hrs">00</span>
-        <span class="ep-countdown-label">HRS</span>
-      </div>
-      <div class="ep-countdown-sep">:</div>
-      <div class="ep-countdown-unit">
-        <span class="ep-countdown-num" id="ep-min">00</span>
-        <span class="ep-countdown-label">MIN</span>
-      </div>
-      <div class="ep-countdown-sep">:</div>
-      <div class="ep-countdown-unit">
-        <span class="ep-countdown-num" id="ep-sec">00</span>
-        <span class="ep-countdown-label">SEC</span>
-      </div>
-    </div>
     <div id="ep-form-section">
-      <div class="ep-form-label">ENTER EMAIL FOR EARLY ACCESS + 10% OFF</div>
+      <div class="ep-offer-big">DROP YOUR EMAIL<br><span>UNLOCK 10% OFF YOUR LOADOUT</span></div>
       <div class="ep-form-row">
-        <input class="ep-input" id="email-popup-field" type="email" placeholder="YOUR@EMAIL.COM" autocomplete="email">
+        <input class="ep-input" id="email-popup-field" type="email" placeholder="YOUR@EMAIL.COM" autocomplete="email" inputmode="email">
         <button class="ep-submit" id="email-popup-btn" onclick="submitEmailPopup()">UNLOCK</button>
       </div>
       <div class="ep-error" id="ep-error"></div>
+      <button class="ep-skip" onclick="enterStore()">SKIP → ENTER WITHOUT CODE</button>
     </div>
     <div class="ep-success" id="email-popup-code">
       <div class="ep-checkmark">✓</div>
       <div class="ep-access-granted">ACCESS GRANTED</div>
-      <div class="ep-code-box">
+      <div class="ep-success-text">10% OFF YOUR FIRST ORDER — USE AT CHECKOUT</div>
+      <button class="ep-code-box" onclick="copyDiscountCode(this)" title="Tap to copy">
         <div class="ep-code-value">UNI10</div>
-      </div>
-      <div class="ep-success-text">10% OFF YOUR FIRST ORDER<br>YOU'LL BE NOTIFIED WHEN WE DROP</div>
-      <div class="ep-products">
-        <div class="ep-product-card">
-          <img class="ep-product-img" src="uni-tee-cut.png" alt="UNI TEE">
-          <div class="ep-product-name">UNI TEE</div>
-          <div class="ep-product-edition">1 OF 75</div>
-        </div>
-      </div>
-      <div class="ep-store-unlock-text" id="ep-store-unlock-text">STORE UNLOCKS JUNE 2</div>
-      <button class="ep-enter-store-btn" id="ep-enter-store-btn" onclick="enterStore()">ENTER STORE →</button>
+        <div class="ep-code-copy" id="copy-label">TAP TO COPY</div>
+      </button>
+      <button class="ep-enter-store-btn" id="ep-enter-store-btn" onclick="enterStore()">ENTER THE DROP →</button>
     </div>
   </div>
   <div class="ep-hud-bar">
@@ -2368,7 +2747,7 @@
     <div class="header-left">
       <span class="blink">▮</span> SYS:ACTIVE &nbsp;|&nbsp; UNI_001
     </div>
-    <a class="header-logo" onclick="showScreen('select')" style="display:flex;align-items:center;"><img src="white_1de1.png" alt="1DE1" style="height:28px;display:block;filter:brightness(0) invert(1);"></a>
+    <a class="header-logo" onclick="showScreen('landing')" style="display:flex;align-items:center;cursor:pointer;"><img src="white_1de1.png" alt="1DE1" style="height:28px;display:block;filter:brightness(0) invert(1);"></a>
     <div class="header-right">
       <button class="about-link" onclick="openAbout()">ABOUT</button>
       <button class="loadout-btn" onclick="toggleDrawer()">
@@ -2389,8 +2768,151 @@
     <span class="hud-line blink">● REC</span>
   </div>
 
+  <!-- ══ SCREEN 0: ONE-PAGE LANDING (default) ══ -->
+  <div id="screen-landing" class="screen active">
+
+    <!-- HERO -->
+    <section class="lp-hero">
+      <img class="lp-hero-media" id="lp-hero-img" src="drop-art.jpg" alt="UNI 001 Drop"
+           onerror="this.style.display='none';document.getElementById('lp-hero-fallback').style.display='flex';">
+      <div class="lp-hero-media" id="lp-hero-fallback" style="display:none;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%, #1a0306 0%, #000 70%);">
+        <img src="white_1de1.png" alt="1DE1" style="width:min(60vw,360px);filter:brightness(0) invert(1);opacity:0.92;">
+      </div>
+      <div class="lp-hero-scan"></div>
+      <div class="lp-hero-content">
+        <div class="lp-hero-tag"><span class="blink">▮</span> SYS:ACTIVE // DROP UNI_001</div>
+        <h1 class="lp-hero-title">UNI 001</h1>
+        <div class="lp-hero-sub">Limited · Numbered · No Restocks</div>
+        <button class="lp-enter-btn" onclick="document.getElementById('lp-products').scrollIntoView({behavior:'smooth'})">ENTER THE DROP ▼</button>
+      </div>
+    </section>
+
+    <!-- STORY — how it's made -->
+    <section class="lp-story">
+      <div class="lp-story-kicker">// ONE OF ONE BEFORE IT'S CLOTHING</div>
+      <h2 class="lp-story-title">Hand-Cut From<br>Vintage Archives</h2>
+      <p class="lp-story-text">
+        Every UNI 001 graphic is original mixed-media artwork by <b>Darielis</b> —
+        cut and assembled by hand from <b>vintage magazines</b>. No computer.
+        No shortcuts. Each piece is a one-of-one collage before it ever becomes a garment.
+      </p>
+      <p class="lp-story-text">
+        One original graphic runs across the entire <b>UNI 001</b> line. Once the run of
+        <b>75</b> is gone, it's gone — no restocks, no reprints.
+      </p>
+
+      <div class="lp-designs lp-designs-single">
+        <div class="lp-design">
+          <img src="drop-art.jpg" alt="UNI 001 — the original graphic" loading="lazy">
+          <span class="lp-design-cap">THE UNI 001 GRAPHIC</span>
+        </div>
+      </div>
+
+      <div class="lp-story-spec">
+        <span><b>✂</b> HAND-CUT COLLAGE</span>
+        <span><b>◷</b> VINTAGE ARCHIVE</span>
+        <span><b>#</b> 1 OF 75</span>
+        <span><b>✕</b> NO RESTOCKS</span>
+      </div>
+
+      <div class="lp-divider"></div>
+    </section>
+
+    <!-- PRODUCTS -->
+    <div class="lp-products-wrap" id="lp-products">
+      <div class="lp-section-head">
+        <div class="lp-section-title">The Drop</div>
+        <div class="lp-section-meta">3 PIECES // 1 OF 75</div>
+      </div>
+
+      <div class="lp-grid">
+
+        <!-- Uni Tee -->
+        <div class="lp-card" id="lp-card-1">
+          <div class="lp-card-thumb" onclick="lpFlip(this)">
+            <span class="lp-edition-tag">1 OF 75</span>
+            <img class="lp-img-front" id="lp-front-1" src="uni-tee-cut.png" alt="Uni Tee" loading="lazy"
+                 onerror="if(this.src.indexOf('uni-tee-cut')<0)this.src='uni-tee-cut.png';">
+            <img class="lp-img-back" id="lp-back-1" src="uni-tee-back.png" alt="Uni Tee back" loading="lazy"
+                 onerror="if(this.src.indexOf('uni-tee-back')<0)this.src='uni-tee-back.png';">
+            <span class="lp-flip-hint">TAP ⤺</span>
+          </div>
+          <div class="lp-card-body">
+            <div class="lp-card-name">Uni Tee</div>
+            <div class="lp-card-price">$44</div>
+            <div class="lp-color-row" id="lp-colors-1">
+              <button class="lp-color-pill sel" onclick="lpPickColor(1,'black',this)"><span class="lp-sw" style="background:#111;"></span>BLACK</button>
+              <button class="lp-color-pill" onclick="lpPickColor(1,'grey',this)"><span class="lp-sw" style="background:#6b6b6b;"></span>GREY</button>
+            </div>
+            <div class="lp-size-note">⚠ RUNS SMALL — SIZE UP</div>
+            <div class="lp-size-row" id="lp-sizes-1">
+              <button class="lp-size-pill" onclick="lpPickSize(1,'S',this)">S</button>
+              <button class="lp-size-pill" onclick="lpPickSize(1,'M',this)">M</button>
+              <button class="lp-size-pill" onclick="lpPickSize(1,'L',this)">L</button>
+              <button class="lp-size-pill" onclick="lpPickSize(1,'XL',this)">XL</button>
+              <button class="lp-size-pill" onclick="lpPickSize(1,'2XL',this)">2XL</button>
+            </div>
+            <button class="lp-add-btn" id="lp-add-1" onclick="lpAdd(1)">+ ADD TO FIT</button>
+          </div>
+        </div>
+
+        <!-- Uni Rugby Red -->
+        <div class="lp-card" id="lp-card-3">
+          <div class="lp-card-thumb" onclick="lpFlip(this)">
+            <span class="lp-edition-tag">1 OF 75</span>
+            <img class="lp-img-front" src="uni-rugby-2.png" alt="Uni Rugby Red" loading="lazy">
+            <img class="lp-img-back" src="uni-rugby-2-back.png" alt="Uni Rugby Red back" loading="lazy">
+            <span class="lp-flip-hint">TAP ⤺</span>
+          </div>
+          <div class="lp-card-body">
+            <div class="lp-card-name">Uni Rugby Red</div>
+            <div class="lp-card-price">$53</div>
+            <div class="lp-size-note">⚠ RUNS SMALL — SIZE UP</div>
+            <div class="lp-size-row" id="lp-sizes-3">
+              <button class="lp-size-pill" onclick="lpPickSize(3,'S',this)">S</button>
+              <button class="lp-size-pill" onclick="lpPickSize(3,'M',this)">M</button>
+              <button class="lp-size-pill" onclick="lpPickSize(3,'L',this)">L</button>
+              <button class="lp-size-pill" onclick="lpPickSize(3,'XL',this)">XL</button>
+            </div>
+            <button class="lp-add-btn" id="lp-add-3" onclick="lpAdd(3)">+ ADD TO FIT</button>
+          </div>
+        </div>
+
+        <!-- Romper Black -->
+        <div class="lp-card" id="lp-card-5">
+          <div class="lp-card-thumb" onclick="lpFlip(this)">
+            <span class="lp-edition-tag">1 OF 75</span>
+            <img class="lp-img-front" src="romper-front.jpg" alt="Uni Tie Waist Romper Black" loading="lazy">
+            <img class="lp-img-back" src="romper-back.jpg" alt="Romper back" loading="lazy">
+            <span class="lp-flip-hint">TAP ⤺</span>
+          </div>
+          <div class="lp-card-body">
+            <div class="lp-card-name">Uni Tie Waist Romper</div>
+            <div class="lp-card-price">$44</div>
+            <div class="lp-size-note">⚠ RUNS SMALL — SIZE UP</div>
+            <div class="lp-size-row" id="lp-sizes-5">
+              <button class="lp-size-pill" onclick="lpPickSize(5,'S',this)">S</button>
+              <button class="lp-size-pill" onclick="lpPickSize(5,'M',this)">M</button>
+              <button class="lp-size-pill" onclick="lpPickSize(5,'L',this)">L</button>
+              <button class="lp-size-pill" onclick="lpPickSize(5,'XL',this)">XL</button>
+              <button class="lp-size-pill" onclick="lpPickSize(5,'2XL',this)">2XL</button>
+            </div>
+            <button class="lp-add-btn" id="lp-add-5" onclick="lpAdd(5)">+ ADD TO FIT</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Optional dressing room -->
+      <div class="lp-dressing-cta">
+        <div class="lp-dc-label">// OPTIONAL — GAME MODE</div>
+        <button class="lp-dressing-btn" onclick="showScreen('select')">⛶ TRY THE FIT — ENTER DRESSING ROOM</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ══ SCREEN 1: CHARACTER SELECT ══ -->
-  <div id="screen-select" class="screen active">
+  <div id="screen-select" class="screen">
     <div style="margin-bottom:24px;background:#000000;display:inline-block;padding:12px 24px;border-radius:4px;"><img src="white_1de1.png" alt="1DE1" style="height:clamp(40px,6vw,72px);display:block;margin:0 auto;filter:brightness(0) invert(1);"></div>
     <div class="screen-title">— Select your player —</div>
     <div class="screen-heading">Choose Your Character</div>
@@ -2612,10 +3134,10 @@
           <div class="product-thumb" onclick="openLightbox(event,5)">
             <div class="thumb-flip">
               <div class="thumb-front">
-                <img src="Uni-TieWaistRomper-Front_Black.webp" alt="Romper Black" style="width:100%;height:100%;object-fit:contain;display:block;">
+                <img src="romper-front.jpg" alt="Romper Black" style="width:100%;height:100%;object-fit:contain;display:block;">
               </div>
               <div class="thumb-back">
-                <img src="Uni-TieWaistRomper-Back_Black.webp" alt="Romper Black back" style="width:100%;height:100%;object-fit:contain;display:block;">
+                <img src="romper-back.jpg" alt="Romper Black back" style="width:100%;height:100%;object-fit:contain;display:block;">
               </div>
             </div>
           </div>
@@ -2688,6 +3210,12 @@
 
 </div><!-- end #app -->
 
+<!-- STICKY FLOATING LOADOUT (mobile thumb reach) -->
+<button class="sticky-loadout" id="sticky-loadout" onclick="toggleDrawer()">
+  LOADOUT <span class="sl-count" id="sticky-count">0</span>
+  <span class="sl-total" id="sticky-total">$0</span>
+</button>
+
 <!-- LOADOUT DRAWER -->
 <div class="drawer-backdrop" id="drawer-backdrop" onclick="closeDrawer()"></div>
 <div class="loadout-drawer" id="loadout-drawer">
@@ -2699,22 +3227,38 @@
     <div class="empty-loadout" style="padding:48px 0;">No items equipped.</div>
   </div>
   <div class="drawer-footer">
+    <div class="drawer-discount" id="drawer-discount" style="display:none;">10% UNLOCKED — code <b>UNI10</b> applied at checkout</div>
     <div class="drawer-total">
       <span>Total</span>
       <span id="drawer-total">$0</span>
     </div>
-    <button class="checkout-btn" id="checkout-btn" onclick="checkout()" disabled>CHECKOUT &nbsp;▶</button>
+    <button class="checkout-btn" id="checkout-btn" onclick="checkout()" disabled>ENTER REAL WORLD &nbsp;▶</button>
     <div class="drawer-note">Ships worldwide &nbsp;·&nbsp; UNI 001 — NO RESTOCK</div>
   </div>
 </div>
 
 <script>
   // ── STATE ──
+  const DISCOUNT_CODE = 'UNI10';
   let cart   = [];   // purchase items (ADD TO CART flow)
   let fitted = new Set(); // visually equipped IDs (ADD TO FIT flow)
   let selectedChar = null;
   let selectedCharName = '';
   let previewedItem = null;
+  let lpSize = {};   // landing: selected size per product id
+  let lpColor = {};  // landing: selected color per product id (for multi-color products)
+  let discountCode = localStorage.getItem('1de1_discount') || '';
+
+  // ── CART PERSISTENCE ──
+  function saveCart() {
+    try { localStorage.setItem('1de1_cart', JSON.stringify(cart)); } catch (e) {}
+  }
+  function loadCart() {
+    try {
+      const raw = localStorage.getItem('1de1_cart');
+      if (raw) cart = JSON.parse(raw) || [];
+    } catch (e) { cart = []; }
+  }
 
   // ── TRY-ON ──
   const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/main/';
@@ -2735,17 +3279,23 @@
          cutout: 'uni-tee-cut.png', back: 'uni-tee-back.png',
          shopifyUrl: 'https://1de1.co/products/uni-tee',
          garmentDesc: 'black oversized t-shirt with gothic logo',
-         variants: { S: 51431795982560, M: 51431796015328, L: 51431796048096, XL: 51431796080864, '2XL': 51431796113632 } },
+         variants: { S: 51431795982560, M: 51431796015328, L: 51431796048096, XL: 51431796080864, '2XL': 51431796113632 },
+         colors: {
+           black: { label: 'BLACK', front: 'uni-tee-cut.png',   back: 'uni-tee-back.png',
+                    variants: { S: 51431795982560, M: 51431796015328, L: 51431796048096, XL: 51431796080864, '2XL': 51431796113632 } },
+           grey:  { label: 'GREY',  front: 'tee-grey-front.webp', back: 'tee-grey-back.webp',
+                    variants: { S: 52766292345056, M: 52766292377824, L: 52766292410592, XL: 52766292443360, '2XL': 52766292476128 } }
+         } },
     3: { name: 'Uni Rugby Red',    edition: '1 of 75', price: 53, cat: 'polo', layer: 3,
          cutout: 'uni-rugby-2.png', back: 'uni-rugby-2-back.png',
          shopifyUrl: 'https://1de1.co/products/uni-rugby-red',
          garmentDesc: 'red rugby polo with mixed media embroidered patch',
          variants: { S: 52666505855200, M: 52666505887968, L: 52666505920736, XL: 52666505953504 } },
     5: { name: 'Uni Tie Waist Romper Black', edition: '1 of 75', price: 44, cat: 'tops', layer: 2, onePiece: true,
-         cutout: 'Uni-TieWaistRomper-Front_Black.webp', back: 'Uni-TieWaistRomper-Back_Black.webp',
+         cutout: 'romper-front.jpg', back: 'romper-back.jpg',
          shopifyUrl: 'https://1de1.co/products/uni-tie-waist-romper',
          garmentDesc: 'black one-piece short romper, shorts cut ending upper thigh, short sleeves, scoop neckline, ribbed fabric, tied waist, replaces full outfit from shoulder to upper thigh, bare legs visible below shorts',
-         variants: { S: 52666506051808, M: 52666506084576, L: 52666506117344, XL: 52666506150112, '2XL': 52666506182880 } }
+         variants: { S: 53057785233632, M: 53057785266400, L: 53057785299168, XL: 53057785331936, '2XL': 53057785364704 } }
   };
 
 
@@ -2755,12 +3305,12 @@
 
     function proceedToApp() {
       document.getElementById('app').classList.add('visible');
-      // GATE DISABLED — store is live. Re-enable by uncommenting the block below.
-      // if (sessionStorage.getItem('de1_unlocked') !== '1') {
-      //   setTimeout(() => {
-      //     document.getElementById('email-popup-overlay').classList.add('visible');
-      //   }, 400);
-      // }
+      // Skippable 10% offer — show once per browser (returning visitors go straight in)
+      if (localStorage.getItem('1de1_email_popup') !== 'done') {
+        setTimeout(() => {
+          document.getElementById('email-popup-overlay').classList.add('visible');
+        }, 400);
+      }
     }
 
     function exitIntro() {
@@ -2889,66 +3439,42 @@
       })
     });
 
-    localStorage.setItem('1de1_email_popup', 'submitted');
+    // Unlock the discount — persist so the drawer reminder + auto-apply works
+    discountCode = DISCOUNT_CODE;
+    try { localStorage.setItem('1de1_discount', DISCOUNT_CODE); } catch (e) {}
+    localStorage.setItem('1de1_email_popup', 'done');
+    renderDrawer();
     document.getElementById('ep-form-section').style.display = 'none';
     const successEl = document.getElementById('email-popup-code');
     successEl.style.display = 'flex';
   }
 
   function copyDiscountCode(box) {
-    navigator.clipboard.writeText('UNI10').then(function() {
-      const label = document.getElementById('copy-label');
-      label.textContent = 'COPIED!';
-      label.style.color = 'var(--accent)';
-      setTimeout(function() {
-        label.textContent = 'TAP TO COPY';
-        label.style.color = '';
-      }, 2000);
-    }).catch(function() {
-      // Fallback for browsers without clipboard API
-      const label = document.getElementById('copy-label');
-      label.textContent = 'CODE: UNI10';
-    });
+    const label = document.getElementById('copy-label');
+    function ok() {
+      if (!label) return;
+      label.textContent = 'COPIED ✓';
+      label.style.color = 'var(--neon)';
+      setTimeout(function() { label.textContent = 'TAP TO COPY'; label.style.color = ''; }, 2000);
+    }
+    try {
+      navigator.clipboard.writeText(DISCOUNT_CODE).then(ok).catch(function() {
+        if (label) label.textContent = 'CODE: ' + DISCOUNT_CODE;
+      });
+    } catch (e) {
+      if (label) label.textContent = 'CODE: ' + DISCOUNT_CODE;
+    }
   }
 
   function enterStore() {
     sessionStorage.setItem('de1_unlocked', '1');
+    localStorage.setItem('1de1_email_popup', 'done'); // don't nag again (covers SKIP)
     const overlay = document.getElementById('email-popup-overlay');
     overlay.style.transition = 'opacity 0.8s ease';
     overlay.style.opacity = '0';
     overlay.style.pointerEvents = 'none';
     setTimeout(() => { overlay.style.display = 'none'; }, 800);
   }
-
-  // ── COUNTDOWN TIMER ──
-  (function() {
-    const target = new Date('2026-06-02T00:00:00-04:00').getTime();
-    function pad(n) { return String(n).padStart(2, '0'); }
-    function tick() {
-      const diff = target - Date.now();
-      if (diff <= 0) {
-        document.getElementById('ep-days').textContent = '00';
-        document.getElementById('ep-hrs').textContent  = '00';
-        document.getElementById('ep-min').textContent  = '00';
-        document.getElementById('ep-sec').textContent  = '00';
-        const unlockText = document.getElementById('ep-store-unlock-text');
-        const enterBtn   = document.getElementById('ep-enter-store-btn');
-        if (unlockText) unlockText.style.display = 'none';
-        if (enterBtn)   enterBtn.style.display   = 'inline-block';
-        return;
-      }
-      const days = Math.floor(diff / 86400000);
-      const hrs  = Math.floor((diff % 86400000) / 3600000);
-      const min  = Math.floor((diff % 3600000)  / 60000);
-      const sec  = Math.floor((diff % 60000)    / 1000);
-      document.getElementById('ep-days').textContent = pad(days);
-      document.getElementById('ep-hrs').textContent  = pad(hrs);
-      document.getElementById('ep-min').textContent  = pad(min);
-      document.getElementById('ep-sec').textContent  = pad(sec);
-    }
-    tick();
-    setInterval(tick, 1000);
-  })();
 
   // ── SCREEN MANAGEMENT ──
   function showScreen(name) {
@@ -3075,6 +3601,121 @@
     document.getElementById('prod-' + id).classList.add('selected');
   }
 
+  // ── LANDING FAST-LANE (cart only, no dressing-room required) ──
+  function lpFlip(thumbEl) {
+    if (window.matchMedia('(hover: hover)').matches) return; // desktop uses :hover
+    thumbEl.classList.toggle('flipped');
+  }
+
+  function lpPickSize(id, size, btn) {
+    lpSize[id] = size;
+    const row = document.getElementById('lp-sizes-' + id);
+    if (row) row.querySelectorAll('.lp-size-pill').forEach(p => p.classList.remove('sel'));
+    if (btn) btn.classList.add('sel');
+  }
+
+  function lpPickColor(id, color, btn) {
+    const p = products[id];
+    if (!p || !p.colors || !p.colors[color]) return;
+    lpColor[id] = color;
+    const row = document.getElementById('lp-colors-' + id);
+    if (row) row.querySelectorAll('.lp-color-pill').forEach(c => c.classList.remove('sel'));
+    if (btn) btn.classList.add('sel');
+    // swap card images
+    const c = p.colors[color];
+    const f = document.getElementById('lp-front-' + id);
+    const b = document.getElementById('lp-back-' + id);
+    if (f) f.src = c.front;
+    if (b) b.src = c.back;
+    // if this item is already in the cart, update its color/variant/thumb to match
+    const item = cart.find(i => i.id === id);
+    if (item) {
+      item.color = color;
+      item.img = c.front;
+      item.name = p.name + ' — ' + c.label;
+      item.variantId = item.size ? (c.variants[item.size] || null) : null;
+      saveCart();
+      updateCartCount();
+      renderDrawer();
+      refreshCardStates();
+    }
+  }
+
+  function lpAdd(id) {
+    const p = products[id];
+    if (!p) return;
+    const btn = document.getElementById('lp-add-' + id);
+
+    // Toggle off if already in cart
+    if (cart.find(i => i.id === id)) {
+      cart = cart.filter(i => i.id !== id);
+      saveCart();
+      refreshCardStates();
+      updateCartCount();
+      renderDrawer();
+      return;
+    }
+
+    // Require a size — default to first available if none picked
+    let size = lpSize[id];
+    if (!size) {
+      const firstPill = document.querySelector('#lp-sizes-' + id + ' .lp-size-pill');
+      if (firstPill) { size = firstPill.textContent.trim(); lpPickSize(id, size, firstPill); }
+    }
+    // Resolve color (multi-color products) → variant set + image + label
+    let color = null, variants = p.variants, img = p.cutout, name = p.name;
+    if (p.colors) {
+      color = lpColor[id] || Object.keys(p.colors)[0];
+      const c = p.colors[color];
+      variants = c.variants;
+      img = c.front;
+      name = p.name + ' — ' + c.label;
+    }
+    const variantId = variants ? (variants[size] || null) : null;
+    cart.push({ id, name, price: p.price, size, variantId, color, img });
+    saveCart();
+
+    // Power-up flash + sticky pulse
+    if (btn) { btn.classList.add('flash'); setTimeout(() => btn.classList.remove('flash'), 500); }
+    const sticky = document.getElementById('sticky-loadout');
+    if (sticky) { sticky.classList.add('pulse'); setTimeout(() => sticky.classList.remove('pulse'), 400); }
+
+    refreshCardStates();
+    updateCartCount();
+    renderDrawer();
+  }
+
+  // Sync all card button states (landing + dressing room) with the cart
+  function refreshCardStates() {
+    [1, 3, 5].forEach(function(id) {
+      const inCart = !!cart.find(i => i.id === id);
+      const item   = cart.find(i => i.id === id);
+      const lpBtn  = document.getElementById('lp-add-' + id);
+      const lpCard = document.getElementById('lp-card-' + id);
+      if (lpBtn)  lpBtn.textContent = inCart ? ('ADDED ✓' + (item && item.size ? ' (' + item.size + ')' : '')) : '+ ADD TO FIT';
+      if (lpBtn)  lpBtn.classList.toggle('added', inCart);
+      if (lpCard) lpCard.classList.toggle('added', inCart);
+      // mirror selected size pill
+      if (inCart && item && item.size) {
+        const row = document.getElementById('lp-sizes-' + id);
+        if (row) row.querySelectorAll('.lp-size-pill').forEach(pp => pp.classList.toggle('sel', pp.textContent.trim() === item.size));
+      }
+      // mirror selected color (multi-color products)
+      const p = products[id];
+      if (inCart && item && item.color && p && p.colors && p.colors[item.color]) {
+        lpColor[id] = item.color;
+        const crow = document.getElementById('lp-colors-' + id);
+        if (crow) crow.querySelectorAll('.lp-color-pill').forEach(function(cp) {
+          cp.classList.toggle('sel', cp.textContent.trim().toUpperCase().indexOf(p.colors[item.color].label) >= 0);
+        });
+        const f = document.getElementById('lp-front-' + id);
+        const b = document.getElementById('lp-back-' + id);
+        if (f) f.src = p.colors[item.color].front;
+        if (b) b.src = p.colors[item.color].back;
+      }
+    });
+  }
+
   function filterCategory(cat) {
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     event.currentTarget.classList.add('active');
@@ -3100,6 +3741,7 @@
       // Remove from visual fit AND purchase cart
       fitted.delete(id);
       cart = cart.filter(i => i.id !== id);
+      saveCart();
       clearTryonResult();
       hideSizePickers();
       if (btn)   { btn.textContent = 'ADD TO FIT'; btn.classList.remove('equipped'); }
@@ -3109,6 +3751,7 @@
       updateEquipVisuals();
       updateWearingText();
       renderDrawer();
+      refreshCardStates();
     } else {
       // Show size picker (toggle)
       const picker = document.getElementById('size-picker-' + id);
@@ -3132,8 +3775,10 @@
     if (!cart.find(i => i.id === id)) {
       cart.push({ id, name: p.name, price: p.price, size, variantId });
     }
+    saveCart();
     updateCartCount();
     renderDrawer();
+    refreshCardStates();
 
     // Add to visual fit + trigger try-on
     const btn   = document.getElementById('fit-' + id);
@@ -3373,14 +4018,36 @@
 
   function removeItem(id) {
     cart = cart.filter(i => i.id !== id);
+    // also un-equip in dressing room if present
+    if (fitted.has(id)) {
+      fitted.delete(id);
+      const btn = document.getElementById('fit-' + id);
+      const badge = document.getElementById('equip-tag-' + id);
+      if (btn) { btn.textContent = 'ADD TO FIT'; btn.classList.remove('equipped'); }
+      if (badge) badge.style.display = 'none';
+      updateEquipVisuals(); updateWearingText();
+    }
+    saveCart();
     updateCartCount();
     renderDrawer();
+    refreshCardStates();
   }
 
   function updateCartCount() {
-    document.getElementById('cart-count').textContent = cart.length;
+    const count = cart.length;
+    const total = cart.reduce((s, i) => s + i.price, 0);
+    const cc = document.getElementById('cart-count');
+    if (cc) cc.textContent = count;
     const btn = document.querySelector('.loadout-btn');
-    if (btn) btn.classList.toggle('has-items', cart.length > 0);
+    if (btn) btn.classList.toggle('has-items', count > 0);
+
+    // Sticky floating loadout
+    const sticky = document.getElementById('sticky-loadout');
+    const sCount = document.getElementById('sticky-count');
+    const sTotal = document.getElementById('sticky-total');
+    if (sCount) sCount.textContent = count;
+    if (sTotal) sTotal.textContent = '$' + total;
+    if (sticky) sticky.classList.toggle('show', count > 0);
   }
 
   // ── ABOUT MODAL ──
@@ -3410,19 +4077,22 @@
     const itemsEl     = document.getElementById('drawer-items');
     const totalEl     = document.getElementById('drawer-total');
     const checkoutBtn = document.getElementById('checkout-btn');
+    const discEl      = document.getElementById('drawer-discount');
     if (!itemsEl) return;
+
+    if (discEl) discEl.style.display = discountCode ? 'block' : 'none';
 
     if (cart.length === 0) {
       itemsEl.innerHTML = '<div class="empty-loadout" style="padding:48px 0;">No items equipped.</div>';
       if (totalEl) totalEl.textContent = '$0';
-      if (checkoutBtn) { checkoutBtn.disabled = true; checkoutBtn.textContent = 'CHECKOUT ▶'; }
+      if (checkoutBtn) { checkoutBtn.disabled = true; checkoutBtn.textContent = 'ENTER REAL WORLD ▶'; }
       return;
     }
 
     itemsEl.innerHTML = cart.map(item => {
       const p = products[item.id];
       return `<div class="drawer-item fade-in">
-        <div class="drawer-item-thumb"><img src="${p.cutout}" alt="${item.name}"></div>
+        <div class="drawer-item-thumb"><img src="${item.img || p.cutout}" alt="${item.name}"></div>
         <div class="drawer-item-info">
           <div class="drawer-item-name">${item.name}${item.size ? ' <span style="opacity:.6;font-size:.85em">// ' + item.size + '</span>' : ''}</div>
           <div class="drawer-item-edition">${p.edition.toUpperCase()} // UNI 001</div>
@@ -3434,7 +4104,7 @@
 
     var total = cart.reduce((s, i) => s + i.price, 0);
     if (totalEl) totalEl.textContent = '$' + total;
-    if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.textContent = 'CHECKOUT — $' + total + ' ▶'; }
+    if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.textContent = 'ENTER REAL WORLD — $' + total + ' ▶'; }
   }
 
   function checkout() {
@@ -3442,9 +4112,11 @@
     const parts = cart.filter(i => i.variantId).map(i => i.variantId + ':1');
     console.log('[1DE1] Cart items:', cart);
     console.log('[1DE1] Variant parts:', parts);
-    const url = parts.length > 0
+    let url = parts.length > 0
       ? 'https://1de1.co/cart/' + parts.join(',')
       : 'https://1de1.co/cart';
+    // Auto-apply unlocked discount code at checkout
+    if (discountCode) url += '?discount=' + encodeURIComponent(discountCode);
     console.log('[1DE1] Checkout URL:', url);
     window.open(url, '_blank');
   }
@@ -3477,6 +4149,20 @@
     if (e.key === 'Escape') document.getElementById('lightbox-overlay').classList.remove('visible');
   });
 
+  // ── INIT — restore persisted cart + sync all UI ──
+  (function initStore() {
+    loadCart();
+    // restore dressing-room equipped states for any persisted cart items
+    cart.forEach(function(item) {
+      const btn = document.getElementById('fit-' + item.id);
+      const badge = document.getElementById('equip-tag-' + item.id);
+      if (btn) { btn.textContent = 'EQUIPPED ✓' + (item.size ? ' (' + item.size + ')' : ''); btn.classList.add('equipped'); }
+      if (badge) badge.style.display = 'block';
+    });
+    updateCartCount();
+    renderDrawer();
+    refreshCardStates();
+  })();
 
 </script>
 </body>
