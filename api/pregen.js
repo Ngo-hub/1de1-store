@@ -17,7 +17,7 @@ const path = require('path');
 const https = require('https');
 
 const TOKEN    = process.env.REPLICATE_TOKEN;
-const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/drop-01/';
+const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/main/';
 const VERSION  = 'c871bb9b046607b680449ecbae55fd8c6d945e0a1948644bf2361b3d021d3ff4';
 const OUT_FILE = path.join(__dirname, '..', 'pregen-results.json');
 const REPO_DIR = path.join(__dirname, '..');
