@@ -2939,6 +2939,35 @@
           </div>
         </div>
 
+        <!-- Uni Hoodie -->
+        <div class="lp-card" id="lp-card-3">
+          <div class="lp-card-thumb" onclick="lpFlip(this)">
+            <span class="lp-edition-tag">1 OF 75</span>
+            <img class="lp-img-front" id="lp-front-3" src="hoodie-black-front.jpg" alt="Uni Hoodie" loading="lazy">
+            <img class="lp-img-back" id="lp-back-3" src="hoodie-black-back.jpg" alt="Uni Hoodie back" loading="lazy">
+            <span class="lp-flip-hint">TAP ⤺</span>
+          </div>
+          <div class="lp-card-body">
+            <div class="lp-card-name">Uni Hoodie</div>
+            <div class="lp-card-price">$71</div>
+            <div class="lp-color-row" id="lp-colors-3">
+              <button class="lp-color-pill sel" onclick="lpPickColor(3,'black',this)"><span class="lp-sw" style="background:#111;"></span>BLACK</button>
+              <button class="lp-color-pill" onclick="lpPickColor(3,'skyblue',this)"><span class="lp-sw" style="background:#bcd6e8;"></span>SKY BLUE</button>
+              <button class="lp-color-pill" onclick="lpPickColor(3,'green',this)"><span class="lp-sw" style="background:#244a33;"></span>DARK GREEN</button>
+              <button class="lp-color-pill" onclick="lpPickColor(3,'pink',this)"><span class="lp-sw" style="background:#e0a6c6;"></span>PINK</button>
+            </div>
+            <div class="lp-size-note">⚠ RUNS SMALL — SIZE UP</div>
+            <div class="lp-size-row" id="lp-sizes-3">
+              <button class="lp-size-pill" onclick="lpPickSize(3,'S',this)">S</button>
+              <button class="lp-size-pill" onclick="lpPickSize(3,'M',this)">M</button>
+              <button class="lp-size-pill" onclick="lpPickSize(3,'L',this)">L</button>
+              <button class="lp-size-pill" onclick="lpPickSize(3,'XL',this)">XL</button>
+              <button class="lp-size-pill" onclick="lpPickSize(3,'2XL',this)">2XL</button>
+            </div>
+            <button class="lp-add-btn" id="lp-add-3" onclick="lpAdd(3)">+ ADD TO FIT</button>
+          </div>
+        </div>
+
       </div>
 
       <!-- Optional dressing room -->
@@ -3168,6 +3197,43 @@
           </div>
         </div>
 
+        <!-- Product 3: Uni Hoodie -->
+        <div class="product-card" id="prod-3" onclick="previewItem(3)" data-cat="tops">
+          <div class="product-thumb" onclick="openLightbox(event,3)">
+            <div class="thumb-flip">
+              <div class="thumb-front">
+                <img src="hoodie-black-front.jpg" alt="Uni Hoodie" style="width:100%;height:100%;object-fit:contain;display:block;">
+              </div>
+              <div class="thumb-back">
+                <img src="hoodie-black-back.jpg" alt="Uni Hoodie back" style="width:100%;height:100%;object-fit:contain;display:block;">
+              </div>
+            </div>
+          </div>
+          <div class="product-info">
+            <div class="product-edition">UNI 001 // 1 OF 75</div>
+            <div class="product-name">Uni Hoodie</div>
+            <div class="product-desc">Oversized hoodie. White gothic logo. 4 colors.</div>
+            <div class="product-bottom">
+              <div class="product-price">$71</div>
+              <div class="product-equipped-badge" id="equip-tag-3">EQUIPPED ✓</div>
+              <div class="product-btns">
+                <button class="add-fit-btn" id="fit-3" onclick="addToFit(event, 3)">ADD TO FIT</button>
+              </div>
+            </div>
+            <div class="size-picker" id="size-picker-3">
+              <div class="size-note">⚠ SIZES RUN SMALL — SIZE UP</div>
+              <span class="size-label">SELECT SIZE</span>
+              <div class="size-btns">
+                <button class="size-btn" onclick="selectSize(event,3,'S')">S</button>
+                <button class="size-btn" onclick="selectSize(event,3,'M')">M</button>
+                <button class="size-btn" onclick="selectSize(event,3,'L')">L</button>
+                <button class="size-btn" onclick="selectSize(event,3,'XL')">XL</button>
+                <button class="size-btn" onclick="selectSize(event,3,'2XL')">2XL</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -3287,7 +3353,7 @@
   const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/main/';
   const charCutouts  = { 'UNIT-A': 'alpha-cut.png', 'UNIT-B': 'omega-cut.png', 'UNIT-C': 'delta-cut.png' };
   const charPregenId = { 'UNIT-A': 'alpha',          'UNIT-B': 'omega',          'UNIT-C': 'delta' };
-  const prodPregenId = { 1: 'uni-tee', 2: 'uni-polo' };
+  const prodPregenId = { 1: 'uni-tee', 2: 'uni-polo', 3: 'uni-hoodie' };
   const tryonCache   = {};  // charId:productId -> output URL
   let   pregenResults = {}; // loaded from pregen-results.json
 
@@ -3321,6 +3387,21 @@
                     variants: { S: 53337543409888, M: 53337543442656, L: 53337543475424, XL: 53337543508192, '2XL': 53337543540960 } },
            brown: { label: 'BROWN', front: 'polo-brown-front.jpg', back: 'polo-brown-back.jpg',
                     variants: { S: 53337543246048, M: 53337543278816, L: 53337543311584, XL: 53337543344352, '2XL': 53337543377120 } }
+         } },
+    3: { name: 'Uni Hoodie',       edition: '1 of 75', price: 71, cat: 'tops', layer: 4,
+         cutout: 'hoodie-black-front.jpg', back: 'hoodie-black-back.jpg',
+         shopifyUrl: 'https://1de1.co/products/uni-hoodie',
+         garmentDesc: 'black oversized hoodie with white gothic logo on chest, drawstring hood, kangaroo pocket',
+         variants: { S: 53337532432608, M: 53337532465376, L: 53337532498144, XL: 53337532530912, '2XL': 53337532563680 },
+         colors: {
+           black:   { label: 'BLACK',      front: 'hoodie-black-front.jpg',   back: 'hoodie-black-back.jpg',
+                      variants: { S: 53337532432608, M: 53337532465376, L: 53337532498144, XL: 53337532530912, '2XL': 53337532563680 } },
+           skyblue: { label: 'SKY BLUE',   front: 'hoodie-skyblue-front.jpg', back: 'hoodie-skyblue-back.jpg',
+                      variants: { S: 53337532268768, M: 53337532301536, L: 53337532334304, XL: 53337532367072, '2XL': 53337532399840 } },
+           green:   { label: 'DARK GREEN', front: 'hoodie-green-front.jpg',   back: 'hoodie-green-back.jpg',
+                      variants: { S: 53337531941088, M: 53337531973856, L: 53337532006624, XL: 53337532039392, '2XL': 53337532072160 } },
+           pink:    { label: 'PINK',       front: 'hoodie-pink-front.jpg',    back: 'hoodie-pink-back.jpg',
+                      variants: { S: 53337532104928, M: 53337532137696, L: 53337532170464, XL: 53337532203232, '2XL': 53337532236000 } }
          } }
   };
 
