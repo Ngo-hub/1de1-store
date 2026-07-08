@@ -4,6 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>1DE1 — Uni 001</title>
+
+<!-- Meta Pixel -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1587307689672693');
+  fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=1587307689672693&ev=PageView&noscript=1"/></noscript>
+<!-- End Meta Pixel -->
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Cinzel:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -2387,6 +2404,30 @@
     font-size: clamp(13px, 4vw, 18px); letter-spacing: 0.18em;
     text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 24px;
   }
+  .lp-countdown { margin-bottom: 26px; }
+  .lp-cd-label {
+    font-family: 'Share Tech Mono', monospace; font-size: 10px;
+    letter-spacing: 0.28em; color: var(--neon); margin-bottom: 10px;
+    text-shadow: 0 0 10px rgba(255,46,62,0.6);
+  }
+  .lp-cd-row { display: flex; align-items: flex-end; gap: 6px; }
+  .lp-cd-unit { display: flex; flex-direction: column; align-items: center; min-width: 46px; }
+  .lp-cd-num {
+    font-family: 'Share Tech Mono', monospace; font-size: clamp(26px, 6.5vw, 38px);
+    color: #fff; line-height: 1; text-shadow: 0 0 14px rgba(255,255,255,0.25);
+  }
+  .lp-cd-cap {
+    font-family: 'Share Tech Mono', monospace; font-size: 8px;
+    letter-spacing: 0.22em; color: rgba(255,255,255,0.45); margin-top: 6px;
+  }
+  .lp-cd-sep {
+    font-family: 'Share Tech Mono', monospace; font-size: clamp(24px, 6vw, 34px);
+    color: rgba(255,46,62,0.35); line-height: 1; margin-bottom: 18px;
+  }
+  .lp-cd-live {
+    font-family: 'Share Tech Mono', monospace; font-size: clamp(22px, 6vw, 32px);
+    color: var(--neon); letter-spacing: 0.1em; text-shadow: 0 0 18px rgba(255,46,62,0.8);
+  }
   .lp-enter-btn {
     display: inline-block; background: var(--neon); color: #000;
     font-family: 'Share Tech Mono', monospace; font-weight: 700;
@@ -2783,6 +2824,20 @@
         <div class="lp-hero-tag"><span class="blink">▮</span> SYS:ACTIVE // DROP UNI_001</div>
         <h1 class="lp-hero-title">UNI 001</h1>
         <div class="lp-hero-sub">Limited · Numbered · No Restocks</div>
+
+        <div class="lp-countdown" id="lp-countdown">
+          <div class="lp-cd-label">DROPS 07.31 // 12:00 EST</div>
+          <div class="lp-cd-row">
+            <div class="lp-cd-unit"><span class="lp-cd-num" id="cd-days">00</span><span class="lp-cd-cap">DAYS</span></div>
+            <span class="lp-cd-sep">:</span>
+            <div class="lp-cd-unit"><span class="lp-cd-num" id="cd-hours">00</span><span class="lp-cd-cap">HRS</span></div>
+            <span class="lp-cd-sep">:</span>
+            <div class="lp-cd-unit"><span class="lp-cd-num" id="cd-mins">00</span><span class="lp-cd-cap">MIN</span></div>
+            <span class="lp-cd-sep">:</span>
+            <div class="lp-cd-unit"><span class="lp-cd-num" id="cd-secs">00</span><span class="lp-cd-cap">SEC</span></div>
+          </div>
+        </div>
+
         <button class="lp-enter-btn" onclick="document.getElementById('lp-products').scrollIntoView({behavior:'smooth'})">ENTER THE DROP ▼</button>
       </div>
     </section>
@@ -2856,48 +2911,31 @@
           </div>
         </div>
 
-        <!-- Uni Rugby Red -->
-        <div class="lp-card" id="lp-card-3">
+        <!-- Uni Polo -->
+        <div class="lp-card" id="lp-card-2">
           <div class="lp-card-thumb" onclick="lpFlip(this)">
             <span class="lp-edition-tag">1 OF 75</span>
-            <img class="lp-img-front" src="uni-rugby-2.png" alt="Uni Rugby Red" loading="lazy">
-            <img class="lp-img-back" src="uni-rugby-2-back.png" alt="Uni Rugby Red back" loading="lazy">
+            <img class="lp-img-front" id="lp-front-2" src="polo-green-front.jpg" alt="Uni Polo" loading="lazy">
+            <img class="lp-img-back" id="lp-back-2" src="polo-green-back.jpg" alt="Uni Polo back" loading="lazy">
             <span class="lp-flip-hint">TAP ⤺</span>
           </div>
           <div class="lp-card-body">
-            <div class="lp-card-name">Uni Rugby Red</div>
-            <div class="lp-card-price">$53</div>
-            <div class="lp-size-note">⚠ RUNS SMALL — SIZE UP</div>
-            <div class="lp-size-row" id="lp-sizes-3">
-              <button class="lp-size-pill" onclick="lpPickSize(3,'S',this)">S</button>
-              <button class="lp-size-pill" onclick="lpPickSize(3,'M',this)">M</button>
-              <button class="lp-size-pill" onclick="lpPickSize(3,'L',this)">L</button>
-              <button class="lp-size-pill" onclick="lpPickSize(3,'XL',this)">XL</button>
-            </div>
-            <button class="lp-add-btn" id="lp-add-3" onclick="lpAdd(3)">+ ADD TO FIT</button>
-          </div>
-        </div>
-
-        <!-- Romper Black -->
-        <div class="lp-card" id="lp-card-5">
-          <div class="lp-card-thumb" onclick="lpFlip(this)">
-            <span class="lp-edition-tag">1 OF 75</span>
-            <img class="lp-img-front" src="romper-front.jpg" alt="Uni Tie Waist Romper Black" loading="lazy">
-            <img class="lp-img-back" src="romper-back.jpg" alt="Romper back" loading="lazy">
-            <span class="lp-flip-hint">TAP ⤺</span>
-          </div>
-          <div class="lp-card-body">
-            <div class="lp-card-name">Uni Tie Waist Romper</div>
+            <div class="lp-card-name">Uni Polo</div>
             <div class="lp-card-price">$44</div>
-            <div class="lp-size-note">⚠ RUNS SMALL — SIZE UP</div>
-            <div class="lp-size-row" id="lp-sizes-5">
-              <button class="lp-size-pill" onclick="lpPickSize(5,'S',this)">S</button>
-              <button class="lp-size-pill" onclick="lpPickSize(5,'M',this)">M</button>
-              <button class="lp-size-pill" onclick="lpPickSize(5,'L',this)">L</button>
-              <button class="lp-size-pill" onclick="lpPickSize(5,'XL',this)">XL</button>
-              <button class="lp-size-pill" onclick="lpPickSize(5,'2XL',this)">2XL</button>
+            <div class="lp-color-row" id="lp-colors-2">
+              <button class="lp-color-pill sel" onclick="lpPickColor(2,'green',this)"><span class="lp-sw" style="background:#2f6b45;"></span>GREEN</button>
+              <button class="lp-color-pill" onclick="lpPickColor(2,'blue',this)"><span class="lp-sw" style="background:#33507f;"></span>BLUE</button>
+              <button class="lp-color-pill" onclick="lpPickColor(2,'brown',this)"><span class="lp-sw" style="background:#6b4a2f;"></span>BROWN</button>
             </div>
-            <button class="lp-add-btn" id="lp-add-5" onclick="lpAdd(5)">+ ADD TO FIT</button>
+            <div class="lp-size-note">⚠ RUNS SMALL — SIZE UP</div>
+            <div class="lp-size-row" id="lp-sizes-2">
+              <button class="lp-size-pill" onclick="lpPickSize(2,'S',this)">S</button>
+              <button class="lp-size-pill" onclick="lpPickSize(2,'M',this)">M</button>
+              <button class="lp-size-pill" onclick="lpPickSize(2,'L',this)">L</button>
+              <button class="lp-size-pill" onclick="lpPickSize(2,'XL',this)">XL</button>
+              <button class="lp-size-pill" onclick="lpPickSize(2,'2XL',this)">2XL</button>
+            </div>
+            <button class="lp-add-btn" id="lp-add-2" onclick="lpAdd(2)">+ ADD TO FIT</button>
           </div>
         </div>
 
@@ -3093,74 +3131,38 @@
           </div>
         </div>
 
-        <!-- Product 3: Uni Rugby Red -->
-        <div class="product-card" id="prod-3" onclick="previewItem(3)" data-cat="polo">
-          <div class="product-thumb" onclick="openLightbox(event,3)">
+        <!-- Product 2: Uni Polo -->
+        <div class="product-card" id="prod-2" onclick="previewItem(2)" data-cat="polo">
+          <div class="product-thumb" onclick="openLightbox(event,2)">
             <div class="thumb-flip">
               <div class="thumb-front">
-                <img src="uni-rugby-2.png" alt="Uni Rugby Red" style="width:100%;height:100%;object-fit:contain;display:block;">
+                <img src="polo-green-front.jpg" alt="Uni Polo" style="width:100%;height:100%;object-fit:contain;display:block;">
               </div>
               <div class="thumb-back">
-                <img src="uni-rugby-2-back.png" alt="Uni Rugby Red back" style="width:100%;height:100%;object-fit:contain;display:block;">
+                <img src="polo-green-back.jpg" alt="Uni Polo back" style="width:100%;height:100%;object-fit:contain;display:block;">
               </div>
             </div>
           </div>
           <div class="product-info">
             <div class="product-edition">UNI 001 // 1 OF 75</div>
-            <div class="product-name">Uni Rugby Red</div>
-            <div class="product-desc">Rugby collar. Red. Mixed media patch.</div>
-            <div class="product-bottom">
-              <div class="product-price">$53</div>
-              <div class="product-equipped-badge" id="equip-tag-3">EQUIPPED ✓</div>
-              <div class="product-btns">
-                <button class="add-fit-btn" id="fit-3" onclick="addToFit(event, 3)">ADD TO FIT</button>
-              </div>
-            </div>
-            <div class="size-picker" id="size-picker-3">
-              <div class="size-note">⚠ SIZES RUN SMALL — SIZE UP</div>
-              <span class="size-label">SELECT SIZE</span>
-              <div class="size-btns">
-                <button class="size-btn" onclick="selectSize(event,3,'S')">S</button>
-                <button class="size-btn" onclick="selectSize(event,3,'M')">M</button>
-                <button class="size-btn" onclick="selectSize(event,3,'L')">L</button>
-                <button class="size-btn" onclick="selectSize(event,3,'XL')">XL</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Product 5: Romper Black -->
-        <div class="product-card" id="prod-5" onclick="previewItem(5)" data-cat="tops">
-          <div class="product-thumb" onclick="openLightbox(event,5)">
-            <div class="thumb-flip">
-              <div class="thumb-front">
-                <img src="romper-front.jpg" alt="Romper Black" style="width:100%;height:100%;object-fit:contain;display:block;">
-              </div>
-              <div class="thumb-back">
-                <img src="romper-back.jpg" alt="Romper Black back" style="width:100%;height:100%;object-fit:contain;display:block;">
-              </div>
-            </div>
-          </div>
-          <div class="product-info">
-            <div class="product-edition">UNI 001 // 1 OF 75</div>
-            <div class="product-name">Uni Tie Waist Romper Black</div>
-            <div class="product-desc">Tie waist romper. Black. Mixed media detail.</div>
+            <div class="product-name">Uni Polo</div>
+            <div class="product-desc">Plaid polo. Open collar. White gothic logo.</div>
             <div class="product-bottom">
               <div class="product-price">$44</div>
-              <div class="product-equipped-badge" id="equip-tag-5">EQUIPPED ✓</div>
+              <div class="product-equipped-badge" id="equip-tag-2">EQUIPPED ✓</div>
               <div class="product-btns">
-                <button class="add-fit-btn" id="fit-5" onclick="addToFit(event, 5)">ADD TO FIT</button>
+                <button class="add-fit-btn" id="fit-2" onclick="addToFit(event, 2)">ADD TO FIT</button>
               </div>
             </div>
-            <div class="size-picker" id="size-picker-5">
+            <div class="size-picker" id="size-picker-2">
               <div class="size-note">⚠ SIZES RUN SMALL — SIZE UP</div>
               <span class="size-label">SELECT SIZE</span>
               <div class="size-btns">
-                <button class="size-btn" onclick="selectSize(event,5,'S')">S</button>
-                <button class="size-btn" onclick="selectSize(event,5,'M')">M</button>
-                <button class="size-btn" onclick="selectSize(event,5,'L')">L</button>
-                <button class="size-btn" onclick="selectSize(event,5,'XL')">XL</button>
-                <button class="size-btn" onclick="selectSize(event,5,'2XL')">2XL</button>
+                <button class="size-btn" onclick="selectSize(event,2,'S')">S</button>
+                <button class="size-btn" onclick="selectSize(event,2,'M')">M</button>
+                <button class="size-btn" onclick="selectSize(event,2,'L')">L</button>
+                <button class="size-btn" onclick="selectSize(event,2,'XL')">XL</button>
+                <button class="size-btn" onclick="selectSize(event,2,'2XL')">2XL</button>
               </div>
             </div>
           </div>
@@ -3249,6 +3251,27 @@
   let lpColor = {};  // landing: selected color per product id (for multi-color products)
   let discountCode = localStorage.getItem('1de1_discount') || '';
 
+  // ── DROP COUNTDOWN ──
+  const DROP_DATE = new Date('2026-07-31T12:00:00-04:00'); // 12:00 EST launch
+  function tickCountdown() {
+    const cd = document.getElementById('lp-countdown');
+    if (!cd) return;
+    const diff = DROP_DATE - new Date();
+    if (diff <= 0) {
+      cd.innerHTML = '<div class="lp-cd-label">STATUS</div><div class="lp-cd-live">// DROP IS LIVE</div>';
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    const pad = n => String(n).padStart(2, '0');
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = pad(v); };
+    set('cd-days', d); set('cd-hours', h); set('cd-mins', m); set('cd-secs', s);
+  }
+  tickCountdown();
+  setInterval(tickCountdown, 1000);
+
   // ── CART PERSISTENCE ──
   function saveCart() {
     try { localStorage.setItem('1de1_cart', JSON.stringify(cart)); } catch (e) {}
@@ -3264,7 +3287,7 @@
   const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/main/';
   const charCutouts  = { 'UNIT-A': 'alpha-cut.png', 'UNIT-B': 'omega-cut.png', 'UNIT-C': 'delta-cut.png' };
   const charPregenId = { 'UNIT-A': 'alpha',          'UNIT-B': 'omega',          'UNIT-C': 'delta' };
-  const prodPregenId = { 1: 'uni-tee', 3: 'uni-rugby-red', 5: 'uni-romper-black' };
+  const prodPregenId = { 1: 'uni-tee', 2: 'uni-polo' };
   const tryonCache   = {};  // charId:productId -> output URL
   let   pregenResults = {}; // loaded from pregen-results.json
 
@@ -3286,16 +3309,19 @@
            grey:  { label: 'GREY',  front: 'tee-grey-front.webp', back: 'tee-grey-back.webp',
                     variants: { S: 52766292345056, M: 52766292377824, L: 52766292410592, XL: 52766292443360, '2XL': 52766292476128 } }
          } },
-    3: { name: 'Uni Rugby Red',    edition: '1 of 75', price: 53, cat: 'polo', layer: 3,
-         cutout: 'uni-rugby-2.png', back: 'uni-rugby-2-back.png',
-         shopifyUrl: 'https://1de1.co/products/uni-rugby-red',
-         garmentDesc: 'red rugby polo with mixed media embroidered patch',
-         variants: { S: 52666505855200, M: 52666505887968, L: 52666505920736, XL: 52666505953504 } },
-    5: { name: 'Uni Tie Waist Romper Black', edition: '1 of 75', price: 44, cat: 'tops', layer: 2, onePiece: true,
-         cutout: 'romper-front.jpg', back: 'romper-back.jpg',
-         shopifyUrl: 'https://1de1.co/products/uni-tie-waist-romper',
-         garmentDesc: 'black one-piece short romper, shorts cut ending upper thigh, short sleeves, scoop neckline, ribbed fabric, tied waist, replaces full outfit from shoulder to upper thigh, bare legs visible below shorts',
-         variants: { S: 53057785233632, M: 53057785266400, L: 53057785299168, XL: 53057785331936, '2XL': 53057785364704 } }
+    2: { name: 'Uni Polo',         edition: '1 of 75', price: 44, cat: 'polo', layer: 3,
+         cutout: 'polo-green-front.jpg', back: 'polo-green-back.jpg',
+         shopifyUrl: 'https://1de1.co/products/uni-polo',
+         garmentDesc: 'green plaid short-sleeve polo shirt with white collar and white gothic logo on chest',
+         variants: { S: 53337543573728, M: 53337543606496, L: 53337543639264, XL: 53337543672032, '2XL': 53337543704800 },
+         colors: {
+           green: { label: 'GREEN', front: 'polo-green-front.jpg', back: 'polo-green-back.jpg',
+                    variants: { S: 53337543573728, M: 53337543606496, L: 53337543639264, XL: 53337543672032, '2XL': 53337543704800 } },
+           blue:  { label: 'BLUE',  front: 'polo-blue-front.jpg',  back: 'polo-blue-back.jpg',
+                    variants: { S: 53337543409888, M: 53337543442656, L: 53337543475424, XL: 53337543508192, '2XL': 53337543540960 } },
+           brown: { label: 'BROWN', front: 'polo-brown-front.jpg', back: 'polo-brown-back.jpg',
+                    variants: { S: 53337543246048, M: 53337543278816, L: 53337543311584, XL: 53337543344352, '2XL': 53337543377120 } }
+         } }
   };
 
 
@@ -3450,6 +3476,7 @@
   }
 
   function copyDiscountCode(box) {
+    if (window.fbq) fbq('track', 'Lead', { content_name: 'UNI10 discount code' });
     const label = document.getElementById('copy-label');
     function ok() {
       if (!label) return;
@@ -3674,6 +3701,10 @@
     const variantId = variants ? (variants[size] || null) : null;
     cart.push({ id, name, price: p.price, size, variantId, color, img });
     saveCart();
+    if (window.fbq) fbq('track', 'AddToCart', {
+      content_name: name, value: p.price, currency: 'USD',
+      content_ids: variantId ? [variantId] : []
+    });
 
     // Power-up flash + sticky pulse
     if (btn) { btn.classList.add('flash'); setTimeout(() => btn.classList.remove('flash'), 500); }
@@ -4110,6 +4141,12 @@
   function checkout() {
     if (cart.length === 0) return;
     const parts = cart.filter(i => i.variantId).map(i => i.variantId + ':1');
+    if (window.fbq) fbq('track', 'InitiateCheckout', {
+      value: cart.reduce((s, i) => s + i.price, 0),
+      currency: 'USD',
+      num_items: cart.length,
+      content_ids: cart.map(i => i.variantId).filter(Boolean)
+    });
     console.log('[1DE1] Cart items:', cart);
     console.log('[1DE1] Variant parts:', parts);
     let url = parts.length > 0

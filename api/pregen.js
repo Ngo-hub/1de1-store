@@ -17,7 +17,7 @@ const path = require('path');
 const https = require('https');
 
 const TOKEN    = process.env.REPLICATE_TOKEN;
-const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/main/';
+const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/drop-01/';
 const VERSION  = 'c871bb9b046607b680449ecbae55fd8c6d945e0a1948644bf2361b3d021d3ff4';
 const OUT_FILE = path.join(__dirname, '..', 'pregen-results.json');
 const REPO_DIR = path.join(__dirname, '..');
@@ -36,9 +36,8 @@ const characters = [
 ];
 
 const garments = [
-  { id: 'uni-tee',          cutout: 'uni-tee-cut.png',                      desc: 'black oversized t-shirt with gothic logo' },
-  { id: 'uni-rugby-red',    cutout: 'uni-rugby-2.png',                       desc: 'red rugby polo with mixed media embroidered patch' },
-  { id: 'uni-romper-black', cutout: 'romper-front.jpg',                        desc: 'very short black romper, hemline ends at upper thigh, bare legs below, short sleeves, scoop neckline, ribbed fabric, tied waist', category: 'dresses' },
+  { id: 'uni-tee',  cutout: 'uni-tee-cut.png',      desc: 'black oversized t-shirt with gothic logo' },
+  { id: 'uni-polo', cutout: 'polo-green-front.jpg',  desc: 'green plaid short-sleeve polo shirt with white collar and white gothic logo on chest' },
 ];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
