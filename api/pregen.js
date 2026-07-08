@@ -17,7 +17,7 @@ const path = require('path');
 const https = require('https');
 
 const TOKEN    = process.env.REPLICATE_TOKEN;
-const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/drop-01/';
+const RAW_BASE = 'https://raw.githubusercontent.com/Ngo-hub/1de1-store/main/';
 const VERSION  = 'c871bb9b046607b680449ecbae55fd8c6d945e0a1948644bf2361b3d021d3ff4';
 const OUT_FILE = path.join(__dirname, '..', 'pregen-results.json');
 const REPO_DIR = path.join(__dirname, '..');
@@ -114,17 +114,29 @@ async function createPrediction(personImage, garmentImage, garmentDesc, category
   };
   if (category) input.category = category;
 
-  const { status, body } = await fetchJSON('https://api.replicate.com/v1/predictions', {
-    method: 'POST',
-    headers: {
-      'Authorization':  'Bearer ' + TOKEN,
-      'Content-Type':   'application/json',
-    },
-    body: JSON.stringify({ version: VERSION, input }),
-  });
+  // Retry on 429 (throttled when account credit < $5) respecting retry_after
+  for (let attempt = 0; attempt < 12; attempt++) {
+    const { status, body } = await fetchJSON('https://api.replicate.com/v1/predictions', {
+      method: 'POST',
+      headers: {
+        'Authorization':  'Bearer ' + TOKEN,
+        'Content-Type':   'application/json',
+      },
+      body: JSON.stringify({ version: VERSION, input }),
+    });
 
-  if (status !== 201) throw new Error('Create failed HTTP ' + status + ': ' + JSON.stringify(body));
-  return body.id;
+    if (status === 201) return body.id;
+
+    if (status === 429) {
+      const wait = ((body && body.retry_after) ? body.retry_after : 6) + 2;
+      console.log('  throttled (429) — waiting ' + wait + 's then retrying...');
+      await sleep(wait * 1000);
+      continue;
+    }
+
+    throw new Error('Create failed HTTP ' + status + ': ' + JSON.stringify(body));
+  }
+  throw new Error('Create failed: still throttled after 12 retries');
 }
 
 async function pollPrediction(predictionId) {
