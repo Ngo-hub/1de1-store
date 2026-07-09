@@ -2864,16 +2864,30 @@
     box-shadow: var(--glass-shadow);
   }
   #sizeguide-overlay .about-modal::before { background: var(--chrome); }
-  .sg-note { font-family: 'Rajdhani', sans-serif; font-size: 14px; color: #c3ccd8; line-height: 1.5; margin: 0 0 16px; }
-  .sg-table { width: 100%; border-collapse: collapse; font-family: 'Share Tech Mono', monospace; }
+  .sg-tabs { display: flex; gap: 8px; margin: 0 0 14px; flex-wrap: wrap; }
+  .sg-tab {
+    font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #c3ccd8; cursor: pointer;
+    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 8px;
+    padding: 7px 12px; backdrop-filter: blur(8px); transition: all 0.15s;
+  }
+  .sg-tab:hover { border-color: rgba(255,255,255,0.4); }
+  .sg-tab.active { background: rgba(255,255,255,0.9); color: #0b0e12; border-color: #fff; font-weight: 700; }
+  .sg-note { font-family: 'Rajdhani', sans-serif; font-size: 14px; color: #c3ccd8; line-height: 1.5; margin: 0 0 14px; }
+  .sg-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .sg-table { width: 100%; border-collapse: collapse; font-family: 'Share Tech Mono', monospace; min-width: 340px; }
   .sg-table th {
-    text-align: left; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
-    color: #aeb9c7; padding: 8px 10px; border-bottom: 1px solid var(--glass-border);
+    text-align: center; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: #aeb9c7; padding: 8px 6px; border-bottom: 1px solid var(--glass-border);
   }
+  .sg-table th:first-child { text-align: left; }
   .sg-table td {
-    font-size: 13px; color: #eef4fb; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 13px; color: #eef4fb; padding: 9px 6px; text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.06); line-height: 1.25;
   }
-  .sg-table tr td:first-child { color: #cfe0f2; font-weight: 700; }
+  .sg-table td span { display: block; font-size: 9px; color: var(--muted); margin-top: 2px; }
+  .sg-table tr td:first-child { color: #cfe0f2; font-weight: 700; text-align: left; }
+  .sg-table tr td:first-child span { display: none; }
   .sg-fine { font-family: 'Rajdhani', sans-serif; font-size: 11px; color: var(--muted); line-height: 1.5; margin: 14px 0 0; }
 
 </style>
@@ -2944,20 +2958,15 @@
       <button class="about-modal-x" onclick="closeSizeGuide()">✕</button>
     </div>
     <div class="about-modal-body">
-      <div class="about-modal-heading">FITS <span>TRUE TO SIZE</span></div>
-      <p class="sg-note">Unisex oversized fit. Measured flat, in inches (±1"). Between sizes or want it boxier? Size up.</p>
-      <!-- NOTE: placeholder measurements — confirm/replace with real Tapstitch spec -->
-      <table class="sg-table">
-        <thead><tr><th>Size</th><th>Chest (flat)</th><th>Length</th></tr></thead>
-        <tbody>
-          <tr><td>S</td><td>20"</td><td>27"</td></tr>
-          <tr><td>M</td><td>22"</td><td>28"</td></tr>
-          <tr><td>L</td><td>24"</td><td>29"</td></tr>
-          <tr><td>XL</td><td>26"</td><td>30"</td></tr>
-          <tr><td>2XL</td><td>28"</td><td>31"</td></tr>
-        </tbody>
-      </table>
-      <p class="sg-fine">Chest = pit-to-pit, measured flat then doubled for full circumference. Each piece is hand-finished, so expect slight variation.</p>
+      <div class="about-modal-heading" id="sg-heading">SIZE <span>GUIDE</span></div>
+      <div class="sg-tabs" id="sg-tabs">
+        <button class="sg-tab" data-sg="1" onclick="openSizeGuide(1)">Uni Tee</button>
+        <button class="sg-tab" data-sg="2" onclick="openSizeGuide(2)">Uni Polo</button>
+        <button class="sg-tab" data-sg="3" onclick="openSizeGuide(3)">Uni Hoodie</button>
+      </div>
+      <p class="sg-note">Unisex oversized fit. Between sizes or want it boxier? Size up.</p>
+      <div class="sg-scroll"><table class="sg-table" id="sg-table"></table></div>
+      <p class="sg-fine">Measured flat, in inches (cm below). Hand-finished garments — expect slight variation.</p>
     </div>
     <div class="about-modal-footer">
       <span class="about-modal-footer-text">UNI 001 · numbered</span>
@@ -4354,7 +4363,44 @@
   }
 
   // ── SIZE GUIDE MODAL ──
-  function openSizeGuide() { document.getElementById('sizeguide-overlay').classList.add('visible'); }
+  const SG_SIZES = ['S', 'M', 'L', 'XL', '2XL'];
+  const sizeCharts = {
+    1: { name: 'Uni Tee', order: ['Chest', 'Length', 'Shoulder', 'Sleeve'], data: {
+      Chest:    { in: [24.0, 24.8, 25.6, 26.4, 27.2], cm: [61, 63, 65, 67, 69] },
+      Length:   { in: [25.6, 26.4, 27.2, 28.0, 28.7], cm: [65, 67, 69, 71, 73] },
+      Shoulder: { in: [21.1, 21.9, 22.6, 23.4, 24.2], cm: [53.5, 55.5, 57.5, 59.5, 61.5] },
+      Sleeve:   { in: [8.7, 8.9, 9.1, 9.3, 9.4],       cm: [22, 22.5, 23, 23.5, 24] } } },
+    2: { name: 'Uni Polo', order: ['Chest', 'Length', 'Shoulder', 'Sleeve'], data: {
+      Chest:    { in: [23.2, 24.0, 24.8, 25.6, 26.4], cm: [59, 61, 63, 65, 67] },
+      Length:   { in: [25.8, 26.6, 27.4, 28.2, 28.9], cm: [65.5, 67.5, 69.5, 71.5, 73.5] },
+      Shoulder: { in: [20.1, 20.7, 21.3, 21.9, 22.4], cm: [51, 52.5, 54, 55.5, 57] },
+      Sleeve:   { in: [10.8, 11.2, 11.6, 12.0, 12.4], cm: [27.5, 28.5, 29.5, 30.5, 31.5] } } },
+    3: { name: 'Uni Hoodie', order: ['Chest', 'Length', 'Shoulder', 'Sleeve'], data: {
+      Chest:    { in: [27.2, 28.0, 28.7, 29.5, 30.3], cm: [69, 71, 73, 75, 77] },
+      Length:   { in: [24.4, 25.0, 25.6, 26.2, 26.8], cm: [62, 63.5, 65, 66.5, 68] },
+      Shoulder: { in: [24.4, 25.0, 25.6, 26.2, 26.8], cm: [62, 63.5, 65, 66.5, 68] },
+      Sleeve:   { in: [21.3, 21.7, 22.1, 22.4, 22.8], cm: [54, 55, 56, 57, 58] } } }
+  };
+  function openSizeGuide(id) {
+    id = id || 1;
+    const c = sizeCharts[id] || sizeCharts[1];
+    const heading = document.getElementById('sg-heading');
+    if (heading) heading.innerHTML = c.name.toUpperCase() + ' <span>SIZE GUIDE</span>';
+    document.querySelectorAll('#sg-tabs .sg-tab').forEach(function(t) {
+      t.classList.toggle('active', t.getAttribute('data-sg') === String(id));
+    });
+    let html = '<thead><tr><th>Measure</th>' + SG_SIZES.map(function(s){ return '<th>' + s + '</th>'; }).join('') + '</tr></thead><tbody>';
+    c.order.forEach(function(m) {
+      const row = c.data[m];
+      html += '<tr><td>' + m + '</td>' + row.in.map(function(v, i) {
+        return '<td>' + v.toFixed(1) + '<span>' + row.cm[i] + '</span></td>';
+      }).join('') + '</tr>';
+    });
+    html += '</tbody>';
+    const tbl = document.getElementById('sg-table');
+    if (tbl) tbl.innerHTML = html;
+    document.getElementById('sizeguide-overlay').classList.add('visible');
+  }
   function closeSizeGuide() { document.getElementById('sizeguide-overlay').classList.remove('visible'); }
   function handleSizeGuideOverlayClick(e) {
     if (e.target === document.getElementById('sizeguide-overlay')) closeSizeGuide();
