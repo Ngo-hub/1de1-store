@@ -36,9 +36,9 @@ const characters = [
 ];
 
 const garments = [
-  { id: 'uni-tee',          cutout: 'uni-tee-cut.png',                      desc: 'black oversized t-shirt with gothic logo' },
-  { id: 'uni-rugby-red',    cutout: 'uni-rugby-2.png',                       desc: 'red rugby polo with mixed media embroidered patch' },
-  { id: 'uni-romper-black', cutout: 'romper-front.jpg',                        desc: 'very short black romper, hemline ends at upper thigh, bare legs below, short sleeves, scoop neckline, ribbed fabric, tied waist', category: 'dresses' },
+  { id: 'uni-tee',    cutout: 'uni-tee-cut.png',       desc: 'black oversized t-shirt with gothic logo' },
+  { id: 'uni-polo',   cutout: 'polo-green-front.jpg',   desc: 'green plaid short-sleeve polo shirt with white collar and white gothic logo on chest' },
+  { id: 'uni-hoodie', cutout: 'hoodie-black-front.jpg', desc: 'black oversized hoodie with white gothic logo on chest, drawstring hood, kangaroo pocket' },
 ];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -115,17 +115,29 @@ async function createPrediction(personImage, garmentImage, garmentDesc, category
   };
   if (category) input.category = category;
 
-  const { status, body } = await fetchJSON('https://api.replicate.com/v1/predictions', {
-    method: 'POST',
-    headers: {
-      'Authorization':  'Bearer ' + TOKEN,
-      'Content-Type':   'application/json',
-    },
-    body: JSON.stringify({ version: VERSION, input }),
-  });
+  // Retry on 429 (throttled when account credit < $5) respecting retry_after
+  for (let attempt = 0; attempt < 12; attempt++) {
+    const { status, body } = await fetchJSON('https://api.replicate.com/v1/predictions', {
+      method: 'POST',
+      headers: {
+        'Authorization':  'Bearer ' + TOKEN,
+        'Content-Type':   'application/json',
+      },
+      body: JSON.stringify({ version: VERSION, input }),
+    });
 
-  if (status !== 201) throw new Error('Create failed HTTP ' + status + ': ' + JSON.stringify(body));
-  return body.id;
+    if (status === 201) return body.id;
+
+    if (status === 429) {
+      const wait = ((body && body.retry_after) ? body.retry_after : 6) + 2;
+      console.log('  throttled (429) — waiting ' + wait + 's then retrying...');
+      await sleep(wait * 1000);
+      continue;
+    }
+
+    throw new Error('Create failed HTTP ' + status + ': ' + JSON.stringify(body));
+  }
+  throw new Error('Create failed: still throttled after 12 retries');
 }
 
 async function pollPrediction(predictionId) {
