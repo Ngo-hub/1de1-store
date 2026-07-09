@@ -210,8 +210,8 @@
     justify-content: center;
     width: 16px;
     height: 16px;
-    background: #00BFFF;
-    color: #000000;
+    background: #eaf1f8;
+    color: #0b0e12;
     font-size: 9px;
     font-weight: 700;
     border-radius: 50%;
@@ -1358,7 +1358,7 @@
     position: fixed;
     inset: 0;
     z-index: 99999;
-    background: #000000;
+    background: radial-gradient(120% 90% at 50% -10%, #232c37 0%, #12171e 42%, #080a0e 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -2677,20 +2677,21 @@
 
   /* ════ DRESSING ROOM RESKIN — match the clean landing look ════ */
   #screen-select, #screen-room {
-    background: #050505; color: #fff;
+    background: transparent; color: #fff;
   }
-  #screen-select { background: radial-gradient(circle at 50% 30%, #140206 0%, #050505 70%); }
+  #screen-select { background: radial-gradient(circle at 50% 25%, #232c37 0%, #12171e 45%, #080a0e 100%); }
   /* Character select */
   #screen-select .screen-title { color: var(--neon); letter-spacing: 0.3em; }
   #screen-select .screen-heading { color: #fff; }
   #screen-room .room-layout { background: transparent; }
-  #screen-room .room-nav { background: #0b0b0b; border-color: #1c1c1c; }
+  #screen-room .room-nav { background: var(--glass-bg); border-color: var(--glass-border); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
   #screen-room .nav-label, #screen-room .nav-item { color: rgba(255,255,255,0.7); }
   #screen-room .nav-item.active { color: var(--neon); }
-  #screen-room .room-products { background: #0b0b0b; border-color: #1c1c1c; }
+  #screen-room .room-products { background: var(--glass-bg); border-color: var(--glass-border); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
   #screen-room .products-label { color: #fff; }
   #screen-room .product-card {
-    background: #0d0d0d; border: 1px solid #1c1c1c; border-radius: 6px;
+    background: var(--glass-bg-strong); border: 1px solid var(--glass-border); border-radius: 14px;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: var(--glass-hi);
   }
   #screen-room .product-card.selected { border-color: var(--neon); }
   #screen-room .product-thumb { background: #fff; border-radius: 4px; }
@@ -2712,13 +2713,13 @@
   #screen-room .size-btn:hover { border-color: var(--neon); color: #fff; }
   #screen-room .back-link, #screen-select .back-link { color: rgba(255,255,255,0.6); }
   #screen-room .back-link:hover, #screen-select .back-link:hover { color: var(--neon); }
-  #screen-room .drop-banner { background: #0d0d0d; border-color: #1c1c1c; }
+  #screen-room .drop-banner { background: var(--glass-bg); border-color: var(--glass-border); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
   #screen-room .drop-banner-text { color: #fff; }
   #screen-room .char-preview-mini { border-color: #1c1c1c; }
   #screen-room .char-preview-mini-name { color: var(--neon); }
   #screen-select .character-card:hover,
   #screen-select .character-card.selected { border-color: var(--neon); }
-  #screen-select .character-card::before { background: linear-gradient(180deg, transparent 40%, rgba(255,46,62,0.12) 100%); }
+  #screen-select .character-card::before { background: linear-gradient(180deg, transparent 40%, rgba(180,205,235,0.12) 100%); }
 
   /* Tablet / desktop: 3-up grid, contained hero */
   @media (min-width: 720px) {
