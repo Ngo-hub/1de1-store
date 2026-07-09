@@ -3977,6 +3977,8 @@
       saveCart();
       clearTryonResult();
       hideSizePickers();
+      // if other tops are still equipped, show the most recently added one
+      if (fitted.size > 0) { const rem = [...fitted]; callTryOn(rem[rem.length - 1]); }
       if (btn)   { btn.textContent = 'ADD TO FIT'; btn.classList.remove('equipped'); }
       if (badge) badge.style.display = 'none';
       if (card)  card.classList.remove('selected');
@@ -4079,66 +4081,24 @@
   async function callTryOn(productId) {
     if (!selectedChar) { console.warn('[1DE1] callTryOn: no character selected'); return; }
 
-    // Sort fitted items by layer so bottoms (1) are applied before tops (2+)
-    const fittedSorted = [...fitted].sort((a, b) => (products[a].layer || 2) - (products[b].layer || 2));
+    // Drop 01 is all tops (tee / polo / hoodie) — you wear one at a time.
+    // Always switch the avatar to the item that was just selected.
+    const pid       = productId;
+    const cacheKey  = selectedChar + ':' + pid;
+    const pregenKey = charPregenId[selectedChar] + '-' + prodPregenId[pid];
+    console.log('[1DE1] callTryOn — char:', selectedChar, '| pid:', pid, '| pregenKey:', pregenKey);
 
-    // ── Single item fast path ─────────────────────────────────────────────────
-    if (fittedSorted.length === 1) {
-      const pid       = fittedSorted[0];
-      const cacheKey  = selectedChar + ':' + pid;
-      const pregenKey = charPregenId[selectedChar] + '-' + prodPregenId[pid];
-      console.log('[1DE1] callTryOn single — char:', selectedChar, '| pid:', pid, '| pregenKey:', pregenKey);
-      if (tryonCache[cacheKey])       { showTryonResult(tryonCache[cacheKey]); return; }
-      if (pregenResults[pregenKey])   { tryonCache[cacheKey] = pregenResults[pregenKey]; showTryonResult(pregenResults[pregenKey]); return; }
-      const p = products[pid];
-      setTryonLoading(true);
-      try {
-        const url = await runLiveTryOn(RAW_BASE + charCutouts[selectedChar], RAW_BASE + p.cutout, p);
-        tryonCache[cacheKey] = url;
-        setTryonLoading(false);
-        showTryonResult(url);
-      } catch (err) { console.warn('[1DE1] Try-on failed:', err.message); setTryonLoading(false); }
-      return;
-    }
+    if (tryonCache[cacheKey])     { showTryonResult(tryonCache[cacheKey]); return; }
+    if (pregenResults[pregenKey]) { tryonCache[cacheKey] = pregenResults[pregenKey]; showTryonResult(pregenResults[pregenKey]); return; }
 
-    // ── Combo path — chain layers ─────────────────────────────────────────────
-    const comboKey = selectedChar + ':combo:' + fittedSorted.join('+');
-    if (tryonCache[comboKey]) { showTryonResult(tryonCache[comboKey]); return; }
-    console.log('[1DE1] Combo try-on — layers:', fittedSorted);
-
-    // Show the base layer pregen immediately so the stage isn't blank while generating
-    const basePregenKey = charPregenId[selectedChar] + '-' + prodPregenId[fittedSorted[0]];
-    if (pregenResults[basePregenKey]) {
-      showTryonResult(pregenResults[basePregenKey]);
-    }
-
-    // Generate full combo silently in background — no loading screen
+    const p = products[pid];
+    setTryonLoading(true);
     try {
-      let personImage = RAW_BASE + charCutouts[selectedChar];
-
-      for (let i = 0; i < fittedSorted.length; i++) {
-        const pid       = fittedSorted[i];
-        const p         = products[pid];
-        const pregenKey = charPregenId[selectedChar] + '-' + prodPregenId[pid];
-
-        // If first layer has a pregen, use GitHub raw URL so Replicate can fetch it
-        if (i === 0 && pregenResults[pregenKey]) {
-          const local = pregenResults[pregenKey];
-          const filename = local.startsWith('/') ? local.slice(1) : local;
-          personImage = RAW_BASE + filename;
-          console.log('[1DE1] Combo base layer from GitHub raw:', personImage);
-          continue;
-        }
-
-        console.log('[1DE1] Combo layer', i, '— applying', p.name);
-        personImage = await runLiveTryOn(personImage, RAW_BASE + p.cutout, p);
-      }
-
-      tryonCache[comboKey] = personImage;
-      showTryonResult(personImage);
-    } catch (err) {
-      console.warn('[1DE1] Combo try-on failed:', err.message);
-    }
+      const url = await runLiveTryOn(RAW_BASE + charCutouts[selectedChar], RAW_BASE + p.cutout, p);
+      tryonCache[cacheKey] = url;
+      setTryonLoading(false);
+      showTryonResult(url);
+    } catch (err) { console.warn('[1DE1] Try-on failed:', err.message); setTryonLoading(false); }
   }
 
   let _tryonBarTimer = null;
