@@ -2705,8 +2705,10 @@
   }
   #screen-room .add-fit-btn.equipped { background: var(--neon); color: #000; }
   #screen-room .size-note {
-    font-size: 11px; font-weight: 700; color: #000; background: #ffcf33;
-    padding: 6px 8px; border-radius: 3px; text-align: center; letter-spacing: 0.06em;
+    font-size: 11px; font-weight: 700; color: #a9dbc0; background: rgba(53,192,138,0.10);
+    border: 1px solid rgba(53,192,138,0.28); backdrop-filter: blur(6px);
+    padding: 6px 8px; border-radius: 8px; text-align: center; letter-spacing: 0.06em;
+    animation: none;
   }
   #screen-room .size-btn {
     background: #161616; border: 1px solid #2a2a2a; color: #ccc; min-height: 40px;
@@ -2751,8 +2753,8 @@
     border: 1px solid var(--glass-border); backdrop-filter: blur(6px);
   }
   .lp-size-note {
-    color: #f0d8a6; background: rgba(255,210,120,0.10);
-    border: 1px solid rgba(255,210,120,0.28);
+    color: #a9dbc0; background: rgba(53,192,138,0.10);
+    border: 1px solid rgba(53,192,138,0.28);
   }
   /* Glass pills */
   .lp-color-pill, .lp-size-pill {
@@ -3021,7 +3023,7 @@
               <button class="lp-color-pill sel" onclick="lpPickColor(1,'black',this)"><span class="lp-sw" style="background:#111;"></span>BLACK</button>
               <button class="lp-color-pill" onclick="lpPickColor(1,'grey',this)"><span class="lp-sw" style="background:#6b6b6b;"></span>GREY</button>
             </div>
-            <div class="lp-size-note">⚠ RUNS SMALL — SIZE UP</div>
+            <div class="lp-size-note">✓ TRUE TO SIZE</div>
             <div class="lp-size-row" id="lp-sizes-1">
               <button class="lp-size-pill" onclick="lpPickSize(1,'S',this)">S</button>
               <button class="lp-size-pill" onclick="lpPickSize(1,'M',this)">M</button>
@@ -3049,7 +3051,7 @@
               <button class="lp-color-pill" onclick="lpPickColor(2,'blue',this)"><span class="lp-sw" style="background:#33507f;"></span>BLUE</button>
               <button class="lp-color-pill" onclick="lpPickColor(2,'brown',this)"><span class="lp-sw" style="background:#6b4a2f;"></span>BROWN</button>
             </div>
-            <div class="lp-size-note">⚠ RUNS SMALL — SIZE UP</div>
+            <div class="lp-size-note">✓ TRUE TO SIZE</div>
             <div class="lp-size-row" id="lp-sizes-2">
               <button class="lp-size-pill" onclick="lpPickSize(2,'S',this)">S</button>
               <button class="lp-size-pill" onclick="lpPickSize(2,'M',this)">M</button>
@@ -3078,7 +3080,7 @@
               <button class="lp-color-pill" onclick="lpPickColor(3,'green',this)"><span class="lp-sw" style="background:#244a33;"></span>DARK GREEN</button>
               <button class="lp-color-pill" onclick="lpPickColor(3,'pink',this)"><span class="lp-sw" style="background:#e0a6c6;"></span>PINK</button>
             </div>
-            <div class="lp-size-note">⚠ RUNS SMALL — SIZE UP</div>
+            <div class="lp-size-note">✓ TRUE TO SIZE</div>
             <div class="lp-size-row" id="lp-sizes-3">
               <button class="lp-size-pill" onclick="lpPickSize(3,'S',this)">S</button>
               <button class="lp-size-pill" onclick="lpPickSize(3,'M',this)">M</button>
@@ -3268,7 +3270,7 @@
               </div>
             </div>
             <div class="size-picker" id="size-picker-1">
-              <div class="size-note">⚠ SIZES RUN SMALL — SIZE UP</div>
+              <div class="size-note">✓ TRUE TO SIZE</div>
               <span class="size-label">SELECT SIZE</span>
               <div class="size-btns">
                 <button class="size-btn" onclick="selectSize(event,1,'S')">S</button>
@@ -3305,7 +3307,7 @@
               </div>
             </div>
             <div class="size-picker" id="size-picker-2">
-              <div class="size-note">⚠ SIZES RUN SMALL — SIZE UP</div>
+              <div class="size-note">✓ TRUE TO SIZE</div>
               <span class="size-label">SELECT SIZE</span>
               <div class="size-btns">
                 <button class="size-btn" onclick="selectSize(event,2,'S')">S</button>
@@ -3342,7 +3344,7 @@
               </div>
             </div>
             <div class="size-picker" id="size-picker-3">
-              <div class="size-note">⚠ SIZES RUN SMALL — SIZE UP</div>
+              <div class="size-note">✓ TRUE TO SIZE</div>
               <span class="size-label">SELECT SIZE</span>
               <div class="size-btns">
                 <button class="size-btn" onclick="selectSize(event,3,'S')">S</button>
