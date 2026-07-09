@@ -116,8 +116,8 @@
   /* Spinning metallic chrome 1DE1 logo (top-center) */
   .chrome-logo {
     display: block;
-    width: 74px;
-    height: 34px;
+    width: 118px;
+    height: 52px;
     background: var(--chrome);
     -webkit-mask: url("white_1de1.png") center/contain no-repeat;
             mask: url("white_1de1.png") center/contain no-repeat;
@@ -153,6 +153,7 @@
     display: flex;
     align-items: center;
     gap: 24px;
+    margin-left: auto;
   }
 
   .about-link {
@@ -2018,7 +2019,7 @@
       padding: 12px 16px;
     }
     .header-left { display: none; }
-    .about-link { font-size: 9px; letter-spacing: 0.2em; }
+    .about-link { display: none; }
     .loadout-btn { font-size: 9px; letter-spacing: 0.15em; padding: 8px 12px; }
 
     /* ── HUD corners — hide on mobile ── */
@@ -3101,7 +3102,6 @@
 
   <!-- ══ SCREEN 1: CHARACTER SELECT ══ -->
   <div id="screen-select" class="screen">
-    <div style="margin-bottom:24px;background:#000000;display:inline-block;padding:12px 24px;border-radius:4px;"><img src="white_1de1.png" alt="1DE1" style="height:clamp(40px,6vw,72px);display:block;margin:0 auto;filter:brightness(0) invert(1);"></div>
     <div class="screen-title">— Select your player —</div>
     <div class="screen-heading">Choose Your Character</div>
 
