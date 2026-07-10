@@ -3686,6 +3686,27 @@
     try { localStorage.setItem('1de1_site_open','1'); } catch(e){}
     const ls = document.getElementById('lock-screen'); if (ls) ls.classList.add('hidden');
   }
+  // Klaviyo waitlist capture (client-side subscribe — public key, safe to expose)
+  const KLAVIYO_PUBLIC_KEY = 'WKkFRp';
+  const KLAVIYO_LIST_ID = 'QNQJYU';
+  function klaviyoSubscribe(email) {
+    try {
+      fetch('https://a.klaviyo.com/client/subscriptions/?company_id=' + KLAVIYO_PUBLIC_KEY, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'revision': '2024-10-15' },
+        body: JSON.stringify({
+          data: {
+            type: 'subscription',
+            attributes: {
+              custom_source: '1DE1 Drop 01 Waitlist',
+              profile: { data: { type: 'profile', attributes: { email: email } } }
+            },
+            relationships: { list: { data: { type: 'list', id: KLAVIYO_LIST_ID } } }
+          }
+        })
+      }).catch(function(){});
+    } catch (e) {}
+  }
   function lockSubmit(e) {
     e.preventDefault();
     const input = document.getElementById('lock-input');
@@ -3694,6 +3715,7 @@
     if (val === LOCK_PASSWORD) { unlockSite(); location.reload(); return false; }
     if (/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(val)) {
       try { localStorage.setItem('1de1_discount','UNI10'); localStorage.setItem('1de1_lock_email', val); } catch(e2){}
+      klaviyoSubscribe(val);
       if (window.fbq) fbq('track','Lead',{ content_name:'lock-screen email' });
       if (msg) msg.innerHTML = "YOU'RE IN. CODE <b style='color:#fff'>UNI10</b> = 10% OFF ON 07.31 🖤";
       input.style.display = 'none';
