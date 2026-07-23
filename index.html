@@ -2911,53 +2911,54 @@
     background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.015) 2px, rgba(255,255,255,0.015) 4px);
   }
   .lock-inner { position: relative; z-index: 2; width: 100%; max-width: 520px; display: flex; flex-direction: column; align-items: center; text-align: center; }
-  .lock-logo { width: 150px; height: 66px; margin-bottom: 22px; }
+  .lock-logo { width: 108px; height: 48px; margin-bottom: 12px; }
   .lock-tag {
-    font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.3em;
-    color: var(--neon); margin-bottom: 16px; text-shadow: 0 0 10px rgba(207,224,242,0.4);
+    font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.28em;
+    color: var(--neon); margin-bottom: 12px; text-shadow: 0 0 10px rgba(207,224,242,0.4);
   }
   .lock-title {
-    font-family: 'Rajdhani', sans-serif; font-weight: 700; line-height: 0.9;
-    font-size: clamp(52px, 17vw, 104px); color: #fff; letter-spacing: 0.02em;
+    font-family: 'Rajdhani', sans-serif; font-weight: 700; line-height: 0.92;
+    font-size: clamp(42px, 13vw, 74px); color: #fff; letter-spacing: 0.01em;
     text-shadow: 0 0 30px rgba(180,205,235,0.15);
   }
   .lock-sub {
     font-family: 'Share Tech Mono', monospace; font-size: clamp(10px, 3vw, 13px);
-    letter-spacing: 0.22em; color: #9aa3b1; margin: 12px 0 32px;
+    letter-spacing: 0.14em; color: #9aa3b1; text-transform: uppercase; margin: 10px 0 22px;
   }
-  .lock-cd { display: flex; gap: 10px; justify-content: center; margin-bottom: 34px; }
-  .lk-unit {
-    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 14px;
-    padding: 14px 10px; min-width: 72px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    box-shadow: var(--glass-hi); display: flex; flex-direction: column; align-items: center;
-  }
-  .lk-num { font-family: 'Share Tech Mono', monospace; font-size: clamp(30px, 9vw, 48px); color: #fff; line-height: 1; }
-  .lk-cap { font-family: 'Share Tech Mono', monospace; font-size: 9px; letter-spacing: 0.2em; color: #8f9bab; margin-top: 8px; }
-  .lock-offer {
-    font-family: 'Rajdhani', sans-serif; font-weight: 600; text-transform: uppercase;
-    font-size: clamp(14px, 4vw, 18px); letter-spacing: 0.14em; color: #dfe8f2; margin-bottom: 14px;
-  }
-  .lock-form { display: flex; gap: 8px; width: 100%; max-width: 420px; }
+  .lock-form { display: flex; gap: 8px; width: 100%; max-width: 440px; margin: 0 auto; }
   #lock-input {
-    flex: 1; min-height: 52px; padding: 0 16px; border-radius: 12px; color: #fff;
-    background: var(--glass-bg); border: 1px solid var(--glass-border);
+    flex: 1; min-height: 56px; padding: 0 18px; border-radius: 12px; color: #fff;
+    background: var(--glass-bg-strong); border: 1px solid var(--glass-border);
     font-family: 'Rajdhani', sans-serif; font-size: 16px;
     backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   }
-  #lock-input::placeholder { color: #6b7684; }
-  #lock-input:focus { outline: none; border-color: rgba(255,255,255,0.5); }
+  #lock-input::placeholder { color: #7f8b9c; }
+  #lock-input:focus { outline: none; border-color: rgba(255,255,255,0.55); }
   .lock-btn {
-    min-height: 52px; padding: 0 20px; border: none; border-radius: 12px; cursor: pointer;
-    background: rgba(255,255,255,0.92); color: #0b0e12; white-space: nowrap;
-    font-family: 'Share Tech Mono', monospace; font-weight: 700; font-size: 13px; letter-spacing: 0.12em;
+    min-height: 56px; padding: 0 22px; border: none; border-radius: 12px; cursor: pointer;
+    background: rgba(255,255,255,0.95); color: #0b0e12; white-space: nowrap;
+    font-family: 'Share Tech Mono', monospace; font-weight: 700; font-size: 13px; letter-spacing: 0.1em;
+    box-shadow: 0 6px 22px rgba(150,190,235,0.28);
   }
   .lock-btn:hover { background: #fff; }
   .lock-msg {
-    margin-top: 16px; min-height: 20px; color: var(--neon);
+    margin-top: 14px; min-height: 18px; color: var(--neon);
     font-family: 'Share Tech Mono', monospace; font-size: 13px; letter-spacing: 0.08em; line-height: 1.5;
   }
+  .lock-cd-label {
+    font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 0.3em;
+    color: #7f8b9c; margin: 28px 0 12px;
+  }
+  .lock-cd { display: flex; gap: 8px; justify-content: center; margin-bottom: 4px; }
+  .lk-unit {
+    background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px;
+    padding: 10px 8px; min-width: 58px; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--glass-hi); display: flex; flex-direction: column; align-items: center;
+  }
+  .lk-num { font-family: 'Share Tech Mono', monospace; font-size: clamp(24px, 7vw, 34px); color: #fff; line-height: 1; }
+  .lk-cap { font-family: 'Share Tech Mono', monospace; font-size: 8px; letter-spacing: 0.18em; color: #8f9bab; margin-top: 6px; }
   @media (max-width: 430px) {
-    .lk-unit { min-width: 62px; padding: 12px 6px; }
+    .lk-unit { min-width: 52px; padding: 9px 5px; }
     .lock-form { flex-direction: column; }
     .lock-btn { width: 100%; }
   }
@@ -2971,21 +2972,21 @@
   <div class="lock-scan"></div>
   <div class="lock-inner">
     <span class="lock-logo chrome-logo" role="img" aria-label="1DE1"></span>
-    <div class="lock-tag"><span class="blink">▮</span> SYS:LOCKED // UNI_001</div>
-    <h1 class="lock-title">DROP 01</h1>
-    <div class="lock-sub">UNO DE UNO · 1 OF 75 · NO RESTOCKS</div>
+    <div class="lock-tag"><span class="blink">▮</span> UNI_001 · DROPS 07.31</div>
+    <h1 class="lock-title">GET 10% OFF</h1>
+    <div class="lock-sub">+ first access to the drop · 1 of 75 · no restocks</div>
+    <form class="lock-form" onsubmit="return lockSubmit(event)">
+      <input type="text" id="lock-input" placeholder="Enter your email" autocomplete="email" spellcheck="false" />
+      <button type="submit" class="lock-btn">UNLOCK MY 10%</button>
+    </form>
+    <div class="lock-msg" id="lock-msg"></div>
+    <div class="lock-cd-label">DROPS IN</div>
     <div class="lock-cd" id="lock-cd">
       <div class="lk-unit"><span class="lk-num" id="lk-days">00</span><span class="lk-cap">DAYS</span></div>
       <div class="lk-unit"><span class="lk-num" id="lk-hours">00</span><span class="lk-cap">HRS</span></div>
       <div class="lk-unit"><span class="lk-num" id="lk-mins">00</span><span class="lk-cap">MIN</span></div>
       <div class="lk-unit"><span class="lk-num" id="lk-secs">00</span><span class="lk-cap">SEC</span></div>
     </div>
-    <div class="lock-offer">Drop your email — unlock 10% off</div>
-    <form class="lock-form" onsubmit="return lockSubmit(event)">
-      <input type="text" id="lock-input" placeholder="you@email.com" autocomplete="email" spellcheck="false" />
-      <button type="submit" class="lock-btn">UNLOCK 10%</button>
-    </form>
-    <div class="lock-msg" id="lock-msg"></div>
   </div>
 </div>
 
