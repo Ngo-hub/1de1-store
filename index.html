@@ -3140,7 +3140,7 @@
         <div class="lp-hero-sub">Limited · Numbered · No Restocks</div>
 
         <div class="lp-countdown" id="lp-countdown">
-          <div class="lp-cd-label">DROPS 07.31 // 12:00 EST</div>
+          <div class="lp-cd-label">DROPS 07.31 // MIDNIGHT EST</div>
           <div class="lp-cd-row">
             <div class="lp-cd-unit"><span class="lp-cd-num" id="cd-days">00</span><span class="lp-cd-cap">DAYS</span></div>
             <span class="lp-cd-sep">:</span>
@@ -3643,7 +3643,7 @@
   let discountCode = localStorage.getItem('1de1_discount') || '';
 
   // ── DROP COUNTDOWN ──
-  const DROP_DATE = new Date('2026-07-31T12:00:00-04:00'); // 12:00 EST launch
+  const DROP_DATE = new Date('2026-07-31T00:00:00-04:00'); // midnight EST launch
   function tickCountdown() {
     const cd = document.getElementById('lp-countdown');
     if (!cd) return;
