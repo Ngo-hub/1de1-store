@@ -3588,7 +3588,7 @@
             <span id="summary-total">$0</span>
           </div>
           <button class="enter-world-btn" onclick="enterRealWorld()">
-            Enter Real World &nbsp;▶
+            Checkout &nbsp;▶
           </button>
           <div class="summary-note">
             You will be redirected to checkout.<br>
@@ -3625,7 +3625,7 @@
       <span>Total</span>
       <span id="drawer-total">$0</span>
     </div>
-    <button class="checkout-btn" id="checkout-btn" onclick="checkout()" disabled>ENTER REAL WORLD &nbsp;▶</button>
+    <button class="checkout-btn" id="checkout-btn" onclick="checkout()" disabled>CHECKOUT &nbsp;▶</button>
     <div class="drawer-note">Ships worldwide &nbsp;·&nbsp; UNI 001 — NO RESTOCK</div>
   </div>
 </div>
@@ -3996,6 +3996,7 @@
       console.error('[1DE1] ERROR: could not find element screen-' + name);
     }
     if (name === 'loadout') renderLoadout();
+    updateCartCount(); // refresh floating LOADOUT pill visibility for this screen
     window.scrollTo(0, 0);
   }
 
@@ -4518,7 +4519,11 @@
     const sTotal = document.getElementById('sticky-total');
     if (sCount) sCount.textContent = count;
     if (sTotal) sTotal.textContent = '$' + total;
-    if (sticky) sticky.classList.toggle('show', count > 0);
+    // Hide the floating LOADOUT pill on the landing page (it covers bottom content);
+    // header LOADOUT button still available there.
+    const landingActive = !!document.querySelector('#screen-landing.active');
+    const drawerOpen = !!document.querySelector('#loadout-drawer.open');
+    if (sticky) sticky.classList.toggle('show', count > 0 && !landingActive && !drawerOpen);
   }
 
   // ── ABOUT MODAL ──
@@ -4581,11 +4586,13 @@
   function toggleDrawer() {
     document.getElementById('loadout-drawer').classList.toggle('open');
     document.getElementById('drawer-backdrop').classList.toggle('open');
+    updateCartCount(); // hide/show floating pill so it never overlaps the checkout button
   }
 
   function closeDrawer() {
     document.getElementById('loadout-drawer').classList.remove('open');
     document.getElementById('drawer-backdrop').classList.remove('open');
+    updateCartCount();
   }
 
   function renderDrawer() {
@@ -4600,7 +4607,7 @@
     if (cart.length === 0) {
       itemsEl.innerHTML = '<div class="empty-loadout" style="padding:48px 0;">No items equipped.</div>';
       if (totalEl) totalEl.textContent = '$0';
-      if (checkoutBtn) { checkoutBtn.disabled = true; checkoutBtn.textContent = 'ENTER REAL WORLD ▶'; }
+      if (checkoutBtn) { checkoutBtn.disabled = true; checkoutBtn.textContent = 'CHECKOUT ▶'; }
       return;
     }
 
@@ -4619,7 +4626,7 @@
 
     var total = cart.reduce((s, i) => s + i.price, 0);
     if (totalEl) totalEl.textContent = '$' + total;
-    if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.textContent = 'ENTER REAL WORLD — $' + total + ' ▶'; }
+    if (checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.textContent = 'CHECKOUT — $' + total + ' ▶'; }
   }
 
   function checkout() {
