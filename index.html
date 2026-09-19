@@ -146,6 +146,17 @@
   /* footer -> light */
   .tl-footer, .tl-footer * { color: var(--muted) !important; }
 
+  /* card controls -> visible on white (these were near-white text before) */
+  .lp-size-pill { color: var(--ink) !important; background: #fff !important; border: 1px solid var(--border) !important; }
+  .lp-size-pill.sel { background: var(--ink) !important; color: #fff !important; border-color: var(--ink) !important; }
+  .lp-add-btn { background: var(--ink) !important; color: #fff !important; border: 1px solid var(--ink) !important; }
+  .lp-add-btn:hover, .lp-add-btn:active { background: #000 !important; color: #fff !important; }
+  .lp-add-btn.added { background: #2fae7a !important; color: #fff !important; border-color: #2fae7a !important; }
+  .lp-size-note { color: #b26a00 !important; }
+  .lp-color-pill { color: var(--ink) !important; border-color: var(--border) !important; }
+  .lp-size-label, .lp-color-label { color: var(--muted) !important; }
+  .lp-flip-hint { color: #fff !important; }  /* sits over the product image */
+
   /* Spinning metallic chrome 1DE1 logo (top-center) */
   .chrome-logo {
     display: block;
@@ -2776,47 +2787,44 @@
      DARK GLASS THEME — glassmorphism overrides (loaded last = wins)
      ════════════════════════════════════════════════════════════════ */
   .lp-card {
-    background: var(--glass-bg) !important;
-    border: 1px solid var(--glass-border) !important;
-    border-radius: 16px !important;
-    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    box-shadow: var(--glass-shadow), var(--glass-hi);
+    background: #ffffff !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 14px !important;
+    box-shadow: 0 8px 26px rgba(0,0,0,0.08);
   }
-  .lp-card.added { border-color: rgba(255,255,255,0.55) !important; }
-  .lp-card-thumb { background: rgba(255,255,255,0.03); }
-  .lp-card-price { color: #dfe8f2; }
+  .lp-card.added { border-color: var(--ink) !important; }
+  .lp-card-thumb { background: #f2f1ee; }
+  .lp-card-price { color: var(--ink); }
   .lp-edition-tag {
-    color: #ffffff; background: rgba(10,13,18,0.82);
-    border: 1px solid rgba(255,255,255,0.28); backdrop-filter: blur(6px);
+    color: #ffffff; background: rgba(10,13,18,0.9);
+    border: none;
     font-size: 9px; padding: 4px 8px; letter-spacing: 0.14em;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   }
   .lp-size-note {
-    color: #f0d8a6; background: rgba(255,210,120,0.10);
-    border: 1px solid rgba(255,210,120,0.30);
+    color: #8a5a00 !important; background: #fff4d6 !important;
+    border: 1px solid #f0dca0 !important;
   }
-  /* Glass pills */
+  /* pills (light) */
   .lp-color-pill, .lp-size-pill {
-    background: var(--glass-bg) !important; border: 1px solid var(--glass-border) !important;
-    color: #d6dee8 !important; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    box-shadow: var(--glass-hi);
+    background: #ffffff !important; border: 1px solid var(--border) !important;
+    color: var(--ink) !important; box-shadow: none;
   }
   .lp-color-pill:hover, .lp-size-pill:hover,
-  .lp-color-pill:active, .lp-size-pill:active { border-color: rgba(255,255,255,0.5) !important; color: #fff !important; }
-  .lp-color-pill.sel { border-color: rgba(255,255,255,0.7) !important; color: #fff !important; background: rgba(255,255,255,0.16) !important; }
+  .lp-color-pill:active, .lp-size-pill:active { border-color: var(--ink) !important; color: var(--ink) !important; }
+  .lp-color-pill.sel { border-color: var(--ink) !important; color: var(--ink) !important; background: #f0efec !important; }
   .lp-size-pill.sel {
-    background: rgba(255,255,255,0.9) !important; border-color: #fff !important;
-    color: #0b0e12 !important; font-weight: 700;
+    background: var(--ink) !important; border-color: var(--ink) !important;
+    color: #ffffff !important; font-weight: 700;
   }
-  /* Glass buttons */
+  /* buttons (light: solid black CTA) */
   .lp-add-btn {
-    background: var(--glass-bg-strong) !important; color: #eef4fb !important;
-    border: 1px solid var(--glass-border) !important; border-radius: 12px !important;
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    box-shadow: var(--glass-shadow), var(--glass-hi);
+    background: var(--ink) !important; color: #ffffff !important;
+    border: 1px solid var(--ink) !important; border-radius: 10px !important;
+    box-shadow: none;
   }
-  .lp-add-btn:hover, .lp-add-btn:active { background: rgba(255,255,255,0.9) !important; color: #0b0e12 !important; }
-  .lp-add-btn.added { background: rgba(255,255,255,0.9) !important; color: #0b0e12 !important; }
+  .lp-add-btn:hover, .lp-add-btn:active { background: #000 !important; color: #fff !important; }
+  .lp-add-btn.added { background: #2fae7a !important; color: #fff !important; }
   .lp-enter-btn {
     background: var(--glass-bg-strong) !important; color: #eef4fb !important;
     border: 1px solid var(--glass-border) !important; border-radius: 14px !important;
