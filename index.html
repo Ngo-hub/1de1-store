@@ -119,6 +119,8 @@
   /* ── REDESIGN (light) overrides ── */
   .hud-corner { display: none !important; }            /* remove gamey HUD */
   .lp-dressing-btn { display: none !important; }        /* dressing room removed */
+  .header-left { display: none !important; }            /* drop gamey SYS:ACTIVE text */
+  .lp-hero-scan { display: none !important; }
   .chrome-logo { filter: none; animation: none; }       /* solid ink logo, no spin */
   .lp-hero::after { background: linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0) 45%, rgba(245,244,241,0.95) 100%) !important; }
 
@@ -2826,10 +2828,9 @@
   .lp-add-btn:hover, .lp-add-btn:active { background: #000 !important; color: #fff !important; }
   .lp-add-btn.added { background: #2fae7a !important; color: #fff !important; }
   .lp-enter-btn {
-    background: var(--glass-bg-strong) !important; color: #eef4fb !important;
-    border: 1px solid var(--glass-border) !important; border-radius: 14px !important;
-    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-    box-shadow: var(--glass-shadow), var(--glass-hi) !important;
+    background: var(--ink) !important; color: #ffffff !important;
+    border: none !important; border-radius: 10px !important;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.25) !important;
   }
   .lp-enter-btn:hover, .lp-enter-btn:active {
     background: rgba(255,255,255,0.92) !important; color: #0b0e12 !important;
@@ -3173,31 +3174,11 @@
 
     <!-- HERO -->
     <section class="lp-hero">
-      <img class="lp-hero-media" id="lp-hero-img" src="drop-art.jpg" alt="UNI 001 Drop"
-           onerror="this.style.display='none';document.getElementById('lp-hero-fallback').style.display='flex';">
-      <div class="lp-hero-media" id="lp-hero-fallback" style="display:none;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 40%, #1a0306 0%, #000 70%);">
-        <img src="white_1de1.png" alt="1DE1" style="width:min(60vw,360px);filter:brightness(0) invert(1);opacity:0.92;">
-      </div>
-      <div class="lp-hero-scan"></div>
+      <video class="lp-hero-media" id="lp-hero-video" autoplay muted loop playsinline webkit-playsinline poster="drop-art.jpg">
+        <source src="elevator-hero.mp4" type="video/mp4">
+      </video>
       <div class="lp-hero-content">
-        <div class="lp-hero-tag"><span class="blink">▮</span> SYS:ACTIVE // DROP UNI_001</div>
-        <h1 class="lp-hero-title">UNI 001</h1>
-        <div class="lp-hero-sub">Limited · Numbered · No Restocks</div>
-
-        <div class="lp-countdown" id="lp-countdown">
-          <div class="lp-cd-label">DROPS 07.31 // MIDNIGHT EST</div>
-          <div class="lp-cd-row">
-            <div class="lp-cd-unit"><span class="lp-cd-num" id="cd-days">00</span><span class="lp-cd-cap">DAYS</span></div>
-            <span class="lp-cd-sep">:</span>
-            <div class="lp-cd-unit"><span class="lp-cd-num" id="cd-hours">00</span><span class="lp-cd-cap">HRS</span></div>
-            <span class="lp-cd-sep">:</span>
-            <div class="lp-cd-unit"><span class="lp-cd-num" id="cd-mins">00</span><span class="lp-cd-cap">MIN</span></div>
-            <span class="lp-cd-sep">:</span>
-            <div class="lp-cd-unit"><span class="lp-cd-num" id="cd-secs">00</span><span class="lp-cd-cap">SEC</span></div>
-          </div>
-        </div>
-
-        <button class="lp-enter-btn" onclick="document.getElementById('lp-products').scrollIntoView({behavior:'smooth'})">ENTER THE DROP ▼</button>
+        <button class="lp-enter-btn" onclick="document.getElementById('lp-products').scrollIntoView({behavior:'smooth'})">SHOP THE DROP ↓</button>
       </div>
     </section>
 
