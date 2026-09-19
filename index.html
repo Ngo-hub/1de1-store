@@ -24,35 +24,38 @@
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&family=Cinzel:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
   :root {
-    --black: #0b0e12;
-    --dark:  #12161c;
-    --panel: rgba(255,255,255,0.055);
-    --border: rgba(255,255,255,0.14);
-    --border-active: rgba(255,255,255,0.42);
-    --accent: #c4ccd8;
-    --accent-dim: #8b95a3;
-    --white: #eef2f7;
-    --muted: #98a2b0;
+    /* LIGHT THEME (redesign) */
+    --black: #0b0e12;          /* dark ink — text + primary buttons */
+    --ink: #0b0e12;
+    --dark:  #14181d;
+    --panel: #ffffff;
+    --border: rgba(0,0,0,0.10);
+    --border-active: rgba(0,0,0,0.55);
+    --accent: #0b0e12;
+    --accent-dim: #6b7280;
+    --white: #0b0e12;          /* used as foreground text/fills -> dark on light */
+    --muted: #6b7280;
     --red: #e0555f;
-    --green: #35c08a;
-    --scan: rgba(255,255,255,0.02);
-    /* chrome + glass tokens */
-    --chrome: linear-gradient(115deg,#ffffff 0%,#b9c0cc 22%,#7d8694 40%,#eef2f7 52%,#9aa3b1 68%,#c8cfd9 82%,#ffffff 100%);
-    --glass-bg: rgba(255,255,255,0.07);
-    --glass-bg-strong: rgba(255,255,255,0.10);
-    --glass-border: rgba(255,255,255,0.20);
-    --glass-hi: inset 0 1px 0 rgba(255,255,255,0.18);
-    --glass-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    --green: #2fae7a;
+    --scan: rgba(0,0,0,0.02);
+    --page: #f5f4f1;           /* off-white page ground */
+    --card: #ffffff;
+    /* chrome + glass tokens (retuned for light) */
+    --chrome: linear-gradient(115deg,#2b3038 0%,#0b0e12 30%,#3a4048 52%,#0b0e12 74%,#242a31 100%);
+    --glass-bg: rgba(0,0,0,0.03);
+    --glass-bg-strong: rgba(0,0,0,0.05);
+    --glass-border: rgba(0,0,0,0.10);
+    --glass-hi: inset 0 1px 0 rgba(255,255,255,0.6);
+    --glass-shadow: 0 10px 30px rgba(0,0,0,0.08);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    background: #0b0e12;
-    background-image:
-      radial-gradient(120% 90% at 50% -10%, #232c37 0%, #12171e 42%, #080a0e 100%);
+    background: var(--page);
+    background-image: none;
     background-attachment: fixed;
-    color: var(--white);
+    color: var(--ink);
     font-family: 'Rajdhani', sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
@@ -106,12 +109,42 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px 32px;
-    border-bottom: 1px solid var(--glass-border);
-    background: rgba(10,13,18,0.55);
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.88);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     perspective: 700px;
   }
+
+  /* ── REDESIGN (light) overrides ── */
+  .hud-corner { display: none !important; }            /* remove gamey HUD */
+  .lp-dressing-btn { display: none !important; }        /* dressing room removed */
+  .chrome-logo { filter: none; animation: none; }       /* solid ink logo, no spin */
+  .lp-hero::after { background: linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0) 45%, rgba(245,244,241,0.95) 100%) !important; }
+
+  /* screens/app -> light ground */
+  .screen, #screen-landing { background: transparent !important; color: var(--ink) !important; }
+
+  /* story section -> dark text on light */
+  .lp-story-title, .lp-story-text b { color: var(--ink) !important; text-shadow: none !important; }
+  .lp-story-text { color: #3a4048 !important; }
+  .lp-story-kicker, .lp-story-spec span b { color: var(--red) !important; text-shadow: none !important; }
+  .lp-story-spec span { color: var(--muted) !important; }
+  .lp-divider { background: linear-gradient(90deg, transparent, rgba(0,0,0,0.14), transparent) !important; }
+
+  /* product cards -> clean white */
+  .lp-card { background: #fff !important; color: var(--ink) !important; border: 1px solid var(--border) !important; box-shadow: 0 8px 24px rgba(0,0,0,0.07) !important; }
+  .lp-card-name, .lp-card-price, .lp-card-desc { color: var(--ink) !important; }
+  .lp-section-title, .lp-section-meta { color: var(--ink) !important; }
+  .lp-size-guide-link { color: var(--muted) !important; }
+
+  /* trust strip -> dark text */
+  .lp-trust-item b { color: var(--ink) !important; }
+  .lp-trust-item span { color: var(--muted) !important; }
+  .lp-trust-i { color: var(--red) !important; }
+
+  /* footer -> light */
+  .tl-footer, .tl-footer * { color: var(--muted) !important; }
 
   /* Spinning metallic chrome 1DE1 logo (top-center) */
   .chrome-logo {
