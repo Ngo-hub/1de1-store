@@ -3174,7 +3174,7 @@
 
     <!-- HERO -->
     <section class="lp-hero">
-      <video class="lp-hero-media" id="lp-hero-video" autoplay muted loop playsinline webkit-playsinline poster="drop-art.jpg">
+      <video class="lp-hero-media" id="lp-hero-video" muted loop playsinline webkit-playsinline preload="none" poster="drop-art.jpg">
         <source src="elevator-hero.mp4" type="video/mp4">
       </video>
       <div class="lp-hero-content">
@@ -3829,15 +3829,17 @@
 
     function proceedToApp() {
       document.getElementById('app').classList.add('visible');
-      // Nudge the hero video to autoplay on mobile (iOS/Android need muted + an explicit play()).
+      // Hero video is heavy — DEFER it so product images load first on mobile (no autoplay/preload).
+      // Start it only after the page has loaded, or on first interaction.
       const hv = document.getElementById('lp-hero-video');
       if (hv) {
         hv.muted = true;
-        const kick = () => { hv.play().catch(function(){}); };
-        kick();
-        hv.addEventListener('loadeddata', kick, { once: true });
+        const start = function(){ hv.play().catch(function(){}); };
+        const begin = function(){ setTimeout(start, 700); };
+        if (document.readyState === 'complete') begin();
+        else window.addEventListener('load', begin, { once: true });
         ['touchstart','click','scroll'].forEach(function(ev){
-          window.addEventListener(ev, kick, { once: true, passive: true });
+          window.addEventListener(ev, start, { once: true, passive: true });
         });
       }
     }
