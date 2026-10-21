@@ -3829,7 +3829,17 @@
 
     function proceedToApp() {
       document.getElementById('app').classList.add('visible');
-      // Email popup removed for the clean redesign — straight into the store.
+      // Nudge the hero video to autoplay on mobile (iOS/Android need muted + an explicit play()).
+      const hv = document.getElementById('lp-hero-video');
+      if (hv) {
+        hv.muted = true;
+        const kick = () => { hv.play().catch(function(){}); };
+        kick();
+        hv.addEventListener('loadeddata', kick, { once: true });
+        ['touchstart','click','scroll'].forEach(function(ev){
+          window.addEventListener(ev, kick, { once: true, passive: true });
+        });
+      }
     }
 
     // While the site is locked (pre-launch), don't reveal the app — lock screen handles it.
