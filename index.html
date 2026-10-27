@@ -4725,5 +4725,40 @@
   })();
 
 </script>
+
+<!-- ── UNI 001 SOLD OUT (collection closed) ── -->
+<style>
+  .sold-out-ribbon{position:absolute;top:10px;left:10px;z-index:6;background:#b4231f;color:#fff;
+    font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.2em;padding:5px 9px;
+    border-radius:4px;text-transform:uppercase;box-shadow:0 2px 8px rgba(0,0,0,0.25);}
+  .lp-card.is-sold .lp-card-thumb img{opacity:0.6;filter:grayscale(0.25);}
+  .lp-add-btn.sold-out{background:#9a9a9a !important;color:#fff !important;border-color:#9a9a9a !important;cursor:not-allowed;}
+  .lp-size-pill.disabled,.lp-color-pill.disabled{opacity:0.45;pointer-events:none;}
+</style>
+<script>
+  (function(){
+    function markSold(){
+      document.querySelectorAll('.lp-card').forEach(function(card){
+        card.classList.add('is-sold');
+        var thumb = card.querySelector('.lp-card-thumb') || card;
+        if(!card.querySelector('.sold-out-ribbon')){
+          var r=document.createElement('span'); r.className='sold-out-ribbon'; r.textContent='Sold Out';
+          thumb.appendChild(r);
+        }
+        var b=card.querySelector('.lp-add-btn');
+        if(b){ b.classList.add('sold-out'); b.textContent='SOLD OUT'; b.disabled=true; b.onclick=null; }
+        card.querySelectorAll('.lp-size-pill,.lp-color-pill').forEach(function(p){ p.classList.add('disabled'); });
+      });
+    }
+    // Neutralise buying + keep sold-out state even if the app re-renders cards
+    window.lpAdd = function(){};
+    var _rcs = window.refreshCardStates;
+    window.refreshCardStates = function(){ markSold(); };
+    if(document.readyState !== 'loading') markSold();
+    else document.addEventListener('DOMContentLoaded', markSold);
+    // reassert a moment after load in case other scripts touch the buttons
+    window.addEventListener('load', function(){ setTimeout(markSold, 300); });
+  })();
+</script>
 </body>
 </html>
