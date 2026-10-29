@@ -23,28 +23,25 @@
   .nav-r a{color:var(--ink);text-decoration:none;}
   .cart-btn{background:var(--ink);color:#fff;border:none;padding:8px 14px;border-radius:6px;font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;}
 
-  /* rack */
-  .rack-wrap{width:100%;overflow-x:auto;padding:clamp(30px,6vw,70px) 0 64px;-webkit-overflow-scrolling:touch;}
-  .rack{position:relative;min-width:max-content;margin:0 auto;padding:0 clamp(40px,7vw,100px);}
-  .rail{position:absolute;top:34px;left:clamp(16px,4vw,60px);right:clamp(16px,4vw,60px);height:7px;border-radius:7px;
-    background:linear-gradient(180deg,#e6e2d8,#b4ae9f 55%,#8f8878);box-shadow:0 3px 7px rgba(0,0,0,0.22),inset 0 1px 0 rgba(255,255,255,0.5);}
-  .rail::before,.rail::after{content:"";position:absolute;top:50%;width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#aaa392,#7a7363);transform:translateY(-50%);box-shadow:0 2px 6px rgba(0,0,0,0.3);}
-  .rail::before{left:-9px;} .rail::after{right:-9px;}
-  .garments{display:flex;align-items:flex-start;position:relative;z-index:2;padding-top:8px;}
+  /* rack — clean premium: real product photos presented big on a minimal rail */
+  .rack-wrap{width:100%;overflow-x:auto;padding:clamp(34px,6vw,74px) 0 60px;-webkit-overflow-scrolling:touch;}
+  .rack{position:relative;min-width:max-content;margin:0 auto;padding:0 clamp(34px,6vw,84px);}
+  .rail{position:absolute;top:30px;left:clamp(14px,3.5vw,54px);right:clamp(14px,3.5vw,54px);height:2px;border-radius:2px;
+    background:linear-gradient(90deg,transparent,#c8c3b7 8%,#c8c3b7 92%,transparent);}
+  .garments{display:flex;align-items:flex-start;position:relative;z-index:2;gap:clamp(14px,2.6vw,42px);padding-top:30px;}
 
-  /* each piece hangs from a wire hanger tucked into its collar; pieces overlap like a packed rack */
-  .garment{position:relative;cursor:pointer;width:clamp(150px,17vw,210px);margin-left:clamp(-34px,-3vw,-20px);
-    transition:transform .4s cubic-bezier(.2,.85,.25,1),z-index 0s;transform-origin:top center;}
-  .garment:first-child{margin-left:0;}
-  .garment:hover{z-index:20;transform:translateY(-26px) scale(1.07);}
-  .hanger{position:absolute;top:-26px;left:50%;transform:translateX(-50%);width:72%;z-index:1;pointer-events:none;
-    filter:drop-shadow(0 2px 2px rgba(0,0,0,0.18));}
-  .hanger svg{display:block;width:100%;height:auto;}
+  /* each piece sits on the rail via a minimal thin hook; no clip-art hangers, no overlap */
+  .garment{position:relative;cursor:pointer;width:clamp(168px,18vw,228px);
+    transition:transform .4s cubic-bezier(.2,.85,.25,1);transform-origin:top center;}
+  .hook{position:absolute;top:-30px;left:50%;transform:translateX(-50%);width:20px;height:34px;z-index:1;pointer-events:none;}
+  .hook svg{display:block;width:100%;height:100%;}
   .g-img{position:relative;z-index:2;width:100%;height:auto;display:block;mix-blend-mode:multiply;
-    filter:drop-shadow(0 14px 18px rgba(0,0,0,0.14));}
-  .tag{margin-top:12px;text-align:center;position:relative;z-index:3;width:120px;margin-left:auto;margin-right:auto;background:rgba(255,255,255,0.85);border-radius:4px;padding:2px 0;}
-  .tag .nm{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;line-height:1.3;color:var(--ink);white-space:nowrap;}
-  .tag .pr{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--accent);margin-top:4px;}
+    filter:drop-shadow(0 16px 22px rgba(0,0,0,0.13));transition:filter .4s;}
+  .garment:hover{transform:translateY(-16px);}
+  .garment:hover .g-img{filter:drop-shadow(0 26px 30px rgba(0,0,0,0.2));}
+  .tag{margin-top:16px;text-align:center;}
+  .tag .nm{font-family:var(--mono);font-size:10.5px;letter-spacing:0.1em;text-transform:uppercase;line-height:1.3;color:var(--ink);white-space:nowrap;}
+  .tag .pr{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--accent);margin-top:5px;}
   .hint{text-align:center;font-family:var(--mono);font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:var(--muted);padding-bottom:40px;}
 
   footer{border-top:1px solid var(--line);padding:22px clamp(18px,4vw,48px);display:flex;justify-content:space-between;
@@ -118,7 +115,7 @@
 <script>
 let RACK = [];
 
-const HOOK='<svg viewBox="0 0 160 92"><path d="M80 22 C80 10 92 9 92 20 C92 29 82 30 80 40" fill="none" stroke="#7d7768" stroke-width="3" stroke-linecap="round"/><path d="M80 40 L16 80 L144 80 Z" fill="none" stroke="#7d7768" stroke-width="3.4" stroke-linejoin="round"/></svg>';
+const HOOK='<svg viewBox="0 0 20 34"><path d="M10 34 L10 11 C10 5 5 5 5 8.5" fill="none" stroke="#b1aa9d" stroke-width="2" stroke-linecap="round"/></svg>';
 const money = s => '$' + Math.round(parseFloat(s));
 let cart = [];
 
@@ -126,7 +123,7 @@ let cart = [];
 function renderRack(){
   document.getElementById('garments').innerHTML = RACK.map((p,i)=>`
     <div class="garment" onclick="openModal(${i})">
-      <div class="hanger">${HOOK}</div>
+      <div class="hook">${HOOK}</div>
       <img class="g-img" src="${p.colors[0].front}" alt="${p.title}" loading="lazy">
       <div class="tag"><div class="nm">${p.short||p.title.replace(/^Unisex /,'')}</div><div class="pr">${money(p.price)}</div></div>
     </div>`).join('');
