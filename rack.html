@@ -139,7 +139,7 @@ function renderRack(){
       <div class="tag"><div class="nm">${p.short||p.title.replace(/^Unisex /,'')}</div><div class="pr">${money(p.price)}</div></div>
     </div>`).join('');
 }
-fetch('rack-data.json').then(r=>r.json()).then(function(d){ RACK=d; renderRack(); })
+fetch('rack-data.json?v='+Date.now()).then(r=>r.json()).then(function(d){ RACK=d; renderRack(); })
   .catch(function(){ document.getElementById('garments').innerHTML='<div style="padding:40px;font-family:monospace;color:#8c8880">Could not load products.</div>'; });
 
 // ── modal ──
