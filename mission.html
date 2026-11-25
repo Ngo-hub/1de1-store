@@ -207,9 +207,15 @@ setInterval(()=>{const p=POOL[Math.floor(Math.random()*POOL.length)];pushLog(p[0
 
 let voiceOn=true;const orb=document.getElementById('orb'),cstate=document.getElementById('cstate');
 function setState(s){cstate.textContent=s}
+function pickVoice(){const vs=speechSynthesis.getVoices();
+  return vs.find(v=>/Daniel|Arthur|Oliver|Google UK English Male|British/i.test(v.name))
+    ||vs.find(v=>v.lang==='en-GB'&&/male/i.test(v.name))
+    ||vs.find(v=>v.lang==='en-GB')
+    ||vs.find(v=>/Google UK English/i.test(v.name))
+    ||vs.find(v=>/Daniel|Alex/i.test(v.name))||null;}
 function speak(t){if(!voiceOn||!window.speechSynthesis)return;speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(t.replace(/<[^>]+>/g,''));u.rate=1.03;u.pitch=.92;
-  const vs=speechSynthesis.getVoices();const pv=vs.find(v=>/Google US English|Samantha|Daniel|Alex/i.test(v.name));if(pv)u.voice=pv;
+  const u=new SpeechSynthesisUtterance(t.replace(/<[^>]+>/g,''));u.rate=.95;u.pitch=.8;
+  const pv=pickVoice();if(pv){u.voice=pv;u.lang=pv.lang;}else u.lang='en-GB';
   u.onstart=()=>{talking=true;orb.classList.add('talk');setState('speaking')};
   u.onend=()=>{talking=false;orb.classList.remove('talk');setState(callMode?'listening':'standby')};
   speechSynthesis.speak(u);}
@@ -243,10 +249,10 @@ if(SR){rec=new SR();rec.lang='en-US';rec.interimResults=false;
 }
 micBtn.onclick=()=>{if(!rec){document.getElementById('note').textContent='This browser has no speech input — use Chrome or Safari.';return}try{micBtn.classList.contains('rec')?rec.stop():rec.start()}catch(e){}};
 callBtn.onclick=()=>{callMode=!callMode;
-  if(callMode){callBtn.classList.add('live');callBtn.textContent='■ End call';const g="Operator online. I'm listening — what's going on?";add('bot',g);speak(g);setTimeout(()=>{if(rec)try{rec.start()}catch(e){}},1400);}
+  if(callMode){callBtn.classList.add('live');callBtn.textContent='■ End call';const g="At your service. I'm listening — what do you need?";add('bot',g);speak(g);setTimeout(()=>{if(rec)try{rec.start()}catch(e){}},1400);}
   else{callBtn.classList.remove('live');callBtn.textContent='◉ Call operator';if(rec)try{rec.stop()}catch(e){}setState('standby')}};
 
-setTimeout(()=>{add('bot',"Operator online. Tap <b>Call operator</b> and talk, or ask me for a standup.");},500);
+setTimeout(()=>{add('bot',"Good day. Operator online and at your service. Tap <b>Call operator</b>, or ask me for a standup.");},500);
 </script>
 </body>
 </html>
