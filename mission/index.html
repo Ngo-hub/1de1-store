@@ -100,11 +100,31 @@
   .log .t{color:var(--acc2)} .log .g{color:var(--acc)} .log .w{color:var(--warn)}
   .note{font-family:var(--mono);font-size:10px;color:var(--mut);margin-top:10px;line-height:1.5}
   ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:rgba(47,245,198,.25);border-radius:3px}
+  .gate{position:fixed;inset:0;z-index:100;background:rgba(4,6,10,.94);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center}
+  .gate.hidden{display:none}
+  .gatebox{text-align:center;padding:30px;max-width:320px;width:90%}
+  .glogo{font-family:'Orbitron';font-weight:900;font-size:34px;letter-spacing:.14em}
+  .glogo i{color:var(--acc);font-style:normal;text-shadow:0 0 14px rgba(47,245,198,.7)}
+  .gtag{font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--mut);text-transform:uppercase;margin:10px 0 22px}
+  .pcin{width:100%;background:rgba(0,0,0,.4);border:1px solid var(--line);border-radius:12px;color:var(--ink);padding:14px 16px;font-family:'Chakra Petch';font-size:16px;text-align:center;letter-spacing:.1em;outline:none}
+  .pcin:focus{border-color:var(--acc)}
+  .pcbtn{width:100%;margin-top:12px;background:linear-gradient(90deg,var(--acc),#13b89a);color:#042019;border:none;font-family:'Chakra Petch';font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:14px;padding:14px;border-radius:12px;cursor:pointer}
+  .pcerr{color:var(--red);font-family:var(--mono);font-size:11px;margin-top:12px;min-height:14px}
 </style>
 </head>
 <body>
 <canvas id="stars"></canvas>
 <div class="scan"></div><div class="vig"></div>
+
+<div id="gate" class="gate">
+  <div class="gatebox">
+    <div class="glogo">1<i>DE</i>1</div>
+    <div class="gtag">Operator access</div>
+    <input id="pc" class="pcin" type="password" placeholder="Passcode" autocomplete="off"/>
+    <button id="pcgo" class="pcbtn">Unlock</button>
+    <div id="pcerr" class="pcerr"></div>
+  </div>
+</div>
 
 <div class="wrap">
   <header>
@@ -236,7 +256,14 @@ async function askBrain(c){c=c.toLowerCase();
   return `Copy that. Right now I run on this deck's data. Once you connect my Claude brain, I can act on it, not just report it.`;
 }
 async function send(txt){if(!txt.trim())return;add('me',txt);setState('thinking');
-  const r=await askBrain(txt);add('bot',r);speak(r);}
+  let r='';
+  try{
+    const resp=await fetch('/api/operator',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:txt})});
+    if(resp.status===401){showGate();setState('standby');return;}
+    const j=await resp.json();r=(j&&j.reply)||'';
+  }catch(e){r='';}
+  if(!r)r=await askBrain(txt);
+  add('bot',r);speak(r);}
 document.getElementById('ti').addEventListener('keydown',e=>{if(e.key==='Enter'){send(e.target.value);e.target.value=''}});
 
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,callMode=false;
@@ -251,6 +278,20 @@ micBtn.onclick=()=>{if(!rec){document.getElementById('note').textContent='This b
 callBtn.onclick=()=>{callMode=!callMode;
   if(callMode){callBtn.classList.add('live');callBtn.textContent='■ End call';const g="At your service. I'm listening — what do you need?";add('bot',g);speak(g);setTimeout(()=>{if(rec)try{rec.start()}catch(e){}},1400);}
   else{callBtn.classList.remove('live');callBtn.textContent='◉ Call operator';if(rec)try{rec.stop()}catch(e){}setState('standby')}};
+
+/* passcode gate */
+const gate=document.getElementById('gate');
+function showGate(){gate.classList.remove('hidden');try{localStorage.removeItem('ngo_ok')}catch(e){}}
+function hideGate(){gate.classList.add('hidden')}
+async function doLogin(){const pc=document.getElementById('pc').value;const err=document.getElementById('pcerr');err.textContent='';
+  if(!pc){err.textContent='Enter your passcode';return;}
+  try{const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({passcode:pc})});
+    if(r.ok){try{localStorage.setItem('ngo_ok','1')}catch(e){}hideGate();}
+    else{const j=await r.json().catch(()=>({}));err.textContent=(j.error||'').includes('not set')?'Passcode not set up yet (add OPERATOR_PASSCODE)':'Wrong passcode';}
+  }catch(e){err.textContent='Connection error';}}
+document.getElementById('pcgo').onclick=doLogin;
+document.getElementById('pc').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+try{if(localStorage.getItem('ngo_ok')==='1')hideGate();}catch(e){}
 
 setTimeout(()=>{add('bot',"Good day. Operator online and at your service. Tap <b>Call operator</b>, or ask me for a standup.");},500);
 </script>

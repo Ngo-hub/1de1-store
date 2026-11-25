@@ -154,3 +154,10 @@ Three playable characters on the character select screen, each with a photo and 
 - **Endpoint:** `POST https://api.replicate.com/v1/predictions`
 - **Input fields:** `human_img`, `garm_img`, `garment_des`, `is_checked`, `is_checked_crop`, `denoise_steps`, `seed`
 - **Pattern:** async create → poll (avoids Vercel's 10s function timeout)
+
+
+## Mission Control Operator (branch: mission-operator-phase1)
+- Page: `mission/index.html` (passcode-gated). `mission.html` redirects to `/mission`.
+- Routes: `POST /api/login` (OPERATOR_PASSCODE -> cookie), `POST /api/operator` (Claude tool-use brain, auth-gated).
+- Shared: `lib/{auth,redis,state,brand,shopify,tools}.js`.
+- New env vars: ANTHROPIC_API_KEY, OPERATOR_PASSCODE (Phase 1a); SHOPIFY_ADMIN_TOKEN, UPSTASH_REDIS_REST_URL/_TOKEN (Phase 1b+). Tools degrade with linked:false until set.
