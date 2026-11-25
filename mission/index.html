@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>1DE1 — OPS DECK</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Orbitron:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#04060a;--ink:#dff5ef;--mut:#5b7a78;--acc:#2ff5c6;--acc2:#8b7cff;--warn:#ffc24b;--red:#ff5d6c;
+    --glass:rgba(16,28,32,.55);--line:rgba(47,245,198,.18);--line2:rgba(139,124,255,.22);
+    --mono:'IBM Plex Mono',monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:'Chakra Petch',system-ui,sans-serif;overflow-x:hidden}
+  #stars{position:fixed;inset:0;z-index:0;opacity:.55}
+  .scan{position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:repeating-linear-gradient(0deg,rgba(47,245,198,.028) 0 1px,transparent 1px 3px);
+    mix-blend-mode:screen;animation:scan 8s linear infinite}
+  @keyframes scan{to{background-position:0 300px}}
+  .vig{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(130% 90% at 50% 0%,transparent 55%,rgba(0,0,0,.65))}
+  .wrap{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:14px 16px 40px}
+
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+    border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(8px);border-radius:14px;padding:12px 16px}
+  .bz{display:flex;align-items:center;gap:14px}
+  .logo{font-family:'Orbitron';font-weight:900;font-size:20px;letter-spacing:.14em}
+  .logo i{color:var(--acc);font-style:normal;text-shadow:0 0 14px rgba(47,245,198,.7)}
+  .tagline{font-family:var(--mono);font-size:10px;letter-spacing:.34em;color:var(--mut);text-transform:uppercase}
+  .hstat{display:flex;align-items:center;gap:16px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--mut);text-transform:uppercase}
+  .hstat b{color:var(--acc)}
+  .ring-live{width:8px;height:8px;border-radius:50%;background:var(--acc);box-shadow:0 0 10px var(--acc);animation:bk 1.4s infinite}
+  @keyframes bk{50%{opacity:.25}}
+
+  .layout{display:grid;grid-template-columns:1.25fr 1fr;gap:14px;margin-top:14px}
+  @media(max-width:900px){.layout{grid-template-columns:1fr}}
+
+  .panel{border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(8px);border-radius:16px;padding:16px;position:relative;overflow:hidden}
+  .panel::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--acc),transparent);opacity:.5}
+  .ptitle{font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--mut);text-transform:uppercase;display:flex;justify-content:space-between;align-items:center}
+  .ptitle em{font-style:normal;color:var(--acc2)}
+
+  .core-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px 0 6px;position:relative}
+  .core{position:relative;width:230px;height:230px;display:flex;align-items:center;justify-content:center}
+  .r{position:absolute;border-radius:50%;border:1px solid var(--line)}
+  .r1{inset:0;border-color:rgba(47,245,198,.25);animation:spin 18s linear infinite}
+  .r2{inset:26px;border-color:rgba(139,124,255,.3);border-style:dashed;animation:spin 12s linear infinite reverse}
+  .r3{inset:54px;border-color:rgba(47,245,198,.4);animation:spin 26s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .orb{width:120px;height:120px;border-radius:50%;
+    background:radial-gradient(circle at 38% 32%,#5affd8,#19c6a0 40%,#0a5c54 75%,#042b2b);
+    box-shadow:0 0 40px rgba(47,245,198,.55),inset 0 0 30px rgba(0,0,0,.5);
+    display:flex;align-items:center;justify-content:center;position:relative;animation:breathe 4s ease-in-out infinite}
+  @keyframes breathe{50%{box-shadow:0 0 60px rgba(47,245,198,.8),inset 0 0 30px rgba(0,0,0,.5)}}
+  .orb.talk{animation:talk .5s ease-in-out infinite}
+  @keyframes talk{50%{box-shadow:0 0 72px rgba(47,245,198,1),inset 0 0 30px rgba(0,0,0,.4);transform:scale(1.04)}}
+  .wave{display:flex;gap:3px;align-items:flex-end;height:38px}
+  .wave span{width:4px;height:8px;background:#04221d;border-radius:2px;transition:height .12s}
+  .corelabel{margin-top:14px;font-family:'Orbitron';font-size:13px;letter-spacing:.24em;color:var(--ink)}
+  .corestate{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--acc);text-transform:uppercase;margin-top:4px}
+
+  .callbtn{margin-top:14px;display:inline-flex;align-items:center;gap:10px;cursor:pointer;
+    background:linear-gradient(90deg,var(--acc),#13b89a);color:#042019;border:none;font-family:'Chakra Petch';font-weight:700;
+    letter-spacing:.14em;text-transform:uppercase;font-size:13px;padding:13px 26px;border-radius:30px;
+    box-shadow:0 0 24px rgba(47,245,198,.4)}
+  .callbtn.live{background:linear-gradient(90deg,var(--red),#c0303f);color:#fff;box-shadow:0 0 24px rgba(255,93,108,.5)}
+
+  .chatlog{margin-top:14px;display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto}
+  .msg{font-size:13.5px;line-height:1.5;padding:9px 12px;border-radius:12px;max-width:94%}
+  .msg.bot{background:rgba(47,245,198,.07);border:1px solid var(--line);align-self:flex-start}
+  .msg.me{background:rgba(139,124,255,.14);border:1px solid var(--line2);align-self:flex-end}
+  .msg .who{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--mut);text-transform:uppercase;display:block;margin-bottom:3px}
+  .inrow{display:flex;gap:8px;margin-top:10px}
+  .ti{flex:1;background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:24px;color:var(--ink);padding:12px 16px;font-family:'Chakra Petch';font-size:14px;outline:none}
+  .ti:focus{border-color:var(--acc)}
+  .mic{flex:none;width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:rgba(47,245,198,.1);color:var(--acc);font-size:18px;cursor:pointer}
+  .mic.rec{background:var(--warn);color:#2a1d00;border-color:var(--warn);animation:bk .8s infinite}
+
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+  .kpi{border:1px solid var(--line);border-radius:12px;padding:11px 12px;background:rgba(0,0,0,.25);position:relative}
+  .kpi .n{font-family:'Orbitron';font-weight:700;font-size:22px;color:var(--acc)}
+  .kpi .k{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:var(--mut);text-transform:uppercase;margin-top:3px}
+
+  .agent{border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:9px;background:rgba(0,0,0,.22);position:relative}
+  .agent .ar{display:flex;align-items:center;justify-content:space-between}
+  .agent h3{font-size:14px;font-weight:600;letter-spacing:.02em}
+  .agent .st{font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;padding:3px 8px;border-radius:20px}
+  .st.on{color:var(--acc);border:1px solid var(--line);background:rgba(47,245,198,.08)}
+  .st.idle{color:var(--warn);border:1px solid rgba(255,194,75,.3)}
+  .st.build{color:var(--mut);border:1px solid rgba(91,122,120,.3)}
+  .agent .role{font-size:11.5px;color:var(--mut);margin-top:4px;line-height:1.4}
+  .bars{display:flex;gap:2px;align-items:flex-end;height:18px;margin-top:8px}
+  .bars span{flex:1;background:var(--acc);opacity:.5;border-radius:1px;animation:eq 1.2s ease-in-out infinite}
+  .bars.q span{background:var(--mut);animation:none;height:3px!important;opacity:.4}
+  @keyframes eq{50%{opacity:.9}}
+
+  .log{font-family:var(--mono);font-size:11px;line-height:1.7;max-height:150px;overflow-y:auto;color:var(--mut)}
+  .log .t{color:var(--acc2)} .log .g{color:var(--acc)} .log .w{color:var(--warn)}
+  .note{font-family:var(--mono);font-size:10px;color:var(--mut);margin-top:10px;line-height:1.5}
+  ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:rgba(47,245,198,.25);border-radius:3px}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="scan"></div><div class="vig"></div>
+
+<div class="wrap">
+  <header>
+    <div class="bz">
+      <div class="logo">1<i>DE</i>1</div>
+      <div class="tagline">One of one · ops deck</div>
+    </div>
+    <div class="hstat">
+      <span><span class="ring-live"></span> CORE <b>ONLINE</b></span>
+      <span>UPTIME <b id="up">00:00</b></span>
+      <span id="clock">--:--:--</span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <div class="panel">
+      <div class="ptitle">Chief Operator <em>// CLAUDE CORE</em></div>
+      <div class="core-wrap">
+        <div class="core">
+          <div class="r r1"></div><div class="r r2"></div><div class="r r3"></div>
+          <div class="orb" id="orb"><div class="wave" id="wave"></div></div>
+        </div>
+        <div class="corelabel">OPERATOR</div>
+        <div class="corestate" id="cstate">standby</div>
+        <button class="callbtn" id="call">◉ Call operator</button>
+      </div>
+      <div class="chatlog" id="chatlog"></div>
+      <div class="inrow">
+        <input class="ti" id="ti" placeholder="Speak or type a command…"/>
+        <button class="mic" id="mic">🎙</button>
+      </div>
+      <div class="note" id="note">Tap <b>Call operator</b> or the mic and talk — it answers out loud.</div>
+    </div>
+
+    <div>
+      <div class="panel" style="margin-bottom:14px">
+        <div class="ptitle">Brand vitals <em id="vsrc">// demo · link shopify</em></div>
+        <div class="kpis" style="margin-top:12px">
+          <div class="kpi"><div class="n" data-count="312" data-pre="$">$0</div><div class="k">Rev today</div></div>
+          <div class="kpi"><div class="n" data-count="4">0</div><div class="k">Orders</div></div>
+          <div class="kpi"><div class="n" data-count="5">0</div><div class="k">Agents</div></div>
+        </div>
+        <div id="agents"></div>
+      </div>
+      <div class="panel">
+        <div class="ptitle">Live telemetry <em>// feed</em></div>
+        <div class="log" id="log"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const cv=document.getElementById('stars'),cx=cv.getContext('2d');let W,H,ps=[];
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;ps=Array.from({length:90},()=>({x:Math.random()*W,y:Math.random()*H,z:Math.random()*.8+.2,s:Math.random()*.25+.05}))}
+rs();addEventListener('resize',rs);
+(function star(){cx.clearRect(0,0,W,H);for(const p of ps){p.y+=p.s*p.z;if(p.y>H)p.y=0;cx.globalAlpha=p.z;cx.fillStyle=p.z>.6?'#2ff5c6':'#4a6f6a';cx.fillRect(p.x,p.y,p.z*1.6,p.z*1.6)}cx.globalAlpha=1;requestAnimationFrame(star)})();
+
+const t0=Date.now();
+function tick(){const d=new Date();document.getElementById('clock').textContent=d.toLocaleTimeString('en-US',{hour12:false});
+  const s=Math.floor((Date.now()-t0)/1000);document.getElementById('up').textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+setInterval(tick,1000);tick();
+
+const wave=document.getElementById('wave');for(let i=0;i<9;i++)wave.appendChild(document.createElement('span'));
+const wb=[...wave.children];let talking=false;
+function waveLoop(){wb.forEach(b=>b.style.height=(talking?6+Math.random()*30:6)+'px');requestAnimationFrame(waveLoop)}waveLoop();
+
+document.querySelectorAll('[data-count]').forEach(el=>{const to=+el.dataset.count,pre=el.dataset.pre||'';let n=0;
+  const iv=setInterval(()=>{n+=Math.ceil(to/28);if(n>=to){n=to;clearInterval(iv)}el.textContent=pre+n},40)});
+
+const AGENTS=[
+  {n:'1DE1 Intel',s:'on',role:'Scans streetwear trends → feeds the designer. 09:00 daily.'},
+  {n:'Flipz Intel',s:'on',role:'Resale & sneaker market scan. 11:00 daily.'},
+  {n:'Market Desk',s:'on',role:'Stocks: pre-market / close / after-hours.'},
+  {n:'Auto Biz NGO',s:'idle',role:'Hunts fully-automated business ideas. Awaiting approval.'},
+  {n:'Designer',s:'build',role:'Drafts on-brand pieces from intel. (Next brick)'},
+];
+document.getElementById('agents').innerHTML=AGENTS.map(a=>`
+  <div class="agent">
+    <div class="ar"><h3>${a.n}</h3><span class="st ${a.s}">${a.s==='on'?'● live':a.s==='idle'?'○ idle':'○ build'}</span></div>
+    <div class="role">${a.role}</div>
+    <div class="bars ${a.s==='on'?'':'q'}">${Array.from({length:14},(_,i)=>`<span style="height:${a.s==='on'?4+Math.random()*14:3}px;animation-delay:${i*.07}s"></span>`).join('')}</div>
+  </div>`).join('');
+
+const POOL=[
+  ['g','1DE1 Intel','trend scan complete — 3 refs saved'],
+  ['t','Flipz Intel','2 arbitrage windows flagged → Telegram'],
+  ['g','Market Desk','close report sent — NASDAQ +0.8%'],
+  ['w','Auto Biz NGO','idle — awaiting your approval'],
+  ['t','Core','context synced · 5 agents registered'],
+  ['g','Shopify','heartbeat ok · awaiting API link'],
+  ['t','Designer','standby — pending wire-up'],
+  ['g','1DE1 Intel','washed denim + tonal knits rising'],
+];
+const logEl=document.getElementById('log');
+function stamp(){return new Date().toLocaleTimeString('en-US',{hour12:false})}
+function pushLog(cls,who,msg){const d=document.createElement('div');d.innerHTML=`<span class="${cls}">[${stamp()}]</span> ${who}: ${msg}`;logEl.prepend(d);while(logEl.children.length>40)logEl.lastChild.remove();}
+POOL.slice(0,5).forEach(p=>pushLog(p[0],p[1],p[2]));
+setInterval(()=>{const p=POOL[Math.floor(Math.random()*POOL.length)];pushLog(p[0],p[1],p[2])},3500);
+
+let voiceOn=true;const orb=document.getElementById('orb'),cstate=document.getElementById('cstate');
+function setState(s){cstate.textContent=s}
+function speak(t){if(!voiceOn||!window.speechSynthesis)return;speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(t.replace(/<[^>]+>/g,''));u.rate=1.03;u.pitch=.92;
+  const vs=speechSynthesis.getVoices();const pv=vs.find(v=>/Google US English|Samantha|Daniel|Alex/i.test(v.name));if(pv)u.voice=pv;
+  u.onstart=()=>{talking=true;orb.classList.add('talk');setState('speaking')};
+  u.onend=()=>{talking=false;orb.classList.remove('talk');setState(callMode?'listening':'standby')};
+  speechSynthesis.speak(u);}
+if(window.speechSynthesis)speechSynthesis.getVoices();
+
+const chat=document.getElementById('chatlog');
+function add(who,txt){const d=document.createElement('div');d.className='msg '+(who==='me'?'me':'bot');
+  d.innerHTML=`<span class="who">${who==='me'?'You':'Operator'}</span>${txt}`;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
+
+function liveAgents(){return AGENTS.filter(a=>a.s==='on').map(a=>a.n)}
+async function askBrain(c){c=c.toLowerCase();
+  if(/standup|brief|meeting|morning|going on|what.?s up/.test(c))return `Systems online. ${liveAgents().length} agents live: ${liveAgents().join(', ')}. Revenue today 312 dollars from 4 orders. Intel flags washed denim and tonal knits trending. Drop 002 in build, five pieces. Designer and sourcing agents aren't wired yet. What do you want to move on?`;
+  if(/sale|revenue|money|order/.test(c))return `312 dollars today across 4 orders. Goes live the moment we link Shopify.`;
+  if(/who|agent|working|running/.test(c))return `Live now: ${liveAgents().join(', ')}. Auto Biz NGO is idle waiting on you. Designer and sourcing still to build.`;
+  if(/drop|design|garment|product/.test(c))return `Drop 002, fall winter, five pieces. Plaid was cut after the DTF sample came out weird. Next step, background remove the colorways and wire live checkout.`;
+  if(/stock|crypto|trad|market/.test(c))return `Market desk runs pre-market, close, and after hours to your Telegram. Last close, NASDAQ up zero point eight percent. Same blueprint scales to live trading intel.`;
+  if(/hi|hey|yo|hello|sup/.test(c))return `I'm here. Ask for a standup, sales, who's working, or drop status.`;
+  return `Copy that. Right now I run on this deck's data. Once you connect my Claude brain, I can act on it, not just report it.`;
+}
+async function send(txt){if(!txt.trim())return;add('me',txt);setState('thinking');
+  const r=await askBrain(txt);add('bot',r);speak(r);}
+document.getElementById('ti').addEventListener('keydown',e=>{if(e.key==='Enter'){send(e.target.value);e.target.value=''}});
+
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null,callMode=false;
+const micBtn=document.getElementById('mic'),callBtn=document.getElementById('call');
+if(SR){rec=new SR();rec.lang='en-US';rec.interimResults=false;
+  rec.onstart=()=>{micBtn.classList.add('rec');setState('listening')};
+  rec.onend=()=>{micBtn.classList.remove('rec');if(callMode){try{rec.start()}catch(e){}}else setState('standby')};
+  rec.onresult=e=>{const txt=e.results[e.results.length-1][0].transcript;send(txt)};
+  rec.onerror=()=>{document.getElementById('note').textContent='Mic permission needed — tap the lock icon in your browser bar and allow the microphone.';callMode=false;callBtn.classList.remove('live');callBtn.textContent='◉ Call operator';};
+}
+micBtn.onclick=()=>{if(!rec){document.getElementById('note').textContent='This browser has no speech input — use Chrome or Safari.';return}try{micBtn.classList.contains('rec')?rec.stop():rec.start()}catch(e){}};
+callBtn.onclick=()=>{callMode=!callMode;
+  if(callMode){callBtn.classList.add('live');callBtn.textContent='■ End call';const g="Operator online. I'm listening — what's going on?";add('bot',g);speak(g);setTimeout(()=>{if(rec)try{rec.start()}catch(e){}},1400);}
+  else{callBtn.classList.remove('live');callBtn.textContent='◉ Call operator';if(rec)try{rec.stop()}catch(e){}setState('standby')}};
+
+setTimeout(()=>{add('bot',"Operator online. Tap <b>Call operator</b> and talk, or ask me for a standup.");},500);
+</script>
+</body>
+</html>
