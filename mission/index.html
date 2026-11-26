@@ -233,8 +233,24 @@ function pickVoice(){const vs=speechSynthesis.getVoices();
     ||vs.find(v=>v.lang==='en-GB')
     ||vs.find(v=>/Google UK English/i.test(v.name))
     ||vs.find(v=>/Daniel|Alex/i.test(v.name))||null;}
-function speak(t){if(!voiceOn||!window.speechSynthesis)return;speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(t.replace(/<[^>]+>/g,''));u.rate=.95;u.pitch=.8;
+let audioEl=null;
+function unlockAudio(){try{if(!audioEl)audioEl=new Audio();audioEl.play().catch(()=>{});}catch(e){}}
+document.addEventListener('pointerdown',unlockAudio,{once:true});
+async function speak(t){const text=(t||'').replace(/<[^>]+>/g,'').trim();if(!text)return;
+  try{
+    const r=await fetch('/api/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});
+    if(r.ok&&(r.headers.get('content-type')||'').includes('audio')){
+      const url=URL.createObjectURL(await r.blob());
+      if(!audioEl)audioEl=new Audio();audioEl.src=url;
+      talking=true;orb.classList.add('talk');setState('speaking');
+      audioEl.onended=()=>{talking=false;orb.classList.remove('talk');setState(callMode?'listening':'standby');URL.revokeObjectURL(url);};
+      await audioEl.play();return;
+    }
+  }catch(e){}
+  browserSpeak(text);
+}
+function browserSpeak(text){if(!window.speechSynthesis)return;speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);u.rate=.95;u.pitch=.8;
   const pv=pickVoice();if(pv){u.voice=pv;u.lang=pv.lang;}else u.lang='en-GB';
   u.onstart=()=>{talking=true;orb.classList.add('talk');setState('speaking')};
   u.onend=()=>{talking=false;orb.classList.remove('talk');setState(callMode?'listening':'standby')};
