@@ -43,8 +43,9 @@
   .add:hover{transform:translateY(-2px)}
   .add:disabled{opacity:.4;cursor:not-allowed;transform:none}
   .stage{position:relative;z-index:1;height:100%;display:flex;align-items:center;justify-content:center}
-  .stage img.hero{max-height:82vh;max-width:100%;object-fit:contain;filter:drop-shadow(0 50px 60px rgba(0,0,0,.55));transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  .stage img.hero{max-height:82vh;max-width:100%;object-fit:contain;filter:drop-shadow(0 50px 60px rgba(0,0,0,.55));transition:transform .5s cubic-bezier(.2,.7,.2,1),opacity .2s;cursor:pointer}
   section.slide:hover .stage img.hero{transform:scale(1.015)}
+  .flip{position:absolute;bottom:3%;left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;pointer-events:none;z-index:3}
   .bignum{position:absolute;z-index:0;right:2%;bottom:2%;font-weight:900;font-size:min(42vh,340px);line-height:1;color:rgba(244,241,234,.045);letter-spacing:-.04em;pointer-events:none}
   .nav{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:12px}
   .nav b{width:8px;height:8px;border-radius:50%;background:rgba(244,241,234,.25);cursor:pointer;transition:.2s;display:block}
@@ -95,7 +96,7 @@ function build(){
   const deck=document.getElementById('deck');
   const it=document.getElementById('introtag');if(it)it.textContent='1DE1 — FALL / WINTER — '+PRODUCTS.length+' PIECES';
   PRODUCTS.forEach((p,i)=>{
-    sel[i]={color:0,size:null};
+    sel[i]={color:0,size:null,back:false};
     const acc=ACCENT[i%ACCENT.length];
     const s=document.createElement('section');
     s.className='slide';s.style.setProperty('--acc',acc);
@@ -117,17 +118,25 @@ function build(){
         </div>
         <button class="add" id="add${i}" disabled>Select a size</button>
       </div>
-      <div class="stage"><img class="hero" src="${p.hero}" alt="${p.short}"></div>`;
+      <div class="stage"><img class="hero" id="img${i}" src="${p.colors[0].cut||p.hero}" alt="${p.short}"><div class="flip" id="flip${i}">↺ tap to see back</div></div>`;
     deck.appendChild(s);
     const ch=s.querySelector('#ch'+i);
     p.colors.forEach((c,ci)=>{
       const b=document.createElement('div');b.className='chip'+(ci===0?' on':'');
       b.innerHTML=`<img src="${c.front}" alt="${c.name}">`;
-      b.onclick=()=>{sel[i].color=ci;sel[i].size=null;
+      b.onclick=()=>{sel[i].color=ci;sel[i].size=null;sel[i].back=false;
         ch.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');
-        s.querySelector('#cn'+i).textContent=c.name;renderSizes(i,s,p);refreshAdd(i,s,p);};
+        s.querySelector('#cn'+i).textContent=c.name;
+        s.querySelector('#img'+i).src=c.cut||c.front;
+        const fl=s.querySelector('#flip'+i);if(fl)fl.textContent='↺ tap to see back';
+        renderSizes(i,s,p);refreshAdd(i,s,p);};
       ch.appendChild(b);
     });
+    const img=s.querySelector('#img'+i);
+    img.onclick=()=>{const col=p.colors[sel[i].color];if(!col.backcut)return;
+      sel[i].back=!sel[i].back;img.style.opacity=0;
+      setTimeout(()=>{img.src=sel[i].back?col.backcut:(col.cut||col.front);img.style.opacity=1;},150);
+      const fl=s.querySelector('#flip'+i);if(fl)fl.textContent=sel[i].back?'↺ tap to see front':'↺ tap to see back';};
     renderSizes(i,s,p);
   });
   const nav=document.getElementById('nav');
