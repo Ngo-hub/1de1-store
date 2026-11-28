@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>1DE1 — Drop 002</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#0f0e0d;--ink:#f4f1ea;--muted:#8c867c;--line:rgba(244,241,234,.14)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  body{overflow-x:hidden}
+  .bar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:18px 26px;mix-blend-mode:difference}
+  .wm{font-weight:900;letter-spacing:.24em;font-size:15px}
+  .bar .meta{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;color:#fff}
+  .cart{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;cursor:pointer;color:#fff}
+  .deck{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;scroll-behavior:smooth}
+  .deck::-webkit-scrollbar{display:none}
+  section.slide{height:100vh;scroll-snap-align:start;position:relative;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;padding:0 clamp(26px,5vw,90px);overflow:hidden}
+  .glow{position:absolute;width:78vh;height:78vh;border-radius:50%;right:8%;top:50%;transform:translateY(-50%);filter:blur(90px);opacity:.5;z-index:0;pointer-events:none}
+  .copy{position:relative;z-index:2;max-width:560px}
+  .idx{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.3em;color:var(--muted);margin-bottom:22px}
+  .idx b{color:var(--ink)}
+  .name{font-weight:900;line-height:.92;letter-spacing:-.02em;font-size:clamp(38px,6vw,86px);text-transform:uppercase}
+  .sub{margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+  .price{margin-top:26px;font-weight:600;font-size:22px}
+  .row{margin-top:26px}
+  .lab{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.22em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+  .chips{display:flex;gap:10px;flex-wrap:wrap}
+  .chip{width:46px;height:46px;border-radius:10px;overflow:hidden;background:#fff;cursor:pointer;border:2px solid transparent;outline:1px solid var(--line);transition:transform .15s,border-color .15s}
+  .chip:hover{transform:translateY(-2px)}
+  .chip img{width:100%;height:100%;object-fit:cover}
+  .chip.on{border-color:var(--ink)}
+  .cname{margin-top:8px;font-size:12px;color:var(--ink);letter-spacing:.04em}
+  .sizes{display:flex;gap:8px;flex-wrap:wrap}
+  .sz{min-width:44px;padding:10px 6px;text-align:center;border:1px solid var(--line);border-radius:8px;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;transition:.15s}
+  .sz:hover{border-color:var(--ink)}
+  .sz.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+  .sz.out{opacity:.3;text-decoration:line-through;cursor:not-allowed}
+  .add{margin-top:28px;display:inline-flex;align-items:center;gap:14px;background:var(--ink);color:var(--bg);border:none;font-family:'Archivo';font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:13px;padding:16px 30px;border-radius:40px;cursor:pointer;transition:.15s}
+  .add:hover{transform:translateY(-2px)}
+  .add:disabled{opacity:.4;cursor:not-allowed;transform:none}
+  .stage{position:relative;z-index:1;height:100%;display:flex;align-items:center;justify-content:center}
+  .stage img.hero{max-height:82vh;max-width:100%;object-fit:contain;filter:drop-shadow(0 50px 60px rgba(0,0,0,.55));transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+  section.slide:hover .stage img.hero{transform:scale(1.015)}
+  .bignum{position:absolute;z-index:0;right:2%;bottom:2%;font-weight:900;font-size:min(42vh,340px);line-height:1;color:rgba(244,241,234,.045);letter-spacing:-.04em;pointer-events:none}
+  .nav{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:40;display:flex;flex-direction:column;gap:12px}
+  .nav b{width:8px;height:8px;border-radius:50%;background:rgba(244,241,234,.25);cursor:pointer;transition:.2s;display:block}
+  .nav b.on{background:var(--ink);transform:scale(1.4)}
+  .hint{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:40;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;animation:bob 2s infinite}
+  @keyframes bob{0%,100%{opacity:.4;transform:translate(-50%,0)}50%{opacity:1;transform:translate(-50%,5px)}}
+  .hero0{height:100vh;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative}
+  .hero0 .big{font-weight:900;font-size:clamp(60px,15vw,220px);line-height:.86;letter-spacing:-.03em}
+  .hero0 .tag{margin-top:22px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.4em;color:var(--muted);text-transform:uppercase}
+  .toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%) translateY(20px);z-index:60;background:var(--ink);color:var(--bg);padding:12px 22px;border-radius:30px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;opacity:0;pointer-events:none;transition:.3s}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  @media(max-width:820px){
+    section.slide{grid-template-columns:1fr;grid-template-rows:auto 1fr;padding:84px 22px 30px;align-content:start}
+    .stage{order:-1;height:42vh}
+    .stage img.hero{max-height:42vh}
+    .glow{right:50%;transform:translate(50%,-50%);width:60vh;height:60vh}
+    .name{font-size:clamp(34px,11vw,60px)}
+    .bignum{display:none}
+    .nav{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="bar">
+  <div class="wm">1DE1</div>
+  <div class="meta">DROP 002 / FALL·WINTER</div>
+  <div class="cart" id="cart">BAG (0)</div>
+</div>
+<div class="nav" id="nav"></div>
+<div class="hint">scroll</div>
+<div class="toast" id="toast"></div>
+
+<div class="deck" id="deck">
+  <div class="hero0">
+    <div class="big">DROP<br>002</div>
+    <div class="tag" id="introtag">1DE1 — FALL / WINTER</div>
+  </div>
+</div>
+
+<script>
+const ACCENT=['#c99a6b','#3f7d5a','#9aa0a8','#c0392b','#d1476b'];
+const CHECKOUT='https://1de1.co/cart/';
+let PRODUCTS=[],sel=[],cart=[];
+function money(v){return '$'+parseFloat(v).toFixed(0);}
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('show');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('show'),1800);}
+function updateCart(){const n=cart.reduce((a,c)=>a+c.qty,0);document.getElementById('cart').textContent='BAG ('+n+')';}
+function build(){
+  const deck=document.getElementById('deck');
+  const it=document.getElementById('introtag');if(it)it.textContent='1DE1 — FALL / WINTER — '+PRODUCTS.length+' PIECES';
+  PRODUCTS.forEach((p,i)=>{
+    sel[i]={color:0,size:null};
+    const acc=ACCENT[i%ACCENT.length];
+    const s=document.createElement('section');
+    s.className='slide';s.style.setProperty('--acc',acc);
+    s.innerHTML=`
+      <div class="glow" style="background:${acc}"></div>
+      <div class="bignum">0${i+1}</div>
+      <div class="copy">
+        <div class="idx">0${i+1} <b>/ 0${PRODUCTS.length}</b></div>
+        <h2 class="name">${p.short}</h2>
+        <div class="sub">${p.title}</div>
+        <div class="price">${money(p.price)}</div>
+        <div class="row">
+          <div class="lab">Color — <span class="cname" id="cn${i}">${p.colors[0].name}</span></div>
+          <div class="chips" id="ch${i}"></div>
+        </div>
+        <div class="row">
+          <div class="lab">Size</div>
+          <div class="sizes" id="sz${i}"></div>
+        </div>
+        <button class="add" id="add${i}" disabled>Select a size</button>
+      </div>
+      <div class="stage"><img class="hero" src="${p.hero}" alt="${p.short}"></div>`;
+    deck.appendChild(s);
+    const ch=s.querySelector('#ch'+i);
+    p.colors.forEach((c,ci)=>{
+      const b=document.createElement('div');b.className='chip'+(ci===0?' on':'');
+      b.innerHTML=`<img src="${c.front}" alt="${c.name}">`;
+      b.onclick=()=>{sel[i].color=ci;sel[i].size=null;
+        ch.querySelectorAll('.chip').forEach(x=>x.classList.remove('on'));b.classList.add('on');
+        s.querySelector('#cn'+i).textContent=c.name;renderSizes(i,s,p);refreshAdd(i,s,p);};
+      ch.appendChild(b);
+    });
+    renderSizes(i,s,p);
+  });
+  const nav=document.getElementById('nav');
+  const slides=[...document.querySelectorAll('.hero0,.slide')];
+  slides.forEach((sl)=>{const b=document.createElement('b');b.onclick=()=>sl.scrollIntoView();nav.appendChild(b);});
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){const idx=slides.indexOf(e.target);
+    nav.querySelectorAll('b').forEach((d,di)=>d.classList.toggle('on',di===idx));}});},{threshold:.6});
+  slides.forEach(sl=>obs.observe(sl));
+}
+function renderSizes(i,s,p){
+  const wrap=s.querySelector('#sz'+i);wrap.innerHTML='';
+  p.colors[sel[i].color].sizes.forEach(z=>{
+    const d=document.createElement('div');d.className='sz'+(z.avail?'':' out');
+    d.textContent=z.size;
+    if(z.avail)d.onclick=()=>{sel[i].size=z.id;wrap.querySelectorAll('.sz').forEach(x=>x.classList.remove('on'));d.classList.add('on');refreshAdd(i,s,p);};
+    wrap.appendChild(d);
+  });
+}
+function refreshAdd(i,s,p){
+  const btn=s.querySelector('#add'+i);
+  if(sel[i].size){btn.disabled=false;btn.textContent='Add to bag — '+money(p.price);
+    btn.onclick=()=>{const ex=cart.find(c=>c.id===sel[i].size);if(ex)ex.qty++;else cart.push({id:sel[i].size,qty:1});updateCart();toast('Added to bag');};}
+  else{btn.disabled=true;btn.textContent='Select a size';}
+}
+document.getElementById('cart').onclick=()=>{
+  if(!cart.length){toast('Bag is empty');return;}
+  location.href=CHECKOUT+cart.map(c=>c.id+':'+c.qty).join(',');
+};
+fetch('rack-data.json?v='+Date.now()).then(r=>r.json()).then(d=>{PRODUCTS=d;build();});
+</script>
+</body>
+</html>
