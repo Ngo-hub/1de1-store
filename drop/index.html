@@ -156,7 +156,7 @@ document.getElementById('cart').onclick=()=>{
   if(!cart.length){toast('Bag is empty');return;}
   location.href=CHECKOUT+cart.map(c=>c.id+':'+c.qty).join(',');
 };
-fetch('rack-data.json?v='+Date.now()).then(r=>r.json()).then(d=>{PRODUCTS=d;build();});
+fetch('/drop/rack-data.json?v='+Date.now()).then(r=>r.json()).then(d=>{PRODUCTS=d;build();});
 </script>
 </body>
 </html>
