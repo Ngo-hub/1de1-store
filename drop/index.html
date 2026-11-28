@@ -165,7 +165,8 @@ document.getElementById('cart').onclick=()=>{
   if(!cart.length){toast('Bag is empty');return;}
   location.href=CHECKOUT+cart.map(c=>c.id+':'+c.qty).join(',');
 };
-fetch('/drop/rack-data.json?v='+Date.now()).then(r=>r.json()).then(d=>{PRODUCTS=d;build();});
+function preload(){PRODUCTS.forEach(p=>{const u=[p.hero];p.colors.forEach(c=>{u.push(c.cut,c.backcut);});u.forEach(src=>{if(src){const im=new Image();im.decoding='async';im.src=src;}});});}
+fetch('/drop/rack-data.json?v='+Date.now()).then(r=>r.json()).then(d=>{PRODUCTS=d;build();preload();});
 </script>
 </body>
 </html>
